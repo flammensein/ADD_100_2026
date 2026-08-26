@@ -12,12 +12,12 @@ ASSIGNMENT REQUIREMENTS
 """
 
 # ℹ️ Gather information from the user
+an_adjective = input("\nPlease enter an adjective: ")
 pet_type = input("\nPlease enter the species of a pet: ")
-the_word_ultra = input('\nPlease type the word "ultra": ')
 sports_team = input("\nPlease enter the name of a sports team: ")
 fav_sport = input("\nWhat is your favorite sport?: ")
 score_num_one = input("\nPlease pick a number: ")
-an_adjective = input("\nPlease enter an adjective: ")
+the_word_ultra = input('\nPlease type the word "ultra": ')
 
 
 # ℹ️ Title of this new literary masterpiece
