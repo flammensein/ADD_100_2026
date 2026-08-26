@@ -21,7 +21,7 @@ an_adjective = input("\nPlease enter an adjective: ")
 
 
 # ℹ️ Title of this new literary masterpiece
-print(f"\n\n\t\tHey, look! A {an_adjective} Misdirection!!")
+print(f"\n\n\t\tHey, Look! A {an_adjective} Misdirection!!")
 
 # ℹ️ Output a story using the remaining information provided by the user
 print(f"\n\n\tThere once was a {pet_type} from Nantucket.")
