@@ -10,3 +10,5 @@ ASSIGNMENT REQUIREMENTS
 [ ] 6. Program runs without errors.
 -----------------------------------------------------------------------
 """
+
+print("")
