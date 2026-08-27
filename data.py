@@ -12,3 +12,17 @@ ASSIGNMENT REQUIREMENTS (DO NOT DELETE)
 -----------------------------------------------------------------------
 """
 
+"""
+Demo of Data Types
+"""
+
+# String
+# Integer
+# Float
+# Boolean
+
+
+print(f"")
+print(f"")
+print(f"")
+print(f"")
