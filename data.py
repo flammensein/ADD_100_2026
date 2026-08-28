@@ -16,13 +16,13 @@ ASSIGNMENT REQUIREMENTS (DO NOT DELETE)
 Demo of Data Types
 """
 
-# String
-# Integer
-# Float
-# Boolean
+string_of_characters = "Is this the real life?"  # String
+just_an_int = 42  # Integer
+soda_in_ice_cream = 3.1415927  # Float
+reality_check = False  # Boolean
 
 
-print(f"")
-print(f"")
-print(f"")
-print(f"")
+print(f"\n\tJust an String \t=\t {string_of_characters}\n")
+print(f"\n\tJust an Int \t=\t {just_an_int}\n")
+print(f"\n\tJust a Float \t=\t {soda_in_ice_cream}\n")
+print(f"\n\tJust a Boolean \t=\t {reality_check}\n")
