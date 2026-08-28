@@ -6,7 +6,7 @@
 git log -1 --format=fuller
 git config --global user.email
 git config user.email
-````
+# ````
 
 # Use your GitHub-provided `noreply` email:
 
