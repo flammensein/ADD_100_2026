@@ -12,11 +12,6 @@ ASSIGNMENT REQUIREMENTS
 """
 
 # Get input for calculations ----
-# gross_income = float(6686.20)
-# monthly_rent = float(1220.50)
-# monthly_utilities = float(200.00)
-# monthly_bills = float(350)
-# monthly_debt = float(2000)
 gross_income = float(input("\n\n\tPlease enter your monthly GROSS income:\t$   "))
 monthly_rent = float(input("\n\tPlease enter your monthly rent cost:\t$   "))
 monthly_utilities = float(input("\n\tPlease enter your monthly utilities:\t$   "))
