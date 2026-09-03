@@ -26,9 +26,9 @@ match today_is.lower():
         child_price_per_day = float(1.00)
 
 # 4: Ask the user for their age and convert it to an integer.
-diner_age = int(input(f"\n\tPlease tell us your age:\t"))
+diner_age = int(input(f"\n\tPlease tell us how old you are:\t"))
 
-# TODO 5: Use if/elif/else to calculate the price.
+# 5: Use if/elif/else to calculate the price.
 # Under 1: FREE ($0.00)
 # Ages 1 to 12: age multiplied by child_price_per_year
 # Ages 13 to 64: $16.95
@@ -42,8 +42,7 @@ elif diner_age < 64:
 else:
     final_price = float(12.95)
 
-print(f"\n\t{today_is}")
-print(f"\n\t{child_price_per_day}")
-print(f"\n\t{diner_age}")
-print(f"\n\t${final_price:.2f}")
-# TODO 6: Print the final price formatted as currency.
+
+# 6: Print the final price formatted as currency.
+
+print(f"\n\tToday, your drink will cost:\t${final_price:.2f}\n\n")
