@@ -1,13 +1,18 @@
 """
 -----------------------------------------------------------------------
 ASSIGNMENT: 3B - The Buffet Calculator (Daily Specials)
-DATE: [Insert Date]
+DATE: 09-03-2026
 FILE: buffet.py
 -----------------------------------------------------------------------
 """
 
-# TODO 1: Ask the user for the day of the week.
-# TODO 2: Use .lower() with the day input.
+# 1: Ask the user for the day of the week.
+today_is = input(str(f"\n\n\tPlease enter what day of the week today is:\t")).lower()
+
+# 2: Use .lower() with the day input.
+# today_sanitized = today_is
+# print(f"\n\ttoday_is:\t {today_is}\n")
+# print(f"\n\ttoday_sanitized:\t{today_sanitized}\n")
 
 # TODO 3: Use match/case to set child_price_per_year.
 # Tuesday: $0.50 per year.
