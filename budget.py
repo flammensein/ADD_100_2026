@@ -11,8 +11,8 @@ ASSIGNMENT REQUIREMENTS
 -----------------------------------------------------------------------
 """
 
-# Get input from the user ----
-# declaring variables as floats to ensure that decimal values are possible for calculations later
+# ℹ️ Get input from the user ----
+# ℹ️ Declaring variables as floats ensures that decimal values are possible for calculations later.
 gross_income = float(input("\n\n\tPlease enter your monthly GROSS income:\t$   "))
 monthly_rent = float(input("\n\tPlease enter your monthly rent cost:\t$   "))
 monthly_utilities = float(input("\n\tPlease enter your monthly utilities:\t$   "))
@@ -20,14 +20,14 @@ monthly_bills = float(input("\n\tPlease enter your monthly bills:\t$   "))
 monthly_debt = float(input("\n\tPlease enter your monthly debt payment:\t$   "))
 
 
-# Perform budget calculations ----
+# ℹ️ Perform budget calculations ----
 net_income = gross_income * 0.8
 tot_expenses = monthly_bills + monthly_debt + monthly_rent + monthly_utilities
 income_remaining = net_income - tot_expenses
 percent_income = float((tot_expenses / net_income))
 discretionary_income = float((income_remaining / net_income))
 
-# Print the formatted report ----
+# ℹ️ Print the formatted report ----
 print(f"\n\n")
 print(f"\t{'=' * 35:^35}")
 print(f"\t{'BASIC PERSONAL BUDGET':^35}")
