@@ -13,11 +13,16 @@ ASSIGNMENT REQUIREMENTS
 
 # ℹ️ Get input from the user ----
 # ℹ️ Declaring variables as floats ensures that decimal values are possible for calculations later.
-gross_income = float(input("\n\n\tPlease enter your monthly GROSS income:\t$   "))
-monthly_rent = float(input("\n\tPlease enter your monthly rent cost:\t$   "))
-monthly_utilities = float(input("\n\tPlease enter your monthly utilities:\t$   "))
-monthly_bills = float(input("\n\tPlease enter your monthly bills:\t$   "))
-monthly_debt = float(input("\n\tPlease enter your monthly debt payment:\t$   "))
+print(f"\n\n")
+gross_income = float(input(f"\n\tPlease enter your monthly GROSS income:\t$   "))
+monthly_rent = float(input(f"\n\tPlease enter your monthly rent cost:\t$   "))
+monthly_utilities = float(input(f"\n\tPlease enter your monthly utilities:\t$   "))
+monthly_bills = float(input(f"\n\tPlease enter your monthly bills:\t$   "))
+monthly_groceries = float(
+    input(f"\n\tPlease estimate your monthly grocery costs:\t$   ")
+)
+monthly_fuel = float(input(f"\n\tPlease estimate your monthly fuel costs:\t$   "))
+monthly_debt = float(input(f"\n\tPlease enter your monthly debt payment:\t$   "))
 
 
 # ℹ️ Perform budget calculations ----
