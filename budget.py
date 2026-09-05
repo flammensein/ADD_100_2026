@@ -25,7 +25,14 @@ monthly_debt = float(input(f"\n\tPlease enter your monthly debt payment:\t$   ")
 
 # ℹ️ Perform budget calculations ----
 net_income = gross_income * 0.8
-tot_expenses = monthly_bills + monthly_debt + monthly_rent + monthly_utilities
+tot_expenses = (
+    monthly_bills
+    + monthly_debt
+    + monthly_rent
+    + monthly_utilities
+    + monthly_groceries
+    + monthly_fuel
+)
 income_remaining = net_income - tot_expenses
 percent_income = float((tot_expenses / net_income))
 discretionary_income = float((income_remaining / net_income))
