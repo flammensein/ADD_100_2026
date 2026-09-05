@@ -4,18 +4,14 @@ ASSIGNMENT: 3B - The Buffet Calculator (Daily Specials)
 DATE: 09-03-2026
 FILE: buffet.py
 -----------------------------------------------------------------------
+
+This program calculates a diner's buffet cost using user input of the day
+of the week and the age of the diner to determine discounts to apply.
 """
 
-# 1: Ask the user for the day of the week.
-today_is = input(str(f"\n\n\tPlease enter what day of the week today is:\t"))
+# Set the child rate and Sunday promotion.
+today_is = input(str(f"\n\n\tPlease enter current day of the week:\t"))
 
-# 2: Use .lower() with the day input.
-# ℹ️ Done as part of Match/Case statement below.
-
-# 3: Use match/case to set child_price_per_year.
-# Tuesday: $0.50 per year.
-# Sunday: $1.00 per year and print the free-drinks notice.
-# Every other day: $1.00 per year using the default case (case _).
 match today_is.lower():
     case "tuesday":
         child_price_per_day = float(0.50)
@@ -25,17 +21,13 @@ match today_is.lower():
     case _:
         child_price_per_day = float(1.00)
 
-# 4: Ask the user for their age and convert it to an integer.
-diner_age = int(input(f"\n\tPlease tell us how old you are:\t"))
+# Categorize the diner and calculate the buffet price.
+diner_age = int(input(f"\n\tPlease tell us your age:   \t"))
 
-# 5: Use if/elif/else to calculate the price.
-# Under 1: FREE ($0.00)
-# Ages 1 to 12: age multiplied by child_price_per_year
-# Ages 13 to 64: $16.95
-# Age 65 and older: $12.95
 if diner_age < 1:
     final_price = float(0.00)
 elif diner_age < 13:
+    # Children pay their age multiplied by the daily rate.
     final_price = child_price_per_day * diner_age
 elif diner_age < 64:
     final_price = float(16.95)
@@ -43,6 +35,5 @@ else:
     final_price = float(12.95)
 
 
-# 6: Print the final price formatted as currency.
-
-print(f"\n\tToday, your drink will cost:\t${final_price:.2f}\n\n")
+# Display the final price.
+print(f"\n\tYour cost today is:   \t\t${final_price:.2f}\n\n")
