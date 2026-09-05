@@ -16,12 +16,10 @@ ASSIGNMENT REQUIREMENTS
 print(f"\n\n")
 gross_income = float(input(f"\n\tPlease enter your monthly GROSS income:\t$   "))
 monthly_rent = float(input(f"\n\tPlease enter your monthly rent cost:\t$   "))
-monthly_utilities = float(input(f"\n\tPlease enter your monthly utilities:\t$   "))
-monthly_bills = float(input(f"\n\tPlease enter your monthly bills:\t$   "))
-monthly_groceries = float(
-    input(f"\n\tPlease estimate your monthly grocery costs:\t$   ")
-)
-monthly_fuel = float(input(f"\n\tPlease estimate your monthly fuel costs:\t$   "))
+monthly_utilities = float(input(f"\n\tPlease enter your monthly utility cost:\t$   "))
+monthly_bills = float(input(f"\n\tPlease enter your monthly bills total:\t$   "))
+monthly_groceries = float(input(f"\n\tPlease enter your monthly groceries:\t$   "))
+monthly_fuel = float(input(f"\n\tPlease enter your monthly fuel costs:\t$   "))
 monthly_debt = float(input(f"\n\tPlease enter your monthly debt payment:\t$   "))
 
 
