@@ -10,7 +10,7 @@ of the week and the age of the diner to determine discounts to apply.
 """
 
 # Set the child rate and Sunday promotion.
-today_is = input(str(f"\n\n\tPlease enter current day of the week:\t"))
+today_is = input(f"\n\n\tPlease enter current day of the week:\t")
 
 match today_is.lower():
     case "tuesday":
