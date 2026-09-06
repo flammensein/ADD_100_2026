@@ -29,7 +29,7 @@ if diner_age < 1:
 elif diner_age < 13:
     # Children pay their age multiplied by the daily rate.
     final_price = child_price_per_day * diner_age
-elif diner_age < 64:
+elif diner_age < 65:
     final_price = float(16.95)
 else:
     final_price = float(12.95)
