@@ -18,16 +18,33 @@ number_2 = int(input(f"\n\tPlease enter another integer for comparison: \t"))
 # Perform 6 logic checks on the two numbers:
 if number_1 > 0 and number_2 > 0:  # Are they both positive?
     print(f"\n\tBoth are positive.")
+else:
+    print(f"\n\tAt least one of your numbers is negative.")
+
 if number_1 > 100 and number_2 > 100:  # Are they both greater than 100?
     print(f"\n\tBoth greater than 100.")
+else:
+    print(f"\n\tAt least one of your numbers is less than 100.")
+
 if (number_1 % 2 == 0) or (number_2 % 2 == 0):  # Is EITHER of them an even number?
     print(f"\n\tOne of these is even.")
+else:
+    print(f"\n\tNeither of your numbers is an even number.")
+
 if (number_1 < 100) or (number_2 < 100):  # Is EITHER of them less than 100?
     print(f"\n\tOne of these is less than 100")
+else:
+    print(f"\n\tNeither of your numbers is less than 100.")
+
 if number_1 != number_2:  # Are they the SAME/Equal number?
     print(f"\n\tThese numbers are NOT the same.")
+else:
+    print(f"\n\tThese numbers are the same.")
+
 if not (number_1 == 0 or number_2 == 0):  # Are they zeros?
     print(f"\n\tThese numbers are NOT 0!")
+else:
+    print(f"\n\tAt least one of these numbers is 0!")
 
 
 # Categorize first number provided above as Positive, Negative, Zero
