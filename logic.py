@@ -24,18 +24,16 @@ if number_1 > 0 and number_2 > 0:
 if number_1 > 100 and number_2 > 100:
     print(f"\n\tBoth greater than 100.")
 # Logic Check 3
-if (number_1 % 2 < 1) or (number_2 % 2 < 1):
+if (number_1 % 2 == 0) or (number_2 % 2 == 0):
     print(f"\n\tOne of these is even.")
 # Logic Check 4
-if not ((number_1 < 100) and (number_2 >= 100)) or not (
-    (number_1 >= 100) and (number_2 < 100)
-):
+if (number_1 < 100) or (number_2 < 100):
     print(f"\n\tOne of these is less than 100")
 # Logic Check 5
-if number_1 != number_2:
+if not (number_1 == number_2):
     print(f"\n\tThese numbers are NOT the same.")
 # Logic Check 6
-if number_1 != 0 and number_2 != 0:
+if not (number_1 == 0 and number_2 == 0):
     print(f"\n\tThese numbers are NOT 0!")
 
 
