@@ -10,3 +10,36 @@ ASSIGNMENT REQUIREMENTS
 [ ] 6. Upload to GitHub and paste the link below.
 -----------------------------------------------------------------------
 """
+
+# Get number 1
+number_1 = int(input(f"\n\tPlease enter an integer for comparison: \t"))
+
+# Get number 2
+number_2 = int(input(f"\n\tPlease enter another integer for comparison: \t"))
+
+# Logic Check 1
+if number_1 > 0 and number_2 > 0:
+    print(f"\n\tBoth are positive.")
+# Logic Check 2
+if number_1 > 100 and number_2 > 100:
+    print(f"\n\tBoth greater than 100.")
+# Logic Check 3
+if (number_1 % 2 < 1) or (number_2 % 2 < 1):
+    print(f"\n\tOne of these is even.")
+# Logic Check 4
+if not ((number_1 < 100) and (number_2 >= 100)) or not (
+    (number_1 >= 100) and (number_2 < 100)
+):
+    print(f"\n\tOne of these is less than 100")
+# Logic Check 5
+if number_1 != number_2:
+    print(f"\n\tThese numbers are NOT the same.")
+# Logic Check 6
+if number_1 != 0 and number_2 != 0:
+    print(f"\n\tThese numbers are NOT 0!")
+
+
+# TODO if/elif/else categorize first num (item 4 above)
+
+
+print("\n\n")
