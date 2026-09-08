@@ -15,7 +15,7 @@ ASSIGNMENT REQUIREMENTS
 number_1 = int(input(f"\n\tPlease enter an integer for comparison: \t"))
 number_2 = int(input(f"\n\tPlease enter another integer for comparison: \t"))
 
-# Perform 6 logic checks on the two numbers:
+# Perform 6 logic checks on the two numbers and output the results of each one:
 if number_1 > 0 and number_2 > 0:  # Are they both positive?
     print(f"\n\tBoth are positive.")
 else:
