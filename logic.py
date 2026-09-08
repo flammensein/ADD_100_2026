@@ -11,33 +11,33 @@ ASSIGNMENT REQUIREMENTS
 -----------------------------------------------------------------------
 """
 
-# Get number 1
+# Get two numbers from the user for comparative analysis
 number_1 = int(input(f"\n\tPlease enter an integer for comparison: \t"))
-
-# Get number 2
 number_2 = int(input(f"\n\tPlease enter another integer for comparison: \t"))
 
-# Logic Check 1
-if number_1 > 0 and number_2 > 0:
+# Perform 6 logic checks on the two numbers:
+if number_1 > 0 and number_2 > 0:  # Are they both positive?
     print(f"\n\tBoth are positive.")
-# Logic Check 2
-if number_1 > 100 and number_2 > 100:
+if number_1 > 100 and number_2 > 100:  # Are they both greater than 100?
     print(f"\n\tBoth greater than 100.")
-# Logic Check 3
-if (number_1 % 2 == 0) or (number_2 % 2 == 0):
+if (number_1 % 2 == 0) or (number_2 % 2 == 0):  # Is EITHER of them an even number?
     print(f"\n\tOne of these is even.")
-# Logic Check 4
-if (number_1 < 100) or (number_2 < 100):
+if (number_1 < 100) or (number_2 < 100):  # Is EITHER of them less than 100?
     print(f"\n\tOne of these is less than 100")
-# Logic Check 5
-if not (number_1 == number_2):
+if number_1 != number_2:  # Are they the SAME/Equal number?
     print(f"\n\tThese numbers are NOT the same.")
-# Logic Check 6
-if not (number_1 == 0 and number_2 == 0):
+if not (number_1 == 0 or number_2 == 0):  # Are they zeros?
     print(f"\n\tThese numbers are NOT 0!")
 
 
-# TODO if/elif/else categorize first num (item 4 above)
+# Categorize first number provided above as Positive, Negative, Zero
+if number_1 > 0:
+    print(f"\n\n\tYour first number, {number_1}, is a positive number!")
+elif number_1 < 0:
+    print(f"\n\n\tYour first number, {number_1}, is an negative number!")
+else:
+    print(f"\n\n\tYour first number was a 0 (zero)!")
 
 
+print(f"\n\n\tThanks for your time!")
 print("\n\n")
