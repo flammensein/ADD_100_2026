@@ -41,7 +41,7 @@ if number_1 != number_2:  # Are they the SAME/Equal number?
 else:
     print(f"\n\tThese numbers are the same.")
 
-if not (number_1 == 0 or number_2 == 0):  # Are they zeros?
+if not (number_1 == 0 or number_2 == 0):  # Are neither of them zeros?
     print(f"\n\tThese numbers are NOT 0!")
 else:
     print(f"\n\tAt least one of these numbers is 0!")
