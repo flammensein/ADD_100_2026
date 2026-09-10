@@ -13,10 +13,11 @@ ASSIGNMENT REQUIREMENTS
 -----------------------------------------------------------------------
 """
 
-# NOTE: We haven't (as far as I can recall) Covered exiting the script/loop/logic intentionally, but
-# it's existed in every language I've ever used so I figured I'd try it and it seems to have worked...
-
-
+# 📌 Task 1: Continue prompting until the response matches the sentinel value.
+# 💡 Called .lower() to make the comparison case-insensitive, so "YES" and "yes"
+#    follow the same path without requiring the user to enter a specific case.
+# ℹ️ I've used "exit" in various languages in the past so I assumed it existed in
+#    python as well and it seems to work well here for me.
 parental_response = "no"
 print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
 while parental_response.lower() != "yes":
@@ -27,8 +28,11 @@ print(
     f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
 )
 
-
+# 📌 Task 2: range starts at 99, stops before 0, and decrements by 1 so each
+#    verse is processed from 99 down through 1.
 for bottle_count in range(99, 0, -1):
+    # 💡 Keep the plural and singular wording separate so the output remains
+    #    grammatically correct as the count changes.
     if bottle_count > 1:
         print(
             f"\n\t{bottle_count} bottles of beer on the wall! {bottle_count} bottles of beer!!"
@@ -43,7 +47,7 @@ for bottle_count in range(99, 0, -1):
             )
         else:
             print(f"\n\tThere's something wrong with your wall...where's da beers?\n\n")
-            exit
+            exit()
     elif bottle_count == 1:
         print(
             f"\n\t{bottle_count} bottle of beer on the wall! {bottle_count} bottle of beer!!"
@@ -51,4 +55,4 @@ for bottle_count in range(99, 0, -1):
         print(
             f"\n\tTake it down! Pass it around!! There're no bottles of beer on the wall!!!\n\n"
         )
-        exit
+        exit()
