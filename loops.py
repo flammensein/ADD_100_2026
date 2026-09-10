@@ -17,15 +17,15 @@ ASSIGNMENT REQUIREMENTS
 # it's existed in every language I've ever used so I figured I'd try it and it seems to have worked...
 
 
-# parental_response = "no"
-# print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
-# while parental_response.lower() != "yes":
-#     print(f"\n\t\tThe child asks: Are we there yet?")
-#     parental_response = input(f"\n\t\tHow do you respond?\t")
+parental_response = "no"
+print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
+while parental_response.lower() != "yes":
+    print(f"\n\t\tThe child asks: Are we there yet?")
+    parental_response = input(f"\n\t\tHow do you respond?\t")
 
-# print(
-#     f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
-# )
+print(
+    f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
+)
 
 
 for bottle_count in range(99, 0, -1):
