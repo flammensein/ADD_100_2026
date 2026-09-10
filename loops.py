@@ -13,20 +13,20 @@ ASSIGNMENT REQUIREMENTS
 -----------------------------------------------------------------------
 """
 
-# 📌 Task 1: Continue prompting until the response matches the sentinel value.
-# 💡 Called .lower() to make the comparison case-insensitive, so "YES" and "yes"
-#    follow the same path without requiring the user to enter a specific case.
-# ℹ️ I've used "exit" in various languages in the past so I assumed it existed in
-#    python as well and it seems to work well here for me.
-parental_response = "no"
-print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
-while parental_response.lower() != "yes":
-    print(f"\n\t\tThe child asks: Are we there yet?")
-    parental_response = input(f"\n\t\tHow do you respond?\t")
+# # 📌 Task 1: Continue prompting until the response matches the sentinel value.
+# # 💡 Called .lower() to make the comparison case-insensitive, so "YES" and "yes"
+# #    follow the same path without requiring the user to enter a specific case.
+# # ℹ️ I've used "exit" in various languages in the past so I assumed it existed in
+# #    python as well and it seems to work well here for me.
+# parental_response = "no"
+# print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
+# while parental_response.lower() != "yes":
+#     print(f"\n\t\tThe child asks: Are we there yet?")
+#     parental_response = input(f"\n\t\tHow do you respond?\t")
 
-print(
-    f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
-)
+# print(
+#     f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
+# )
 
 # 📌 Task 2: range starts at 99, stops before 0, and decrements by 1 so each
 #    verse is processed from 99 down through 1.
@@ -55,4 +55,7 @@ for bottle_count in range(99, 0, -1):
         print(
             f"\n\tTake it down! Pass it around!! There're no bottles of beer on the wall!!!\n\n"
         )
-        exit()
+
+print(f"\n\n\t{'=' * 43}")
+print(f"\tDrive safe, drive sober. Someone loves you.")
+print(f"\t{'=' * 43}\n\n")
