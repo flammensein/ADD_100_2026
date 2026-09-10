@@ -13,7 +13,7 @@ ASSIGNMENT REQUIREMENTS
 -----------------------------------------------------------------------
 """
 
-# # 📌 Task 1: Continue prompting until the response matches the sentinel value.
+# # 📌 Task 1: Loop until "the child" gets the answer they want.
 # # 💡 Called .lower() to make the comparison case-insensitive, so "YES" and "yes"
 # #    follow the same path without requiring the user to enter a specific case.
 # # ℹ️ I've used "exit" in various languages in the past so I assumed it existed in
@@ -28,7 +28,8 @@ ASSIGNMENT REQUIREMENTS
 #     f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
 # )
 
-# 📌 Task 2: range starts at 99, stops before 0, and decrements by 1 so each
+# 📌 Task 2: Loop until there are no more beers #SadDays
+#    The range starts at 99, stops before 0, and decrements by 1 so each
 #    verse is processed from 99 down through 1.
 for bottle_count in range(99, 0, -1):
     # 💡 Keep the plural and singular wording separate so the output remains
