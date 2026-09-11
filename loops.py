@@ -18,15 +18,14 @@ ASSIGNMENT REQUIREMENTS
 # #    follow the same path without requiring the user to enter a specific case.
 # # ℹ️ I've used "exit" in various languages in the past so I assumed it existed in
 # #    python as well and it seems to work well here for me.
-# parental_response = "no"
-# print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
-# while parental_response.lower() != "yes":
-#     print(f"\n\t\tThe child asks: Are we there yet?")
-#     parental_response = input(f"\n\t\tHow do you respond?\t")
-
-# print(
-#     f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
-# )
+parental_response = "no"
+print(f"\n\tA child has decided to test your last nerve! Begin encounter...\n")
+while parental_response.lower() != "yes":
+    print(f"\n\t\tThe child asks: Are we there yet?")
+    parental_response = input(f"\n\t\tHow do you respond?\t")
+print(
+    f"\n\n\tYou have acquiesced to the child's nagging or arrived at your destination. Good day.\n\n"
+)
 
 # 📌 Task 2: Loop until there are no more beers #SadDays
 #    The range starts at 99, stops before 0, and decrements by 1 so each
