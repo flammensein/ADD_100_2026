@@ -47,7 +47,6 @@ for bottle_count in range(99, 0, -1):
             )
         else:
             print(f"\n\tThere's something wrong with your wall...where's da beers?\n\n")
-            exit()
     elif bottle_count == 1:
         print(
             f"\n\t{bottle_count} bottle of beer on the wall! {bottle_count} bottle of beer!!"
