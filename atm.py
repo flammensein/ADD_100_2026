@@ -24,7 +24,6 @@ while is_running:
     print("\t1...Check Balance")
     print("\t2...Make a Deposit")
     print("\t3...Withdrawal Cash")
-    print("\t4...Transfer $")
     print("\t0...Exit Capitalism")
 
     try:
@@ -39,14 +38,51 @@ while is_running:
             print(f"\n\tYour current Account Balance is: ${current_balance:.2f}\n")
             continue
         case 2:
-            print(f"\n\tMake a Deposit")
-            continue
+            print(f"\n\tMake a Deposit:")
+            print(f"\n\tYour current Account Balance is: ${current_balance:.2f}\n")
+            try:
+                deposit = float(
+                    input(f"\tPlease enter the amount you would like to deposit:\t$")
+                )
+                if deposit <= 0:
+                    print("\n\tDeposit amounts must be greater than $0.00")
+                else:
+                    current_balance += deposit
+                    print(f"\n\tYour deposit of ${deposit:.2f} was successful")
+                    print(f"\n\tYour new balance is: ${current_balance:.2f}\n")
+            except ValueError:
+                print("\n\tInvalid input. Please try again.")
+                continue
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+                continue
         case 3:
-            print(f"\n\tWithdrawal Cash")
-            continue
-        case 4:
-            print(f"\n\tTransfer $")
-            continue
+            print(f"\n\tWithdrawal Cash:")
+            print(f"\n\tYour current Account Balance is: ${current_balance:.2f}\n")
+            try:
+                cash_out = float(
+                    input(f"\tPlease enter the amount you would like to withdrawal:\t$")
+                )
+                if (cash_out <= 0) or ((cash_out % 5) != 0):
+                    print(
+                        "\n\tWithdrawal amounts must be greater than $5.00 and in $5 increments."
+                    )
+                elif cash_out > current_balance:
+                    print(
+                        f"Unfortunately ${cash_out:.2f} is greater than your balance of ${current_balance:.2f}"
+                    )
+                    continue
+                else:
+                    current_balance -= cash_out
+                    print(f"\n\tYour withdrawal of ${cash_out:.2f} was successful")
+                    print(f"\n\tYour new balance is: ${current_balance:.2f}\n")
+                    continue
+            except ValueError:
+                print("\n\tInvalid input. Please try again.")
+                continue
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+                continue
         case 0:
             print("\n\tSo long, and thanks for all the fish!!")
             is_running = False
