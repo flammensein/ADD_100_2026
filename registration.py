@@ -35,32 +35,34 @@ Submission Items:
 
 """
 
-first_name = input(f"")
-while first_name == "":
-    print(f"")
-    try:
-        first_name = str(input(f"\n\t"))
-    except ValueError:
-        print("Invalid entry. Please try again.")
-        continue
-    except Exception as e:
-        # Handles unexpected errors without stopping the program.
-        print(f"An unexpected error occurred: {e}")
-        continue
+# first_name = ""
+# while not first_name:
+#     try:
+#         first_name = input(f"\n\tPlease enter your first name:\t").strip()
+#         first_name = first_name.capitalize()
+#         print(f"Hello, {first_name}! I bet you have a last name, too!")
+#     except ValueError:
+#         print("Invalid entry. Please try again.")
+#         continue
+#     except Exception as e:
+#         # Handles unexpected errors without stopping the program.
+#         print(f"An unexpected error occurred: {e}")
+#         continue
 
 
-last_name = input(f"")
-while last_name == "":
-    print(f"")
-    try:
-        last_name = str(input(f"\n\t"))
-    except ValueError:
-        print("Invalid entry. Please try again.")
-        continue
-    except Exception as e:
-        # Handles unexpected errors without stopping the program.
-        print(f"An unexpected error occurred: {e}")
-        continue
+# last_name = ""
+# while not last_name:
+#     try:
+#         last_name = input(f"\n\tPlease enter your last name:\t").strip()
+#         last_name = last_name.capitalize()
+#         print(f"It's nice to meet you, {first_name} {last_name}.")
+#     except ValueError:
+#         print("Invalid entry. Please try again.")
+#         continue
+#     except Exception as e:
+#         # Handles unexpected errors without stopping the program.
+#         print(f"An unexpected error occurred: {e}")
+#         continue
 
 # valid_entry = False
 # while valid_entry != True:
