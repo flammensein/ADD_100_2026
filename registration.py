@@ -38,35 +38,53 @@ Submission Items:
 first_name = input(f"")
 while first_name == "":
     print(f"")
-    first_name = input(f"")
-
-
-# last_name = input(f"")
-# while last_name == "":
-#     print(f"")
-#     last_name = input(f"")
-
-
-dancer_age = 0
-while True:
     try:
-        dancer_age = int(input(f"\n\tPlease tell us the dancer's age:\t"))
-        if dancer_age <= 0:
-            print(f"\n\tPlease enter a valid number for your age.")
-        elif dancer_age > 117:
-            print(
-                f"\n\tAs of the creation of this program, the oldest person alive is 117. And I doubt you are that person. Please enter a valid number for your age.\n\n"
-            )
-        elif dancer_age > 20:
-            print(
-                f"\n\tYou are age appropriate to receive a drink ticket with your dance ticket. Please drink responsibly and have fun!\n\n"
-            )
-        else:
-            print(f"\n\tThank you!\n\n")
+        first_name = str(input(f"\n\t"))
     except ValueError:
-        print(
-            f"\n\tYou must enter an integer as a number for your age (e.g. 42 not Forty-Two).\n\n"
-        )
+        print("Invalid entry. Please try again.")
+        continue
+    except Exception as e:
+        # Handles unexpected errors without stopping the program.
+        print(f"An unexpected error occurred: {e}")
+        continue
+
+
+last_name = input(f"")
+while last_name == "":
+    print(f"")
+    try:
+        last_name = str(input(f"\n\t"))
+    except ValueError:
+        print("Invalid entry. Please try again.")
+        continue
+    except Exception as e:
+        # Handles unexpected errors without stopping the program.
+        print(f"An unexpected error occurred: {e}")
+        continue
+
+# valid_entry = False
+# while valid_entry != True:
+#     try:
+#         dancer_age = int(input(f"\n\tPlease tell us the dancer's age:\t"))
+#         if dancer_age <= 0:
+#             print(f"\n\tPlease enter a valid number for your age.")
+#         elif dancer_age > 117:
+#             print(
+#                 f"\n\tAs of the creation of this program, the oldest person alive is 117. And I doubt you are that person. Please enter your real age.\n\n"
+#             )
+#         elif dancer_age > 20:
+#             # accepts an 'of age' valid entry, ends the loop, and moves on.
+#             print(
+#                 f"\n\tYou are age appropriate to receive a drink ticket with your dance ticket. Please drink responsibly and have fun!\n\n"
+#             )
+#             valid_entry = True
+#         else:
+#             # accepts an 'under age' valid entry, ends the loop, and moves on.
+#             print(f"\n\tThank you!\n\n")
+#             valid_entry = True
+#
+#             f"\n\tYou must enter an integer for your age (e.g. 42 not Forty-Two).\n\n"
+#         )
 
 # phone_num = input(f"")
 
