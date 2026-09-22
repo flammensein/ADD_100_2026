@@ -1,172 +1,157 @@
 """
 -----------------------------------------------------------------------
-ASSIGNMENT 5A: INPUT VALIDATION
+ASSIGNMENT: DANCE TICKET REGISTRATION
 -----------------------------------------------------------------------
 [ ] 1. Header Docstring included.
-[ ] 2. All 5 inputs have 'while' loop validation.
-[ ] 3. The more tickets loop uses .upper() and correct Boolean logic.
-[ ] 4. Include a try and except statement around the entire program. Should have one defined
-       exception (probably value error) and a generic exception
-[ ] 5. Have pinned a variable in the WATCH window and took a screenshot.
+[ ] 2. All inputs are validated.
+[ ] 3. The program runs in a loop until the user chooses to stop.
+[ ] 4. A try/except block is used to handle invalid input.
+[ ] 5. A generic exception is included for unexpected errors.
 -----------------------------------------------------------------------
-
-Part 1: The Code
-Create a registration form (registration.py) in which each input is validated using a while loop.  Registration for a dance:
-Requirements:
-
- ✅   First Name & Last Name: Cannot be blank.
- ✅   Age: Must be a number; also check whether they are older or younger than 21 to determine whether they get a drink ticket.
- ✅   Phone Number: Cannot be blank.
-    Ticket Count: Must be a valid integer > 0 (Crash-Proof!).
-    Additional Tickets? (Y/N) (Extra credit - 5 points- start the whole process over if they say yes!)
-
-
-Part 2: The Screenshot
-While your program is running in Debug Mode, take a screenshot of your VS Code window. I must be able to see:
-
-    A red breakpoint on one of your lines.
-    The Watch window on the left shows at least one of your variables.
-
-Submission Items:
-
-    The GitHub Link to your registration.py file.
-    The Image File (.png or .jpg) of your Debug/Watch screenshot.
-
-
 """
 
-# Putting these outside the main look to avoid resetting it after each loop.
-ticket_count = 0
-more_tickets = True
-of_age_tickets = 0
+# ℹ️ Wrap the entire program in an outer try/except to catch any unexpected failure.
+try:
+    # ℹ️ Initialize values outside the main loop so they persist across dancer entries.
+    ticket_count = 0
+    more_tickets = True
+    of_age_tickets = 0
 
-while more_tickets == True:
-    first_name = ""
-    while (
-        not first_name
-    ):  # loops until the user enters a value that meets our bare minimal requirements of a first name
-        try:
-            first_name = input(f"\n\tPlease enter the dancer's first name:\t").strip()
-            first_name = first_name.capitalize()
-            print(f"\n\tThank you! ")
-        except ValueError:
-            print("\n\tInvalid entry. Please try again.")
-            continue
-        except Exception as e:
-            # Handles unexpected errors without stopping the program.
-            print(f"\n\tAn unexpected error occurred: {e}")
-            continue
+    # 📌 Continue processing while the user wants to add more dancers.
+    while more_tickets:
+        # ℹ️ Ask for the first name and keep prompting until it is not blank.
+        first_name = ""
+        while not first_name:
+            try:
+                first_name = input(
+                    "\n\tPlease enter the dancer's first name:\t"
+                ).strip()
+                first_name = first_name.capitalize()
+            except ValueError:
+                print("\n\tInvalid entry. Please try again.")
+            except Exception as e:
+                print(f"\n\tAn unexpected error occurred: {e}")
 
-    last_name = ""
-    while (
-        not last_name
-    ):  # loops until the user enters a value that meets our bare minimal requirements of a last name
-        try:
-            last_name = input(f"\n\tPlease enter the dancer's last name:\t").strip()
-            last_name = last_name.capitalize()
-            print(
-                f"\n\tThank you! We have a couple more questions about {first_name} {last_name}.\n"
-            )
-        except ValueError:
-            print("\n\tInvalid entry. Please try again.")
-            continue
-        except Exception as e:
-            # Handles unexpected errors without stopping the program.
-            print(f"\n\tAn unexpected error occurred: {e}")
-            continue
+        # ✅ A valid first name was entered.
+        print("\n\tThank you!")
 
-    valid_entry = False
-    while not valid_entry:  # loops until the user enters a valid entry
+        # ℹ️ Ask for the last name and validate it in the same way.
+        last_name = ""
+        while not last_name:
+            try:
+                last_name = input("\n\tPlease enter the dancer's last name:\t").strip()
+                last_name = last_name.capitalize()
+            except ValueError:
+                print("\n\tInvalid entry. Please try again.")
+            except Exception as e:
+                print(f"\n\tAn unexpected error occurred: {e}")
+
+        # 💡 This keeps the output personal and clear for the current dancer.
+        print(
+            f"\n\tThank you! We have a couple more questions about {first_name} {last_name}.\n"
+        )
+
+        # ℹ️ Validate the dancer's age and allow only realistic values.
+        valid_entry = False
+        while not valid_entry:
+            try:
+                dancer_age = int(input("\n\tPlease tell us the dancer's age:\t"))
+
+                if dancer_age <= 0:
+                    print("\n\tPlease enter a valid number for their age.")
+                elif dancer_age > 117:
+                    print(
+                        "\n\tAs of the creation of this program, the oldest person alive is 117. "
+                        "Please enter their real age.\n"
+                    )
+                elif dancer_age >= 21:
+                    # ✅ Age 21 or older qualifies for a drink ticket.
+                    print(
+                        "\n\tThis dancer is age appropriate for a drink ticket with their dance ticket. "
+                        "Please drink responsibly and have fun!\n"
+                    )
+                    of_age_tickets += 1
+                    valid_entry = True
+                elif dancer_age <= 20:
+                    # ✅ Valid underage dancer entry.
+                    print("\n\tThank you!\n")
+                    valid_entry = True
+                else:
+                    print(
+                        "\n\tYou must enter an integer for their age (e.g. 42 not Forty-Two).\n"
+                    )
+            except ValueError:
+                print("\n\tInvalid entry. Please try again.")
+            except Exception as e:
+                print(f"\n\tAn unexpected error occurred: {e}")
+
+        # ⚠️ Phone number is checked for a value, but could be validated further for digits and length.
+        phone_num = ""
+        while not phone_num:
+            try:
+                phone_num = input(
+                    "\n\tPlease enter the dancer's 10-digit phone number:\t"
+                ).strip()
+            except ValueError:
+                print("\n\tInvalid entry. Please try again.")
+            except Exception as e:
+                print(f"\n\tAn unexpected error occurred: {e}")
+
+        # ℹ️ Ask how many tickets they want and validate the number.
         try:
-            dancer_age = int(input(f"\n\tPlease tell us the dancer's age:\t"))
-            if dancer_age <= 0:
-                print(f"\n\tPlease enter a valid number for their age.")
-            elif dancer_age > 117:
-                print(
-                    f"\n\tAs of the creation of this program, the oldest person alive is 117. And it is doubtful they are here. Please enter their real age.\n\n"
+            if ticket_count <= 0:
+                ticket_count = int(
+                    input(
+                        f"\n\tHow many tickets would {first_name} {last_name} like?:\t"
+                    )
                 )
-            elif dancer_age > 20:
-                # accepts an 'of age' valid entry, ends the loop, and moves on.
-                print(
-                    f"\n\tThis dancer is age appropriate for a drink ticket with their dance ticket. Please drink responsibly and have fun!\n\n"
-                )
-                of_age_tickets += 1
-                valid_entry = True
             else:
-                # accepts an 'under age' valid entry, ends the loop, and moves on.
-                print(f"\n\tThank you!\n\n")
-                valid_entry = True
-                print(
-                    f"\n\tYou must enter an integer for their age (e.g. 42 not Forty-Two).\n\n"
+                added_tickets = int(
+                    input("\n\tHow many additional tickets would this dancer like?:\t")
                 )
+                ticket_count += added_tickets
         except ValueError:
             print("\n\tInvalid entry. Please try again.")
             continue
         except Exception as e:
-            # Handles unexpected errors without stopping the program.
             print(f"\n\tAn unexpected error occurred: {e}")
             continue
 
-    phone_num = ""
-    # Loops until a value is entered.
-    # ⚠️ Accepts any non-null value, but if I were to deploy this for real I would learn how to make it detect
-    # the number of characters input, ensure they were all numbers, and that there were 10 numerical digits.
-    while not phone_num:
-        phone_num = input(
-            f"\n\tPlease enter the dancer's 10-digit phone number:\t"
-        ).strip()
+        # ✅ Display the current ticket total for this dancer.
+        print(f"\n\tYou are set to order {ticket_count} ticket(s).\n")
 
-    try:
-        if ticket_count <= 0:
-            ticket_count = int(
-                input(f"\n\tHow many tickets would {first_name} {last_name} like?:\t")
+        # 📌 Ask if the user wants to add more dancers and normalize the response with .upper().
+        yes_no = (
+            input(
+                "\n\tWould you like to add tickets for other dancers to your purchase? (Y/N):\t"
             )
-            # print(f"Ticket Count:\t{ticket_count}")
-            # break
-        elif ticket_count > 0:
-            added_tickets = int(input(f"\n\tHow many tickets would this dancer?:\t"))
-            # print(f"Ticket Count:\t{ticket_count}")
-            # print(f"Added Tickets:\t{added_tickets}")
-            ticket_count += added_tickets
-            # print(f"Ticket Count:\t{ticket_count}")
-            # break
-    except ValueError:
-        print("\n\tInvalid entry. Please try again.")
-        continue
-    except Exception as e:
-        # Handles unexpected errors without stopping the program.
-        print(f"\n\tAn unexpected error occurred: {e}")
-        continue
+            .strip()
+            .upper()
+        )
 
-    print(f"\n\tYou are set to order {ticket_count} ticket(s). \n")
+        # 💡 Boolean logic is clearer when we set the flag directly.
+        if yes_no == "N":
+            more_tickets = False
+        elif yes_no == "Y":
+            more_tickets = True
+        else:
+            print("\n\tInvalid Input, please enter 'Y' for Yes or 'N' for No.")
+            # Keep the loop going until the answer is valid.
+            more_tickets = True
 
-    # yes_no = "y"
-    # while yes_no == "y":
-    # try:
-    yes_no = input(
-        f"\n\tWould you like to add tickets for other dancers to your purchase? (Y/N):\t"
-    ).lower()
-    # print(f"yes_no:\t{yes_no}")
-    if yes_no == "n":
-        # print(f"yes_no:\t{yes_no}")
-        more_tickets = False
-        # break
-    elif yes_no == "y":
-        # print(f"yes_no:\t{yes_no}")
-        more_tickets = True
-        # break
-    else:
-        # print(f"yes_no:\t{yes_no}")
-        print(f"\n\tInvalid Input, please enter 'Y' for Yes or 'N' for No.")
-        # continue
-        # except Exception as e:
-        # print(f"\n\tAn unexpected error occurred:  {e}")
+    # ✅ Final summary after all dancers have been processed.
+    print("\n\n")
+    print(
+        f"\n\tYour final order will include {ticket_count} dance ticket(s) and {of_age_tickets} drink tickets.\n"
+    )
+    print(
+        "\n\tEnjoy the dance and have fun! \n\tDrink responsibly and designate a sober driver in advance. \n\tSomeone loves you."
+    )
+    print("\n\n")
 
+except ValueError:
+    print("\n\tA value error occurred. Please check your inputs and try again.")
 
-print(f"\n\n")
-print(
-    f"\n\tYour final order will include {ticket_count} dance ticket(s) and {of_age_tickets} drink tickets. \n"
-)
-print(
-    f"\n\tEnjoy the dance and have fun! Always drink responsibly and designate a driver if using private transportation. Someone love you."
-)
+except Exception as e:
+    print(f"\n\tAn unexpected error occurred: {e}")
+    print("\n\tThe program is shutting down. Please try again later.")
