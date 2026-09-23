@@ -19,7 +19,7 @@ try:
 
     # 📌 Continue processing while the user wants to add more dancers.
     while more_tickets:
-        # ℹ️ Ask for the first name and keep prompting until it is not blank.
+        # ℹ️ Repeat the prompt until the dancer provides a non-blank value for first_name.
         first_name = ""
         while not first_name:
             try:
@@ -35,7 +35,7 @@ try:
         # ✅ A valid first name was entered.
         print("\n\tThank you!")
 
-        # ℹ️ Ask for the last name and validate it in the same way.
+        # ℹ️ Repeat the prompt until the dancer provides a non-blank value for last_name.
         last_name = ""
         while not last_name:
             try:
@@ -51,7 +51,7 @@ try:
             f"\n\tThank you! We have a couple more questions about {first_name} {last_name}.\n"
         )
 
-        # ℹ️ Validate the dancer's age and allow only realistic values.
+        # ℹ️ Repeat the prompt until the user enters a valid age from 1 through 117.
         valid_entry = False
         while not valid_entry:
             try:
@@ -62,7 +62,7 @@ try:
                 elif dancer_age > 117:
                     print(
                         "\n\tAs of the creation of this program, the oldest person alive is 117. "
-                        "Please enter their real age.\n"
+                        "Please enter the dancer's real age.\n"
                     )
                 elif dancer_age >= 21:
                     # ✅ Age 21 or older qualifies for a drink ticket.
@@ -85,7 +85,7 @@ try:
             except Exception as e:
                 print(f"\n\tAn unexpected error occurred: {e}")
 
-        # ⚠️ Phone number is checked for a value, but could be validated further for digits and length.
+        # ⚠️ Repeat the prompt until a phone number value is provided; digits and length could be validated further.
         phone_num = ""
         while not phone_num:
             try:
@@ -97,47 +97,62 @@ try:
             except Exception as e:
                 print(f"\n\tAn unexpected error occurred: {e}")
 
-        # ℹ️ Ask how many tickets they want and validate the number.
-        try:
-            if ticket_count <= 0:
-                ticket_count = int(
-                    input(
-                        f"\n\tHow many tickets would {first_name} {last_name} like?:\t"
+        # ℹ️ Repeat the prompt until the user enters a valid positive whole-number ticket quantity.
+        valid_ticket_num = False
+        while not valid_ticket_num:
+            try:
+                if ticket_count == 0:
+                    ticket_count = int(
+                        input(
+                            f"\n\tHow many tickets would {first_name} {last_name} like?:\t"
+                        )
                     )
-                )
-            else:
-                added_tickets = int(
-                    input("\n\tHow many additional tickets would this dancer like?:\t")
-                )
-                ticket_count += added_tickets
-        except ValueError:
-            print("\n\tInvalid entry. Please try again.")
-            continue
-        except Exception as e:
-            print(f"\n\tAn unexpected error occurred: {e}")
-            continue
+                    if ticket_count <= 0:
+                        print("\n\tPlease enter at least one ticket.")
+                    else:
+                        valid_ticket_num = True
+                else:
+                    added_tickets = int(
+                        input(
+                            "\n\tHow many additional tickets would this dancer like?:\t"
+                        )
+                    )
+                    if added_tickets <= 0:
+                        print("\n\tPlease enter at least one additional ticket.")
+                    else:
+                        ticket_count += added_tickets
+                        valid_ticket_num = True
+            except ValueError:
+                print("\n\tInvalid entry. Please enter a whole number.")
+            except Exception as e:
+                print(f"\n\tAn unexpected error occurred: {e}")
 
         # ✅ Display the current ticket total for this dancer.
         print(f"\n\tYou are set to order {ticket_count} ticket(s).\n")
 
-        # 📌 Ask if the user wants to add more dancers and normalize the response with .upper().
-        yes_no = (
-            input(
-                "\n\tWould you like to add tickets for other dancers to your purchase? (Y/N):\t"
+        # 📌 Continue prompting until the user chooses Y to continue or N to finish.
+        yes_no = ""
+        while yes_no != "y" and yes_no != "n":
+            yes_no = (
+                input(
+                    "\n\tWould you like to add tickets for other dancers to your purchase? (Y/N):\t"
+                )
+                .strip()
+                .upper()
             )
-            .strip()
-            .upper()
-        )
 
-        # 💡 Boolean logic is clearer when we set the flag directly.
-        if yes_no == "N":
-            more_tickets = False
-        elif yes_no == "Y":
-            more_tickets = True
-        else:
-            print("\n\tInvalid Input, please enter 'Y' for Yes or 'N' for No.")
-            # Keep the loop going until the answer is valid.
-            more_tickets = True
+            # 💡 Set the loop flag directly after receiving a valid Y/N response.
+            if yes_no == "N":
+                more_tickets = False
+                break
+            elif yes_no == "Y":
+                more_tickets = True
+                break
+            else:
+                print("\n\tInvalid Input, please enter 'Y' for Yes or 'N' for No.")
+                # Keep the loop going until the answer is valid.
+                yes_no = ""
+                continue
 
     # ✅ Final summary after all dancers have been processed.
     print("\n\n")
