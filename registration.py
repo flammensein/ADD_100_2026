@@ -45,8 +45,6 @@ try:
                 print("\n\tInvalid entry. Please try again.")
             except Exception as e:
                 print(f"\n\tAn unexpected error occurred: {e}")
-
-        # 💡 This keeps the output personal and clear for the current dancer.
         print(
             f"\n\tThank you! We have a couple more questions about {first_name} {last_name}.\n"
         )
