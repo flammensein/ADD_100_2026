@@ -11,7 +11,7 @@ ASSIGNMENT 6B: THE DEPARTMENT SECURITY TERMINAL
 """
 
 DEPT_IN = [
-    "IT",
+    "Book Store",
     "Finance",
     "Help Desk",
     "Book Store",
@@ -121,13 +121,30 @@ while keep_running != "n":
                 username_query = input(f"\n\tEnter the username to search for:\t")
                 if username_query in USER_NAMES:
                     print(f"\n\fThe user {username_query} is a valid username.")
-                keep_running = "y"
                 continue
             case "2":
-                keep_running = "y"
+                print(f"\n\tSorry, only a member of IT can change a user's username.")
+                print(
+                    f"\n\tPlease contact the Help Desk to create a Name Change Request."
+                )
                 continue
             case "3":
-                keep_running = "y"
+                print(
+                    f"\n\tYou must be a member of a department authorized to reset user passwords."
+                )
+                print(f"\n\t1. Book Store")
+                print(f"\t2. Finance")
+                print(f"\t3. Help Desk")
+                print(f"\t4. Book Store")
+                print(f"\t5. Administration")
+                print(f"\t6. Human Resources")
+                print(f"\t7. Student Services")
+                print(f"\t8. Facilities")
+                print(f"\t9. Academic Affairs")
+                what_your_dept = input(
+                    f"\n\tPlease select your department from the list above (1-9):\t"
+                )
+
                 continue
             case _:
                 print("\n\tInvalid entry. Please try again.")
