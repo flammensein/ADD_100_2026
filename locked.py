@@ -121,13 +121,11 @@ while keep_running != "n":
                 username_query = input(f"\n\tEnter the username to search for:\t")
                 if username_query in USER_NAMES:
                     print(f"\n\fThe user {username_query} is a valid username.")
-                continue
             case "2":
                 print(f"\n\tSorry, only a member of IT can change a user's username.")
                 print(
                     f"\n\tPlease contact the Help Desk to create a Name Change Request."
                 )
-                continue
             case "3":
                 print(
                     f"\n\tYou must be a member of a department authorized to reset user passwords."
@@ -144,15 +142,9 @@ while keep_running != "n":
                 what_your_dept = input(
                     f"\n\tPlease select your department from the list above (1-9):\t"
                 )
-
-                continue
             case _:
                 print("\n\tInvalid entry. Please try again.")
-                keep_running = "y"
-                continue
     except ValueError:
         print("\n\tInvalid entry. Please try again.")
-        keep_running = "y"
     except Exception as e:
         print(f"\n\tAn unexpected error occurred: {e}")
-        keep_running = "y"
