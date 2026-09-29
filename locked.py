@@ -133,7 +133,7 @@ while keep_running != "n":
                 )
                 print(f"\n")
                 for dept_name in DEPT_IN:
-                    print(f"\t{DEPT_IN(dept_name)}")
+                    print(f"\t{DEPT_IN.index(dept_name)}: {dept_name}")
                 print(f"\n\t1. Book Store")
                 print(f"\t2. Finance")
                 print(f"\t3. Help Desk")
