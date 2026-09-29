@@ -11,7 +11,7 @@ ASSIGNMENT 6B: THE DEPARTMENT SECURITY TERMINAL
 """
 
 DEPT_IN = [
-    "Book Store",
+    "exit function" "Book Store",
     "Finance",
     "Help Desk",
     "Book Store",
@@ -130,8 +130,9 @@ while keep_running != "n":
                 print(
                     f"\n\tYou must be a member of a department authorized to reset user passwords."
                 )
+                print(f"\n")
                 for dept_name in DEPT_IN:
-                    print([])
+                    print(f"\t{DEPT_IN(dept_name)}")
                 print(f"\n\t1. Book Store")
                 print(f"\t2. Finance")
                 print(f"\t3. Help Desk")
