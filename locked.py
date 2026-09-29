@@ -130,6 +130,8 @@ while keep_running != "n":
                 print(
                     f"\n\tYou must be a member of a department authorized to reset user passwords."
                 )
+                for dept_name in DEPT_IN:
+                    print([])
                 print(f"\n\t1. Book Store")
                 print(f"\t2. Finance")
                 print(f"\t3. Help Desk")
