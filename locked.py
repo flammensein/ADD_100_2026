@@ -11,7 +11,8 @@ ASSIGNMENT 6B: THE DEPARTMENT SECURITY TERMINAL
 """
 
 DEPT_IN = [
-    "exit function" "Book Store",
+    "exit function",
+    "Book Store",
     "Finance",
     "Help Desk",
     "Book Store",
