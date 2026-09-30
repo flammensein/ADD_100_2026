@@ -97,7 +97,7 @@ Extra credit: Ask for employee category from a menu; only let IT or ADMIN change
 ✅    Header Docstring: Include the complete checklist docstring at the top of your file. (Note: Do not include student names per grading policy).
 ✅    Department Constant: Define a system constant in ALL_CAPS representing your department name.
 ✅    Parallel Structures: Define a constant tuple for usernames (`USER_NAMES`) and a parallel mutable list for passwords (`passwords`).
-ℹ️    Interactive `while` Loop: Use a persistent while loop to keep the terminal running so users can look up users, update passwords, attempt to add a user. Provide a menu of options - lookup username (if statement, yes that is an employee, no that is not an employee), change username, change password, quit - change username will break
+✅    Interactive `while` Loop: Use a persistent while loop to keep the terminal running so users can look up users, update passwords, attempt to add a user. Provide a menu of options - lookup username (if statement, yes that is an employee, no that is not an employee), change username, change password, quit - change username will break
 ℹ️    The Tamper Trap (`try/except`): Allow the user to attempt changing a username inside the tuple. Catch the resulting TypeError and print a message telling the user to email the help desk because usernames cannot be changed.
 ℹ️    Password Updates: Allow the user to update a password inside the mutable list using a valid index. (Get the index of the username, use to update the password)
 ℹ️    Error Handling: Gracefully catch ValueError and IndexError when handling index lookups or numerical input.
@@ -119,7 +119,7 @@ while keep_running != "n":
                 keep_running = "n"
                 break
             case "1":
-                username_query = input(f"\n\tEnter the username to search for:\t")
+                username_query = input(f"\n\tEnter the username to search for:   ")
                 if username_query in USER_NAMES:
                     print(f"\n\fThe user {username_query} is a valid username.")
             case "2":
@@ -134,18 +134,26 @@ while keep_running != "n":
                 print(f"\n")
                 for dept_name in DEPT_IN:
                     print(f"\t{DEPT_IN.index(dept_name)}: {dept_name}")
-                print(f"\n\t1. Book Store")
-                print(f"\t2. Finance")
-                print(f"\t3. Help Desk")
-                print(f"\t4. Book Store")
-                print(f"\t5. Administration")
-                print(f"\t6. Human Resources")
-                print(f"\t7. Student Services")
-                print(f"\t8. Facilities")
-                print(f"\t9. Academic Affairs")
                 what_your_dept = input(
-                    f"\n\tPlease select your department from the list above (1-9):\t"
+                    f"\n\tPlease select your department from the list above (1-9):   "
                 )
+                if what_your_dept in ("3", "5", "7"):
+                    username_query = input(
+                        "\n\tEnter the username of the user who needs a password reset:   "
+                    )
+                    if username_query in USER_NAMES:
+                        new_pw1 = input(
+                            f"\n\tEnter the new password for {username_query}:   "
+                        )
+                        new_pw2 = input(f"\n\tRe-enter the new password:   ")
+                        if new_pw1 != new_pw2:
+                            print("\n\tThe passwords do not match. Please try again.")
+                            break
+                        else:
+                            password_index = USER_NAMES.index(username_query)
+                            passwords[password_index] = new_pw1
+                    else:
+                        print("\n\tInvalid username. Please try again.")
             case _:
                 print("\n\tInvalid entry. Please try again.")
     except ValueError:
