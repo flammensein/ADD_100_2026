@@ -8,6 +8,11 @@ ASSIGNMENT 6B: THE DEPARTMENT SECURITY TERMINAL
 [ ] 4. While loop runs interactively.
 [ ] 5. Try/except catches TypeError and tells user to email help desk.
 -----------------------------------------------------------------------
+
+    📌 I used the chatbot to incorporate the "List of Requirements" into the
+    annotations. I felt it did a decent job, though I'm not sure if that's what
+    I really think or if it's my desire to move on to the next task.
+
 """
 
 ### ℹ️ System constant defined in ALL_CAPS
