@@ -16,7 +16,7 @@ DEPT_IN = [
     "Finance",
     "Help Desk",
     "Book Store",
-    "Administration",
+    "IT Administration",
     "Human Resources",
     "Student Services",
     "Facilities",
