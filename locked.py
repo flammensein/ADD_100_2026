@@ -2,11 +2,11 @@
 -----------------------------------------------------------------------
 ASSIGNMENT 6B: THE DEPARTMENT SECURITY TERMINAL
 -----------------------------------------------------------------------
-[ ] 1. Header Docstring included.
-[ ] 2. Department constant defined in ALL_CAPS.
-[ ] 3. Username tuple and password list defined.
-[ ] 4. While loop runs interactively.
-[ ] 5. Try/except catches TypeError and tells user to email help desk.
+[✅ ] 1. Header Docstring included.
+[✅ ] 2. Department constant defined in ALL_CAPS.
+[✅ ] 3. Username tuple and password list defined.
+[✅ ] 4. While loop runs interactively.
+[✅ ] 5. Try/except catches TypeError and tells user to email help desk.
 -----------------------------------------------------------------------
 
     📌 I used the chatbot to incorporate the "List of Requirements" into the
@@ -263,9 +263,7 @@ while program_running:
             else:
                 print("\n\tYou have made an invalid selection. Please try again.\n")
 
-        except (
-            TypeError
-        ) as e:  # Saw this on W3Schools and thought it was worth including
+        except TypeError as e:
             # ⚠️ Gracefully catches TypeError when attempting to modify the immutable tuple
             print(f"\n\t[TYPE ERROR DETECTED] {e}")
             print(
