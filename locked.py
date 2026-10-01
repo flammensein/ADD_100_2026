@@ -146,7 +146,7 @@ while program_running:
             choice = input("\n\tPlease select an action from the menu above:\t").strip()
 
             if choice == "1":
-                # 📌 Option 1: Lookup Username
+                # 📌 Option 1: Looking up Username
                 search_user = (
                     input("\n\tPlease enter username to lookup:\t").strip().lower()
                 )
@@ -161,7 +161,7 @@ while program_running:
                     )
 
             elif choice == "2":
-                # 📌 Option 2: Change Password
+                # 📌 Option 2: Changing Password
                 search_user = (
                     input("\n\tPlease enter username to change password for:\t")
                     .strip()
@@ -258,33 +258,28 @@ while program_running:
             else:
                 print("\n\tYou have made an invalid selection. Please try again.\n")
 
-        except TypeError as e:
+        except (
+            TypeError
+        ) as e:  # Saw this on W3Schools and thought it was worth including
             # ⚠️ Gracefully catches TypeError when attempting to modify the immutable tuple
             print(f"\n\t[TYPE ERROR DETECTED] {e}")
             print(
                 "\tSystem Immutability Violation: Tuples cannot be modified in-place."
             )
             print(
-                "\tPlease email the Help Desk at helpdesk@department.edu for credential assistance.\n"
+                "\tPlease email the Help Desk at helpdesk@fakeSchool.edu for credential assistance.\n"
             )
 
         except ValueError as e:
             # ⚠️ Gracefully catches ValueError for invalid data inputs
             print(f"\n\t[VALUE ERROR DETECTED] {e}")
             print(
-                "\tPlease email the Help Desk at helpdesk@department.edu for assistance.\n"
-            )
-
-        except IndexError as e:
-            # ⚠️ Gracefully catches IndexError for out-of-bounds indexing
-            print(f"\n\t[INDEX ERROR DETECTED] {e}")
-            print(
-                "\tPlease email the Help Desk at helpdesk@department.edu for assistance.\n"
+                "\tPlease email the Help Desk at helpdesk@fakeSchool.edu for assistance.\n"
             )
 
         except Exception as e:
             # ⚠️ Handles unexpected errors safely
             print(f"\n\tAn unexpected error occurred: {e}")
             print(
-                "\tPlease email the Help Desk at helpdesk@department.edu for assistance.\n"
+                "\tPlease email the Help Desk at helpdesk@fakeSchool.edu for assistance.\n"
             )
