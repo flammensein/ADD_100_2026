@@ -42,14 +42,12 @@ print(
 )
 print(f"\t{'~' * 43}")
 
-print(
-    f"\n\n\n\n\n\n\tCAUTION!!! The future is mysterious! For more clarity, ask yes/no questions."
-)
+print(f"\n\tCAUTION!!! The future is mysterious! For clarity, ask yes/no questions.")
 
 # Loops until the user enters "quit" as their query
 while True:
     try:
-        print(f'\n\n\tEnter "Quit" to let the Oracle rest.\n\n\n\n')
+        print(f'\n\n\tEnter "Quit" to let the Oracle rest.\n')
         the_ultimate_question = input(f"\n\tWhat is it you wish to know?   ").lower()
     except ValueError:
         print("\n\tInvalid entry. Please try again.")
@@ -62,8 +60,8 @@ while True:
     else:
         # Use random.choice(RESPONSES) to answer
         the_perfect_answer = random.choice(THE_ORACLE_SAYS)
-        print(f"\n\t{the_perfect_answer}\n\n\n\n\n")
+        print(f"\n\t{the_perfect_answer}\n")
         continue
 
-print(f"\n\n\n\n\n\n\tThe Oracle fades into the mists until called upon once again...")
-input(f"\n\tPress 'ENTER' to exit the mists before you, too, fade away...\n\n\n\n\n")
+print(f"\n\tThe Oracle fades into the mists until called upon once again...")
+input(f"\n\tPress 'ENTER' to exit the mists before you, too, fade away...\n")
