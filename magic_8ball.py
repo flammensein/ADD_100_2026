@@ -58,7 +58,7 @@ while True:
     if the_ultimate_question == "quit":
         break
     else:
-        # Use random.choice(RESPONSES) to answer
+        # Otherwise give and answer from THE_ORACLE_SAYS
         the_perfect_answer = random.choice(THE_ORACLE_SAYS)
         print(f"\n\t{the_perfect_answer}\n")
         continue
