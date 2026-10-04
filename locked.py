@@ -136,16 +136,16 @@ while program_running:
     terminal_running = True
     while terminal_running:
         # 📌 Displays the interactive menu options.
-        print(f"\n\t-------------------------------------------------------")
+        print(f"\n\t{'-' * 55}")
         print(f"\t         {DEPARTMENT} TERMINAL")
-        print(f"\t-------------------------------------------------------")
+        print(f"\n\t{'-' * 55}")
         print("\t0...Return to Category Menu")
         print("\t1...Lookup Username")
         print("\t2...Change Password")
         print("\t3...Request Username Change")
         if is_it_user:
             print("\t4...Add New Employee/Password (IT Only)")
-        print(f"\t-------------------------------------------------------")
+        print(f"\n\t{'-' * 55}")
 
         try:
             choice = input("\n\tPlease select an action from the menu above:\t").strip()
@@ -202,10 +202,10 @@ while program_running:
                         f"\n\t[NOTICE] Request to change username '{old_user}' has been submitted to IT."
                     )
                     print(
-                        "\tNote: Usernames cannot be modified directly due to tuple immutability."
+                        "\n\tNote: Usernames cannot be modified directly due to tuple immutability."
                     )
 
-                    # 💡 Demonstration option for tuple immutability (triggers TypeError)
+                    # 💡 Demonstration option for tuple immutability (triggers TypeError if "y" is chosen in the next line)
                     try_direct = (
                         input(
                             "\n\tWould you like to attempt direct username modification? (y/n):\t"
@@ -215,7 +215,9 @@ while program_running:
                     )
                     if try_direct == "y":
                         idx_loc = USER_NAMES.index(old_user)
-                        USER_NAMES[idx_loc] = "new_username"  # 📌 Triggers TypeError!
+                        USER_NAMES[idx_loc] = (
+                            "new_username"  # 📌 Triggers TypeError Below!
+                        )
                 else:
                     print(
                         f"\n\t[ERROR] Username '{old_user}' does not exist in the system.\n"
