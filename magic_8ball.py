@@ -38,17 +38,25 @@ THE_ORACLE_SAYS = (
 
 mystical_query = ""
 
-print(f"\n\t{'=' * 35}")
-print("\n\tWelcome to the Desert of the Real...")
+print(f"\n\t{'~' * 43}")
+print(
+    "\t\u2014\u2014\u2014 Welcome \u2014 to the Desert of the Real \u2014\u2014\u2014"
+)
+print(f"\t{'~' * 43}")
 
 # ✅TODO: Create a while loop that keeps asking questions
 # Loops until the user enters "quit" as their query
-while mystical_query != "quit":
-    input = str(f"What is it you wish to know?   ")
+while True:
+    print(f'\tEnter "Quit" to let the Oracle rest.')
+    the_ultimate_question = input(f"\n\tWhat is it you wish to know?   ")
 
     # ✅TODO: Use random.choice(RESPONSES) to answer
     the_perfect_answer = random.choice(THE_ORACLE_SAYS)
-    print(f"\n\f{the_perfect_answer}")
-    # input(f"\n\fPress ENTER")
+    print(f"\n\t{the_perfect_answer}")
 
     # TODO: If user types "quit", break the loop
+    if str(the_ultimate_question).lower == "quit":
+        break
+
+print(f"\n\tThe Oracle fades into the mists until called upon once again...")
+input(f"\n\tPress 'ENTER' to exit the mists before you, too, fade away...")
