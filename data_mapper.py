@@ -10,6 +10,14 @@ ASSIGNMENT 8A: OPTION A - NATO TRANSLATOR
 -----------------------------------------------------------------------
 """
 
+"""
+Prompt used to generate the NATO_ALPHABET:
+    Finish this list for the variable "NATO_ALPHABET" including all of the letters, 
+    numbers, and punctuation as listed on the wiki page here: 
+    https://en.wikipedia.org/wiki/NATO_phonetic_alphabet#Letters
+    Use the "Code Word" columns for the translated values of all 3 types. Be sure 
+    to include an entry for " " that is just " " on both sides.
+"""
 NATO_ALPHABET = {
     "A": "Alfa",
     "B": "Bravo",
