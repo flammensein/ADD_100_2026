@@ -1,0 +1,26 @@
+Project Design Document: 
+FlammenRides Unicycles
+Developer: Brent T Marnati | Scrum Master: Leroy Green 
+
+The system will pull pricing and inventory information from inventory.csv.
+Orders will consist of the various customizable parts of a custom-built unicycle.
+Orders will print invoices to invoice-<invoice_num>.??? (hopefully .pdf in the end).
+
+Model: 24" URC Mountain Unicycle - ISIS
+	Tire: Vee Crown Gem 24" x 2.80
+	Frame Size: M - neck 14cm
+	Frame Color: lime green
+	Saddle: Handle Saddle S Muni Finish
+		Cushion Width: Wide cushion
+		Color of Leather Cushion: black
+		Color of Handle Leather Strip: lime green
+	Seat Post: 25 cm
+	Seat Post Clamp: Quick release double lever
+		Seat Post Clamp Color: black
+	Rim: Reinforced
+		Rim Color: black
+	Cranks: Mad4One - Blue Line 125
+		Cranks Color: black
+	Pedals: Penta BX
+	Brake: No Brake but ready for disc
+		Rotor Diameter: 180mm
