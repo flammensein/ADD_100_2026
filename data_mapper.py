@@ -67,37 +67,26 @@ EMOJI_CIPHER = {
     " ": " ",
 }
 
-un_message = input(
+# for x in EMOJI_CIPHER.values():
+#     print(x)
+# for x in EMOJI_CIPHER.keys():
+#     print(x)
+# for x, y in EMOJI_CIPHER.items():
+#     print(x, y)
+user_secret = input(
     "\n\tEnter your secret message below (valid characters: A-Z 0-9 punctuation(.,!?'\"-:;()&) and [space]):\n\t:   "
 ).upper()
 
+unencrypted_mess = list(user_secret)
+print(f"\n\tunencrypted_mess")
 
-for character in un_message:
-    print(EMOJI_CIPHER(character))
-
-
+print(f"\n\t", end="")
 # # TODO: Loop through each character
+for character in user_secret:
+    if character in EMOJI_CIPHER:
+        unencrypted_mess.index(character) = EMOJI_CIPHER[character]
+    else:
+        unencrypted_mess[character] = "⚠️"
+print(f"\n")
+print(f"\n\t{unencrypted_mess}")
 # # TODO: try to print the emoji, except if it's a space or symbol
-
-
-# """
-# 📚 ADD-100: Intro to Python | Demo: Resilient Lookup Schema
-# """
-
-# # 1. Define the Schema
-# translator = {
-#     "one": "uno",
-#     "two": "dos",
-#     "three": "tres",
-#     "four": "cuatro",
-#     "five": "cinco",
-# }
-
-# word = input("Enter an English number (one-five): ").lower().strip()
-
-# # 2. Perform a Resilient Lookup
-# try:
-#     translation = translator[word]
-#     print(f"System Output: {translation}")
-# except KeyError:
-#     print(f"!! DATA INTEGRITY WARNING: '{word}' is not in our system.")
