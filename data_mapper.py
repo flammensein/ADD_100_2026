@@ -33,7 +33,7 @@ EMOJI_CIPHER = {
     "O": "🐙",
     "P": "🐧",
     "Q": "👑",
-    "R": "🌈",
+    "R": "🌹",
     "S": "☀️",
     "T": "🌳",
     "U": "☂️",
@@ -78,42 +78,52 @@ while program_running:
         )
         print("\t2...Decode a message written in Emojis into the Latin Alphabet. ")
         print("\t3...Quit your Cryptographic Joy Time")
-        encrypt_decrypt = int(
-            input(
-                f"\n\tEnter your choice from above (1,2,3) to have fun with encryption and decryption:   "
-            )
+        encrypt_decrypt = input(
+            f"\n\tEnter your choice from above (1,2,3) to have fun with encryption and decryption:   "
         )
     except ValueError:
         print("\n\tInvalid entry. Please try again.")
     except Exception as e:
         print(f"\n\tAn unexpected error occurred: {e}")
 
-        if encrypt_decrypt == "3":
-            program_running = False
-            break
-        elif encrypt_decrypt == "2":
-            continue
-        elif encrypt_decrypt == "1":
-            continue
-        else:
-            print("\n\tInvalid entry. Please try again.")
+    if encrypt_decrypt == "1":
+        user_secret = input(
+            "\n\tTo encrypt, type your secret message below. \n\t(valid characters: A-Z 0-9 punctuation(.,!?'\"-:;()&) and [space]):   "
+        ).upper()
+        encrypted_message = []
+        for character in user_secret:
+            encrypted_message.append(EMOJI_CIPHER.get(character, "⚠️"))
+        print(f"\n\t{''.join(encrypted_message)}")
+        continue
+    elif encrypt_decrypt == "2":
+        user_secret = input(
+            "\n\tTo decrypt, enter your encrypted message below. \n\t(invalid characters will be left unchanged):   "
+        )
+        decoded_message = user_secret
+        for character, emoji in EMOJI_CIPHER.items():
+            decoded_message = decoded_message.replace(emoji, character)
+        print(f"\n\t{decoded_message}")
+        continue
+    elif encrypt_decrypt == "3":
+        program_running = False
+        break
+    else:
+        print("\n\tInvalid entry. Please try again.")
 
 
-# # for x in EMOJI_CIPHER.values():
-# #     print(x)
-# # for x in EMOJI_CIPHER.keys():
-# #     print(x)
-# # for x, y in EMOJI_CIPHER.items():
-# #     print(x, y)
-# user_secret = input(
-#     "\n\tEnter your secret message below (valid characters: A-Z 0-9 punctuation(.,!?'\"-:;()&) and [space]):\n\t:   "
-# ).upper()
+# for x in EMOJI_CIPHER.values():
+#     print(x)
+# for x in EMOJI_CIPHER.keys():
+#     print(x)
+# for x, y in EMOJI_CIPHER.items():
+#     print(x, y)
+
 
 # unencrypted_mess = list(user_secret)
 # print(f"\n\tunencrypted_mess")
 
 # print(f"\n\t", end="")
-# # # TODO: Loop through each character
+# # TODO: Loop through each character
 # for character in user_secret:
 #     if character in EMOJI_CIPHER:
 #         unencrypted_mess.index(character) = EMOJI_CIPHER[character]
@@ -121,4 +131,4 @@ while program_running:
 #         unencrypted_mess[character] = "⚠️"
 # print(f"\n")
 # print(f"\n\t{unencrypted_mess}")
-# # # TODO: try to print the emoji, except if it's a space or symbol
+# # TODO: try to print the emoji, except if it's a space or symbol
