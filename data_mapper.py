@@ -88,10 +88,10 @@ while program_running:
             "\n\tTo encrypt, type your secret message below. \n\t(valid characters: A-Z 0-9 punctuation(.,!?'\"-:;()&) and [space]):   "
         ).upper()
         print()
-        encrypted_message = []
-        for character in user_secret:
-            encrypted_message.append(EMOJI_CIPHER.get(character, "⚠️"))
-        print(f"\n\t{''.join(encrypted_message)}")
+        encrypted_message = user_secret
+        for character, emoji in EMOJI_CIPHER.items():
+            encrypted_message = encrypted_message.replace(character, emoji)
+        print(f"\n\t{encrypted_message}")
         continue
 
     elif encrypt_decrypt == "2":
@@ -104,9 +104,11 @@ while program_running:
             decoded_message = decoded_message.replace(emoji, character)
         print(f"\n\t{decoded_message}")
         continue
+
     elif encrypt_decrypt == "3":
         print()
         program_running = False
         break
+
     else:
         print("\n\tInvalid entry. Please try again.")
