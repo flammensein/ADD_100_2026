@@ -6,7 +6,7 @@ ASSIGNMENT 8A: OPTION B - EMOJI CIPHER
 [✅] 2. EMOJI_CIPHER constant maps every letter (A-Z) to an emoji.
 [✅] 3. Program takes a word or phrase from the user.
 [✅] 4. Program loops through characters and prints emojis.
-[ ] 5. A 'try/except' block handles spaces or punctuation.
+[☣️] 5. A 'try/except' block handles spaces or punctuation. ☣️ I intentionally left this out as the way I felt the code should work would be to handle at least a basic level of punctuation and spaces to be encrypted/decrypted. Doing otherwise to me would be disingenuous and detract from the end fun of having a script that can encode/decode in a fun way and do it smoothly.
 -----------------------------------------------------------------------
 """
 
