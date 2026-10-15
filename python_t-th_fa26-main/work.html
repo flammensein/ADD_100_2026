@@ -1,0 +1,309 @@
+<div style="font-family: 'Segoe UI', Helvetica, Arial, sans-serif; max-width: 1200px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; line-height: 1.6; border: 1px solid #e0e0e0;" lang="en">
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2d3b45; line-height: 1.6; border-radius: 10px; overflow: hidden;">
+            <div style="background-color: #4b3190; padding: 30px; color: white;">
+                <h2 style="margin: 0; font-size: 32px; color: white;">🎸 Assignment 7A: String Mastery</h2>
+            </div>
+            <p style="margin-top: 10px; margin-left: 15px; font-style: italic; color: #4b3190;">The Guitar &amp; The Thread: Tuning and Untangling Strings 🎸🧵</p>
+            <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dddddd;">
+                <p style="margin: 0;"><strong>🎯 Learning Goals:</strong> Master string immutability, manipulation methods, ASCII analysis, and the String/List bridge.</p>
+                <p style="margin: 5px 0 0 0;"><strong>⏱️ Estimated Time:</strong> 2.5 hours of study + 45 minutes of coding.</p>
+            </div>
+            <div style="padding: 0 20px;">
+                <div style="float: right; max-width: 250px; margin: 15px 0px 15px 25px; padding: 10px; background: #ffffff; text-align: center; border: 1px solid #dddddd;">
+                    <p style="margin: 0; font-style: italic;"><img style="max-width: 100%; height: auto;" src="https://mchenry.instructure.com/courses/1490066/files/76596931/preview?" alt="A cartoon duck in a purple hoodie plays an electric guitar in a music studio with guitars and posters." data-api-endpoint="https://mchenry.instructure.com/api/v1/courses/1490066/files/76596931" data-api-returntype="File" /></p>
+                </div>
+                <p><strong>Everything is a Sequence.</strong></p>
+                <p>In Python, a string is a sequence of characters. Think of a guitar: each fret is an <strong>index</strong> (a position), and each string is a piece of data. However, Python strings are <strong>Immutable</strong>&mdash;this means they are "locked." You can play the notes, but you can't swap a string while the song is playing!</p>
+            </div>
+            <div style="background-color: #f3e5f5; border-radius: 8px; padding: 20px; margin: 20px; text-align: center; clear: both; border: 2px solid #7b1fa2;">
+                <h3 style="margin-top: 0; color: #7b1fa2; text-align: left;">🎨 Visual Guide: String Immutability &amp; Methods</h3>
+                <p style="text-align: left; font-size: 0.95em;">Review this infographic to visualize how string indexing works and how methods clean sequences without modifying the original data.</p>
+                <img id="76669488" src="/courses/1490066/files/76669488/preview" alt="Infographic on Python string mastery: immutability, list bridge, methods, and ASCII sorting." />
+            </div>
+            <div style="padding: 0 20px;">
+                <p><em>Open the chapters below to read your "Python by Example" guide.</em> 👇</p>
+            </div>
+        </div>
+    <div style="font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: #f4f4f4; padding: 20px; margin: 20px; border-radius: 10px; line-height: 1.6; border: 1px solid #e0e0e0;">
+        <h3 style="margin-top: 0; color: #4b3190;">🎬 Videos &amp; Annotated Code</h3>
+        <details style="background-color: #ffffff; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+            <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">🎥 Python's Unchangeable Strings</summary>
+            <hr style="border-width: 1px 0px 0px; border-style: solid none none; border-color: #cccccc currentcolor currentcolor; margin: 20px 0px; clear: both;" />
+            <div style="padding: 20px; margin: 0 20px 20px; background: #ffffff; border-radius: 8px; border: 1px solid #dddddd;">
+                <div style="padding: 20px; overflow: hidden; max-width: 100%; background: #eeeeee; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px dashed #7b1fa2;">
+                    <p style="text-align: center; color: #7b1fa2;"><iframe class="lti-embed" style="width: 720px; height: 405px;" title="Python_s_Unchangeable_Strings" src="https://mchenry.instructure.com/courses/1490066/external_tools/retrieve?display=borderless&amp;url=https%3A%2F%2Fmchenry.hosted.panopto.com%2FPanopto%2FLTI%2FLTI.aspx%3Fcustom_context_delivery%3D84cef0ae-e288-42dd-addc-b3d4016fb0e0" width="720" height="405" loading="lazy" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *; autoplay *; clipboard-write *; display-capture *"></iframe></p>
+                </div>
+            </div>
+        </details>
+            <div style="padding: 20px; margin: 0 20px 20px; background: #ffffff; border-radius: 8px; border: 1px solid #dddddd;">
+                <p><iframe class="lti-embed" style="width: 720px; height: 405px;" title="Class recording TTh-20260929_170128UTC-Meeting Recording" src="https://mchenry.instructure.com/courses/1490066/external_tools/retrieve?display=borderless&amp;url=https%3A%2F%2Fmchenry.hosted.panopto.com%2FPanopto%2FLTI%2FLTI.aspx%3Fcustom_context_delivery%3D2674fa42-2f32-4d36-b9a2-b4d4012674b8" width="720" height="405" loading="lazy" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *; autoplay *; clipboard-write *; display-capture *; fullscreen *"></iframe></p>
+            </div>
+            <details style="background-color: #ffffff; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+                <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">💻 Annotated Lecture Code</summary>
+                <div style="padding: 15px; margin-top: 10px;">
+                    <pre><code>"""
+String mastery: working with text, string methods, and built-in functions.
+"""
+
+greeting = "Hello"
+
+print(greeting)
+
+# ℹ️ info: The + operator concatenates (joins) strings. Strings are immutable,
+# so this expression creates a new string and assigns it back to greeting.
+greeting = greeting + " World"
+
+print(greeting)
+
+# ℹ️ info: Escape sequences start with a backslash: \n makes a new line and
+# 	 inserts a tab. The double quote here is ordinary text inside single quotes.
+print('\n\n new lines, \t tab " ')
+# 💡tip: Multiplying a string repeats its contents; this prints 100 asterisks.
+print("*" * 100)
+
+
+# 🔤 Converting values to strings
+
+ten = 10
+
+# ⚠️ warning: Python cannot concatenate a string and an integer directly.
+# print("Ten: " + ten)
+# ℹ️ info: str() is a built-in conversion function; it returns the number as text.
+print("Ten: " + str(ten))
+# 💡tip: An f-string inserts the value into the text without explicitly calling str().
+print(f"Ten:  {ten}")
+
+
+name = "meri kasprak   "
+# ℹ️ info: strip() returns a string with whitespace removed from both ends.
+# title() returns a title-cased string, capitalizing the start of each word.
+# String methods return results; they do not change the original string in place.
+print(name.strip().title())
+
+string_list = "John Jacob Jingleheimer Schmidt"
+# ℹ️ info: split(" ") separates this string wherever there is a space and returns a list.
+list_of_string = string_list.split(" ")
+print(list_of_string)
+# ℹ️ info: A for loop can visit each string in the list one at a time.
+for item in list_of_string:
+    print(item)
+
+
+# 🐶 Bingo: replacing letters one at a time
+# ℹ️ info: Strings cannot be changed in place, so list() (a built-in function)
+# makes a list of individual characters that we can update.
+name_string = "BINGO"
+dog_letters = list(name_string)
+count = 0
+
+# 2. THE LOOP: This runs once for each character in "BINGO".
+for char in name_string:
+    # ℹ️ info: join() is a string method. The string before the dot is the
+    # separator placed between each item from the iterable (here, a list).
+    current_name = " ".join(dog_letters)
+
+    print("There was a farmer who had a dog and Bingo was his Name-o")
+    # 💡tip: The f-string inserts current_name; multiplying the result repeats it 3 times.
+    print(f"({current_name}) \n" * 3)
+    print("and Bingo was his Name-o!\n")
+
+    # Replace the character at this position; count tracks the matching list index.
+    dog_letters[count] = "🐶"
+    count += 1
+
+# 3. THE FINALE: join() combines the updated list of characters into one string.
+final_name = " ".join(dog_letters)
+print(f"({final_name}) \n" * 3)
+print("and Bingo was his Name-o!")</code></pre>
+                </div>
+            </details>
+        </div>
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2d3b45; line-height: 1.6; padding: 0 20px;">
+        <details style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+            <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">&nbsp;Click to expand: 🎞️ Ch 1: String Nature &amp; Immutability</summary>
+            <div style="padding: 15px; margin-top: 10px;">
+                <h3><strong>1.1 Immutability: The Locked Note&nbsp;</strong></h3>
+                <p>You can find what character is at an index, but you cannot overwrite it.</p>
+                <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;">instrument = "Guitar"
+print(instrument[0]) # Output: G
+# instrument[0] = "Z" # 🛑 This crashes! You cannot change a string in place.</pre>
+                </div>
+                <h4><strong>1.2 Multiline Strings &amp; Escape Sequences</strong></h4>
+                <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;"># Multiline String
+song_lyrics = """There was a farmer
+who had a dog..."""
+
+# Escape Sequences
+print("Line 1\nLine 2")  # \n = Newline
+print("Column\tData")   # \t = Tab</pre>
+                </div>
+            </div>
+        </details>
+<details style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+    <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">&nbsp;Click to expand: 🪕 Ch 2: Math &amp; The Input Trap</summary>
+    <div style="padding: 15px; margin-top: 10px;">
+        <h4><strong>2.1 Concatenation (+) and Replication (*)</strong></h4>
+        <div style="overflow-x: auto; margin-bottom: 20px;">
+            <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;">print("Py" + "thon")  # Output: Python
+print("🎸" * 3)        # Output: 🎸🎸🎸</pre>
+        </div>
+        <h4><strong>2.2 Handling Input</strong></h4>
+        <p>Input is <em>always</em> a string. Convert it to do math!</p>
+        <div style="overflow-x: auto; margin-bottom: 20px;">
+            <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;">num = input("Number: ")
+total = int(num) + 5 
+print("Result: " + str(total))</pre>
+        </div>
+    </div>
+</details>
+<details style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+    <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">&nbsp;Click to expand: 🧵 Ch 3: The Method Toolbox (Cleaning Data)</summary>
+    <div style="padding: 15px; margin-top: 10px;">
+        <p>Methods return a NEW cleaned string. They do <strong>not</strong> change the original.</p>
+        <div style="overflow-x: auto; margin-bottom: 20px;">
+            <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;">name = "   meri kasprak   "
+print(name.strip().title()) # Output: "Meri Kasprak"
+
+serial = "902-10"
+print(serial.replace("-", "")) # Output: "90210"
+
+# Splitting (The Scissors)
+# Turns a string into a List!
+sentence = "Hello World"
+words = sentence.split(" ") # ["Hello", "World"]</pre>
+        </div>
+    </div>
+</details>
+<details style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+    <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">&nbsp;Click to expand: 🔍 Ch 4: Validation &amp; ASCII Analysis</summary>
+    <div style="padding: 15px; margin-top: 10px;">
+        <div style="overflow-x: auto; margin-bottom: 20px;">
+            <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;">print("123".isdigit())   # True
+print("Python".isalpha()) # True
+
+# Searching
+print(msg.find("Error"))  # Returns Index (or -1)
+print(msg.count("e"))     # Returns Count
+
+# Slicing (Just like lists!)
+print("Python"[0:2])      # Output: "Py"
+
+# ASCII Comparisons
+print(max("hello")) # 'o'
+print(min("Hello")) # 'H' (Capitals are lower than lowercase!)</pre>
+        </div>
+    </div>
+</details>
+<details style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #dddddd;">
+    <summary style="color: #4b3190; font-size: 18px; cursor: pointer; padding: 10px;">&nbsp;Click to expand: 🎞️ Ch 5: Project - Coding Bingo 🐶👏</summary>
+    <div style="padding: 15px; margin-top: 10px;">
+        <h4><strong>The Procedural Algorithm</strong></h4>
+        <div style="overflow-x: auto; margin-bottom: 20px;">
+            <pre style="background-color: #121212; color: #ffffff; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace;"># 1. SETUP: Strings are immutable, so we use a list
+name_string = "BINGO"
+dog_letters = list(name_string)
+count = 0
+
+# 2. THE LOOP: This runs once for each character in "BINGO"
+for char in name_string:
+    # STRING METHOD: .join() combines items into one string
+    current_name = " ".join(dog_letters)
+    
+    print("There was a farmer who had a dog and Bingo was his Name-o")
+    print(f"({current_name}) \n" * 3) # String replication * 3
+    print("and Bingo was his Name-o!\n")
+    
+    # Replace the letter at our current index with a dog face
+    dog_letters[count] = "🐶"
+    count += 1
+
+# 3. THE FINALE: The loop is over, but we show the final version!
+final_name = " ".join(dog_letters)
+print(f"({final_name}) \n" * 3)
+print("and Bingo was his Name-o!")</pre>
+        </div>
+    </div>
+</details>
+<details style="padding: 10px; border-radius: 5px; margin-bottom: 25px; border: 1px solid #ffe0b2;">
+    <summary style="color: #c24805; font-size: 18px; cursor: pointer; padding: 10px;">⛏️ Dig Deeper: Optional Resources</summary>
+    <div style="padding: 15px; margin-top: 10px;">
+        <ul style="line-height: 1.8;">
+            <li><strong>🌐 W3Schools:</strong> <a href="https://www.w3schools.com/python/python_strings.asp" target="_blank" rel="noopener">Strings</a>, <a href="https://www.w3schools.com/python/python_lists_methods.asp" target="_blank" rel="noopener">Lists</a></li>
+            <li><strong>🌐 LinkedIn Learning:</strong> <a href="https://www.linkedin.com/learning/python-standard-library-essential-training/basic-string-operations?u=69317474" target="_blank" rel="noopener">Operations</a>, <a href="https://www.linkedin.com/learning/python-standard-library-essential-training/searching-strings?u=69317474" target="_blank" rel="noopener">Searching</a></li>
+        </ul>
+    </div>
+</details>
+<div style="margin-top: 40px; padding: 25px; background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
+    <h2 style="margin-top: 0; color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px;">📝 Your Assignment: String Mastery Lab</h2>
+    <p>Complete the four stages of the lab using your "Python by Example" guide above.</p>
+    <div style="background-color: #4b3190; padding: 15px; border-radius: 8px; color: white; margin: 20px 0; text-align: center;">
+        <p style="margin: 0 0 10px 0;">Step 1: Get the Starter Code</p>
+        <a id="76167470" class="instructure_file_link instructure_scribd_file inline_disabled" style="display: inline-block; padding: 10px 20px; background-color: white; color: #4b3190; text-decoration: none; border-radius: 5px;" title="string_mastery.py" href="https://mchenry.instructure.com/courses/1490066/files/76693765?wrap=1" target="_blank" data-api-endpoint="https://mchenry.instructure.com/api/v1/courses/1490066/files/76693765" data-api-returntype="File" data-canvas-previewable="false" rel="noopener">📥 Download string_mastery.py</a>
+    </div>
+    <div style="padding: 15px; border-radius: 8px;"><strong>📌 Submission Checklist:</strong>
+        <ul>
+            <li style="list-style-type: none;">
+                <ul style="margin: 10px 0 0 0;">
+                    <li>Task 1: Basics (Length, Indexing, ASCII).</li>
+                    <li>Task 2: Cleanup (Strip, Casing, Replace).</li>
+                    <li>Task 3: Validation (isdigit check).</li>
+                    <li>Task 4: The Ducky Loop (Using .join() and direct iteration).</li>
+                    <li>Checklist Docstring present at the top.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div style="margin-top: 25px; border-radius: 6px; padding: 15px; border: 1px solid #2e7d32;">
+        <h3>🌉 Top Tips</h3>
+        <p style="margin-bottom: 10px; font-size: 0.9em;">Common string functions!</p>
+        <ul style="font-size: 0.9em; margin-bottom: 0;">
+            <li>[ ] <strong>Dialogue Parsing:</strong> <code style="font-size: 10pt;">if "sword" in player_input.lower():</code></li>
+            <li>[ ] <strong>Story Formatting:</strong> Using <code style="font-size: 10pt;">.title()</code> to make NPC names look professional.</li>
+            <li>[ ] <strong>Ciphers:</strong> Using <code style="font-size: 10pt;">ord()</code> and <code style="font-size: 10pt;">chr()</code> to create secret messages for your game world.</li>
+        </ul>
+    </div>
+</div>
+<div style="margin-top: 40px;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid #dddddd;" border="1">
+        <caption>
+            <h3 style="color: #4b3190;">📊 <span style="color: #2d3b45; font-size: 1rem;">Grading Rubric</span></h3>
+        </caption>
+        <thead style="background-color: #4b3190; color: white;">
+            <tr>
+                <th style="padding: 10px;" scope="col">Criterion</th>
+                <th style="padding: 10px;" scope="col">Distinguished (4)</th>
+                <th style="padding: 10px;" scope="col">Proficient (3)</th>
+                <th style="padding: 10px;" scope="col">Emerging (1-2)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px;">String Basics</td>
+                <td>Correctly uses len(), indexing, and ASCII analysis.</td>
+                <td>Minor off-by-one errors or flawed ASCII logic.</td>
+                <td>Incorrect use of basic functions.</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">The Cleanup Crew</td>
+                <td>Successfully applies sanitization methods to messy data.</td>
+                <td>Methods applied but logic is redundant.</td>
+                <td>Missing sanitization steps.</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">Ducky Logic</td>
+                <td>Correctly uses .join() and direct string iteration to sing the song.</td>
+                <td>Loop works, but join logic is flawed.</td>
+                <td>Bridge logic is missing or broken.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div style="background-color: #f9f9f9; padding: 25px; text-align: center; border-top: 1px solid #eee;">
+    <p style="font-size: 1.1em; color: #4b3190; margin: 0;">&copy; 2026 Meri Kasprak, Ph.D. 🦆</p>
+    <p style="font-size: 1.1em; color: #4b3190; margin: 5px 0 0 0;">In Collaboration with Gemini ✨</p>
+</div>
+<p>&nbsp;</p>
+    </div>
+</div>
