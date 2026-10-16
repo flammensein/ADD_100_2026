@@ -136,7 +136,7 @@ while program_running:
 
     # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
     except EOFError:
-        print("\n\tNo more input available. Exiting program...\n\n")
+        print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
         break
     except Exception as e:
         print(f"\n\tAn unexpected error occurred: {e}")
