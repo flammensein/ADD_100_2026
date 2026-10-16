@@ -68,7 +68,7 @@ EMOJI_CIPHER = {
 }
 
 # ℹ️ Build the reverse cipher dictionary for decoding emojis back into text.
-#    Why/How: Some emojis (like ☀️ or ☂️) include an invisible Unicode variation selector (\ufe0f),
+#    To compensate for some emojis (like ☀️ or ☂️) which include an invisible Unicode variation selector (\ufe0f),
 #    making them 2 characters long in Python. Stripping "\ufe0f" with .replace() ensures every
 #    emoji key is a single character so our character-by-character for-loop works cleanly.
 #    Reference: https://en.wikipedia.org/wiki/Variation_Selectors_(Unicode_block)
