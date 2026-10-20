@@ -4,10 +4,10 @@ ASSIGNMENT 9A: THE SMOOTHIE SPRINT
 -----------------------------------------------------------------------
 [✅] 1. Header Docstring included.
 [✅] 2. Global Constants BASES and FRUITS defined as Tuples.
-[ ] 3. Professional function get_price(size) returns a float.
-[ ] 4. Professional function blend(size, base, fruit, price) for output.
-[ ] 5. main() function handles try/except for price (int).
-[ ] 6. main() calls both functions correctly.
+[✅] 3. Professional function get_price(size) returns a float.
+[✅] 4. Professional function blend(size, base, fruit, price) for output.
+[🚧] 5. main() function handles try/except for price (int).
+[🚧] 6. main() calls both functions correctly.
 -----------------------------------------------------------------------
 """
 
@@ -90,6 +90,7 @@ def fruit_selection():
 
 
 # TODO: Define main() to collect input and call your logic
+# 🚧 Work in progress
 def main():
     size = 0
     while size == 0:
