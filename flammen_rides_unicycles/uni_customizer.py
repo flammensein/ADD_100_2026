@@ -82,7 +82,17 @@ def final_order():
 
 
 def main():
-    pass
+    model_opts()
+    wheel_size = tire_opts()
+    saddle_opts()
+    seat_post_opts()
+    rim_opts(wheel_size)
+    crank_opts()
+    pedal_opts()
+    brake_opts()
+    billing_info()
+    shipping_info()
+    final_order()
 
 
 main()
