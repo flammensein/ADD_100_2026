@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+ASSIGNMENT 9B: SPRINT 2 - FUNCTIONAL STUBS
+Project: Flammen Rides Unicycles
+"""
 
 
 def model_opts():
