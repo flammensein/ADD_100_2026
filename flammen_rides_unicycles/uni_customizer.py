@@ -1,6 +1,7 @@
 """
 ASSIGNMENT 9B: SPRINT 2 - FUNCTIONAL STUBS
 Project: Flammen Rides Unicycles
+Developer: Brent T. Marnati
 """
 
 
