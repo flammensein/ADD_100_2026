@@ -4,6 +4,9 @@ Project: Flammen Rides Unicycles v0.2
 Developer: Brent T. Marnati
 """
 
+import uuid
+from datetime import datetime
+
 # Maps to model_opts() - Unicycle brands, models, and wheel sizes
 UNICYCLE_BRANDS = {
     "Nimbus Unicycles": {
@@ -108,31 +111,40 @@ AVAILABLE_RIM_COLORS = ["Black", "Silver", "Red", "Blue"]
 PEDAL_OPTIONS = {
     "Wellgo": {
         "material": "Clear polycarbonate platform",
-        "pins": "removable steel pins",
+        "pins": "Removable steel pins",
+        "available_colors": ["Clear", "Smoke", "Blue", "Red"],
     },
     "Nimbus": {
-        "material": "Plastic platform",
-        "pins": "molded studs",
+        "material": "Plastic studded platform",
+        "pins": "Molded studs",
+        "available_colors": ["Black", "White"],
     },
     "Kris Holm": {
-        "material": "Plastic platform",
-        "pins": "molded studs",
+        "material": "Studded plastic platform",
+        "pins": "Molded studs",
+        "available_colors": ["Black"],
     },
 }
 
 # Maps to crank_opts() - Crank models, interface splines, and length options
 CRANK_OPTIONS = {
     "KH Boundary": {
+        "brand": "Kris Holm",
         "interface": "Q-Axle micro spline",
         "lengths": ["117/137mm dual hole", "127/150mm dual hole"],
+        "available_colors": ["Black", "Silver"],
     },
     "Nimbus VCX": {
+        "brand": "Nimbus",
         "interface": "ISIS / Standard",
         "lengths": ["125mm", "150mm"],
+        "available_colors": ["Black", "Silver", "Red"],
     },
     "Club Steel": {
-        "interface": "cotterless, square-tapered",
+        "brand": "Club",
+        "interface": "Cotterless, square-tapered",
         "lengths": ["114mm", "125mm"],
+        "available_colors": ["Black"],
     },
 }
 
@@ -140,6 +152,52 @@ TIRE_OPTIONS = {
     "Maxxis": ['20 x 2.5"', '27.5 x 3.0"'],
     "Nimbus": ['36 x 2.25"', '29 x 3.0"'],
     "Qu-Ax": ['36 x 2.25"'],
+}
+
+# Add "supports_brakes": True to a model's options when it supports brakes.
+BRAKE_OPTIONS = {
+    "Shimano Deore M6100": {
+        "manufacturer": "Shimano",
+        "type": "Hydraulic Disc",
+        "supported_rotors_mm": [160, 180],
+        "default_rotor_mm": 180,
+    },
+    "Magura HS33": {
+        "manufacturer": "Magura",
+        "type": "Hydraulic Rim Brake",
+        "supported_rotors_mm": [],
+        "default_rotor_mm": None,
+    },
+    "SRAM Level TL": {
+        "manufacturer": "SRAM",
+        "type": "Hydraulic Disc",
+        "supported_rotors_mm": [160, 180],
+        "default_rotor_mm": 160,
+    },
+    "Bengal Helix 7.B": {
+        "manufacturer": "Bengal",
+        "type": "Mechanical Disc",
+        "supported_rotors_mm": [160, 180],
+        "default_rotor_mm": 180,
+    },
+}
+
+SHIPPING_METHODS = {
+    "1": {
+        "name": "Standard Ground",
+        "cost": 25.00,
+        "days": "3-5 business days",
+    },
+    "2": {
+        "name": "Express 2-Day",
+        "cost": 55.00,
+        "days": "2 business days",
+    },
+    "3": {
+        "name": "Overnight Freight",
+        "cost": 95.00,
+        "days": "1 business day",
+    },
 }
 
 
@@ -170,7 +228,22 @@ def model_opts():
 
         if 1 <= index <= len(models):
             brand, model, options = models[index - 1]
-            return {"brand": brand, "model": model, **options}
+            model_info = {"brand": brand, "model": model, **options}
+            if options.get("supports_brakes", False):
+                while True:
+                    brake_choice = (
+                        input("Would you like to install brakes? (y/n): ")
+                        .strip()
+                        .lower()
+                    )
+                    if brake_choice in {"y", "n"}:
+                        model_info["brakes_enabled"] = brake_choice == "y"
+                        break
+                    print("Please enter 'y' or 'n'.")
+            else:
+                model_info["brakes_enabled"] = False
+                print("This model does not support brakes.")
+            return model_info
 
         print(f"Please enter a number from 1 to {len(models)}.")
 
@@ -256,21 +329,19 @@ def saddle_opts():
         width_choice = widths[0]
         print(f"Defaulting to: {width_choice}")
 
-    cushion_color = input(
-        "Enter Cushion Color (e.g., Black, Blue, Red): "
-    ).strip().title()
+    cushion_color = (
+        input("Enter Cushion Color (e.g., Black, Blue, Red): ").strip().title()
+    )
     if not cushion_color:
         cushion_color = "Black"
 
     leather_color = "N/A"
     if saddle_data.get("handle_leather_option", False):
-        enable_leather = input(
-            "Enable Custom Leather Handle? (y/n): "
-        ).strip().lower()
+        enable_leather = input("Enable Custom Leather Handle? (y/n): ").strip().lower()
         if enable_leather == "y":
-            leather_color = input(
-                "Enter Leather Color (e.g., Brown, Black, Tan): "
-            ).strip().title()
+            leather_color = (
+                input("Enter Leather Color (e.g., Brown, Black, Tan): ").strip().title()
+            )
             if not leather_color:
                 leather_color = "Brown"
 
@@ -453,60 +524,380 @@ def rim_opts(wheel_size):
 
 
 def crank_opts():
-    # Crank Model/Length
-    # Crank Color
-    pass
+    """Configure a crank model, length, interface, and color."""
+    print("\n==========================================")
+    print(" CRANK ARM SELECTION")
+    print("==========================================")
+
+    crank_names = list(CRANK_OPTIONS)
+    print("\nAvailable Crank Models:")
+    for index, name in enumerate(crank_names, start=1):
+        info = CRANK_OPTIONS.get(name, {})
+        interface = info.get("interface", "Standard")
+        print(f" [{index}] {name} ({interface})")
+
+    choice = input("\nSelect Crank Model (Enter number): ").strip()
+    try:
+        selected_crank_name = crank_names[int(choice) - 1]
+    except (ValueError, IndexError):
+        selected_crank_name = crank_names[0]
+        print(f"Defaulting to: {selected_crank_name}")
+
+    crank_info = CRANK_OPTIONS.get(selected_crank_name, {})
+    interface = crank_info.get("interface", "Standard")
+    available_lengths = crank_info.get("lengths", ["125mm"])
+    colors = crank_info.get("available_colors", ["Black"])
+
+    print(f"\nAvailable Lengths for {selected_crank_name}:")
+    for index, length in enumerate(available_lengths, start=1):
+        print(f" [{index}] {length}")
+
+    length_choice = input("\nSelect Length (Enter number): ").strip()
+    try:
+        selected_length = available_lengths[int(length_choice) - 1]
+    except (ValueError, IndexError):
+        selected_length = available_lengths[0]
+        print(f"Defaulting to: {selected_length}")
+
+    print(f"\nAvailable Colors: {', '.join(colors)}")
+    color_choice = input("Select Crank Color: ").strip().title()
+    if color_choice not in colors:
+        color_choice = colors[0]
+        print(f"Defaulting color to: {color_choice}")
+
+    print("\nSelected Cranks Configured:")
+    print(f" • Model: {selected_crank_name}")
+    print(f" • Interface: {interface}")
+    print(f" • Length: {selected_length}")
+    print(f" • Color: {color_choice}")
+
+    return {
+        "crank_model": selected_crank_name,
+        "interface": interface,
+        "length": selected_length,
+        "color": color_choice,
+    }
 
 
 def pedal_opts():
-    # Pedal Make/Model
-    pass
+    """Configure pedal make, platform, pin type, and color."""
+    print("\n==========================================")
+    print(" PEDAL SELECTION")
+    print("==========================================")
+
+    pedal_brands = list(PEDAL_OPTIONS)
+    print("\nAvailable Pedal Makes:")
+    for index, brand in enumerate(pedal_brands, start=1):
+        info = PEDAL_OPTIONS.get(brand, {})
+        material = info.get("material", "Plastic platform")
+        pins = info.get("pins", "Molded studs")
+        print(f" [{index}] {brand} — {material} ({pins})")
+
+    choice = input("\nSelect Pedal Make (Enter number): ").strip()
+    try:
+        selected_brand = pedal_brands[int(choice) - 1]
+    except (ValueError, IndexError):
+        selected_brand = pedal_brands[0]
+        print(f"Defaulting to: {selected_brand}")
+
+    pedal_info = PEDAL_OPTIONS.get(selected_brand, {})
+    material = pedal_info.get("material", "Plastic platform")
+    pins = pedal_info.get("pins", "Molded studs")
+    colors = pedal_info.get("available_colors", ["Black"])
+
+    print(f"\nAvailable Colors for {selected_brand}: {', '.join(colors)}")
+    selected_color = input("Choose Pedal Color: ").strip().title()
+    if selected_color not in colors:
+        selected_color = colors[0]
+        print(f"Defaulting color to: {selected_color}")
+
+    print("\nSelected Pedals Configured:")
+    print(f" • Make: {selected_brand}")
+    print(f" • Platform: {material}")
+    print(f" • Pin Type: {pins}")
+    print(f" • Color: {selected_color}")
+
+    return {
+        "pedal_brand": selected_brand,
+        "material": material,
+        "pins": pins,
+        "color": selected_color,
+    }
 
 
-def brake_opts():
-    # Only available if model_opts() selection makes it so.
-    # Brake Make/Model
-    # Rotor Diameter
-    pass
+def brake_opts(brakes_enabled=True):
+    """Configure a supported brake system, or return a bypassed configuration."""
+    print("\n==========================================")
+    print(" BRAKE SYSTEM SELECTION")
+    print("==========================================")
+
+    if not brakes_enabled:
+        print("Brakes are not enabled or are not supported by the selected model.")
+        return {
+            "brakes_installed": False,
+            "brake_model": "None",
+            "type": "N/A",
+            "rotor_diameter_mm": "N/A",
+        }
+
+    brake_models = list(BRAKE_OPTIONS)
+    print("\nAvailable Brake Systems:")
+    for index, model_name in enumerate(brake_models, start=1):
+        info = BRAKE_OPTIONS.get(model_name, {})
+        manufacturer = info.get("manufacturer", "Generic")
+        brake_type = info.get("type", "Standard Disc")
+        print(f" [{index}] {model_name} — {manufacturer} ({brake_type})")
+
+    choice = input("\nSelect Brake Model (Enter number): ").strip()
+    try:
+        selected_brake_name = brake_models[int(choice) - 1]
+    except (ValueError, IndexError):
+        selected_brake_name = brake_models[0]
+        print(f"Defaulting to: {selected_brake_name}")
+
+    brake_spec = BRAKE_OPTIONS.get(selected_brake_name, {})
+    brake_type = brake_spec.get("type", "Hydraulic Disc")
+    supported_rotors = brake_spec.get("supported_rotors_mm", [])
+    default_rotor = brake_spec.get("default_rotor_mm")
+    selected_rotor = "N/A"
+
+    if supported_rotors:
+        print(f"\nAvailable Rotor Diameters for {selected_brake_name}:")
+        for index, size in enumerate(supported_rotors, start=1):
+            print(f" [{index}] {size}mm Rotor")
+
+        rotor_choice = input("\nSelect Rotor Size (Enter number): ").strip()
+        try:
+            selected_rotor = supported_rotors[int(rotor_choice) - 1]
+        except (ValueError, IndexError):
+            selected_rotor = (
+                default_rotor
+                if default_rotor in supported_rotors
+                else supported_rotors[0]
+            )
+            print(f"Defaulting rotor size to: {selected_rotor}mm")
+    else:
+        print("\nNo rotor required for this brake style.")
+
+    print("\nSelected Brake System Configured:")
+    print(f" • Model: {selected_brake_name}")
+    print(f" • Type: {brake_type}")
+    if selected_rotor == "N/A":
+        print(" • Rotor: N/A")
+    else:
+        print(f" • Rotor Diameter: {selected_rotor}mm")
+
+    return {
+        "brakes_installed": True,
+        "brake_model": selected_brake_name,
+        "type": brake_type,
+        "rotor_diameter_mm": selected_rotor,
+    }
 
 
 def billing_info():
-    # Collect Billing information
-    pass
+    """Collect billing details and return them as a dictionary."""
+    print("\n==========================================")
+    print(" BILLING INFORMATION")
+    print("==========================================")
+
+    full_name = input("Enter Full Name: ").strip() or "Brent Marnati"
+    email = input("Enter Email Address: ").strip() or "brent@example.com"
+    address = input("Enter Billing Street Address: ").strip() or "123 Unicycle Way"
+    city = input("Enter City: ").strip() or "Portland"
+    state = input("Enter State (2 letters): ").strip().upper() or "OR"
+    zip_code = input("Enter ZIP Code: ").strip() or "97201"
+    payment_method = (
+        input(
+            "Payment Method [Credit Card / PayPal / Apple Pay] "
+            "(Default: Credit Card): "
+        )
+        .strip()
+        .title()
+        or "Credit Card"
+    )
+
+    print("\nBilling Information Saved.")
+    return {
+        "full_name": full_name,
+        "email": email,
+        "address": address,
+        "city": city,
+        "state": state,
+        "zip_code": zip_code,
+        "payment_method": payment_method,
+    }
 
 
-def shipping_info():
-    # Collect shipping destination
-    # Calculate shipping cost options based on destination, and weight
-    # Present user with shipping options and the cost of each to
-    # ==> Collect shipping method choice
-    # Collect
-    pass
+def shipping_info(billing_dict=None):
+    """Collect the delivery address and shipping method."""
+    print("\n==========================================")
+    print(" SHIPPING INFORMATION & METHOD")
+    print("==========================================")
+
+    same_as_billing = (
+        input("Is shipping address same as billing address? (y/n): ").strip().lower()
+    )
+    if same_as_billing == "y" and billing_dict:
+        ship_address = {
+            "full_name": billing_dict.get("full_name", "Valued Customer"),
+            "address": billing_dict.get("address", "123 Main St"),
+            "city": billing_dict.get("city", "Portland"),
+            "state": billing_dict.get("state", "OR"),
+            "zip_code": billing_dict.get("zip_code", "97201"),
+        }
+        print("Using billing address for shipping.")
+    else:
+        ship_address = {
+            "full_name": input("Recipient Full Name: ").strip() or "Brent Marnati",
+            "address": input("Shipping Street Address: ").strip() or "123 Unicycle Way",
+            "city": input("City: ").strip() or "Portland",
+            "state": input("State: ").strip().upper() or "OR",
+            "zip_code": input("ZIP Code: ").strip() or "97201",
+        }
+
+    print("\nAvailable Shipping Options:")
+    for key, method in SHIPPING_METHODS.items():
+        print(
+            f" [{key}] {method['name']} — ${method['cost']:.2f} " f"({method['days']})"
+        )
+
+    choice = input("\nSelect Shipping Method (Enter number): ").strip()
+    selected = SHIPPING_METHODS.get(choice, SHIPPING_METHODS["1"])
+    if choice not in SHIPPING_METHODS:
+        print("Invalid selection. Defaulting to Standard Ground.")
+
+    print(
+        f"\nShipping Method Selected: {selected['name']} " f"(${selected['cost']:.2f})"
+    )
+    return {
+        "destination": ship_address,
+        "method_name": selected["name"],
+        "shipping_cost": selected["cost"],
+        "delivery_estimate": selected["days"],
+    }
 
 
-def final_order():
-    # Builds onscreen presentation of order with generated unique Order ID (invoice_num)
-    # Offers 'Accept/Buy/Submit', 'Edit', 'Cancel' options.
-    # Proceeds accordingly
-    pass
+def final_order(order_data):
+    """Display an itemized receipt and collect the user's order decision."""
+    timestamp = datetime.now().strftime("%Y%m%d")
+    unique_suffix = str(uuid.uuid4())[:4].upper()
+    invoice_num = f"INV-{timestamp}-{unique_suffix}"
+
+    print("\n==========================================================")
+    print(" FLAMMEN RIDES UNICYCLES - ORDER INVOICE")
+    print(f" Invoice ID: {invoice_num}")
+    print("==========================================================")
+
+    base_price = 450.00
+    saddle = order_data.get("saddle", {})
+    seat_post = order_data.get("seat_post", {})
+    rim = order_data.get("rim", {})
+    cranks = order_data.get("cranks", {})
+    pedals = order_data.get("pedals", {})
+    brakes = order_data.get("brakes", {})
+    shipping = order_data.get("shipping", {})
+    shipping_cost = shipping.get("shipping_cost", 25.00)
+    tax_rate = 0.08
+    tax_amount = base_price * tax_rate
+    total_cost = base_price + shipping_cost + tax_amount
+
+    print("\n--- COMPONENT SUMMARY ---")
+    print(f" • Frame / Model: {order_data.get('frame_brand', 'Custom Unicycle')}")
+    print(f" • Wheel Size: {order_data.get('wheel_size', '36\"')}")
+    print(
+        f" • Rim: {rim.get('rim_model', 'N/A')} " f"({rim.get('rim_color', 'Black')})"
+    )
+    print(
+        f" • Saddle: {saddle.get('saddle_name', 'N/A')} "
+        f"[{saddle.get('width', 'Medium')}]"
+    )
+    print(
+        f" • Seatpost & Clamp: {seat_post.get('post_model', 'N/A')} "
+        f"({seat_post.get('clamp_style', 'Standard')})"
+    )
+    print(
+        f" • Crank Arms: {cranks.get('crank_model', 'N/A')} "
+        f"({cranks.get('length', '125mm')})"
+    )
+    print(
+        f" • Pedals: {pedals.get('pedal_brand', 'N/A')} "
+        f"({pedals.get('color', 'Black')})"
+    )
+    print(
+        f" • Brakes: {brakes.get('brake_model', 'None')} "
+        f"({brakes.get('type', 'N/A')})"
+    )
+
+    print("\n--- SHIPPING DESTINATION ---")
+    destination = shipping.get("destination", {})
+    print(f" {destination.get('full_name', 'Valued Customer')}")
+    print(
+        f" {destination.get('address', '123 Main St')}, "
+        f"{destination.get('city', 'Portland')}, "
+        f"{destination.get('state', 'OR')} "
+        f"{destination.get('zip_code', '97201')}"
+    )
+    print(
+        f" Method: {shipping.get('method_name', 'Standard Ground')} "
+        f"(${shipping_cost:.2f})"
+    )
+
+    print("\n--- FINANCIAL BREAKDOWN ---")
+    print(f" Subtotal:             ${base_price:>8.2f}")
+    print(f" Estimated Tax (8%):   ${tax_amount:>8.2f}")
+    print(f" Shipping & Handling:  ${shipping_cost:>8.2f}")
+    print(" -----------------------------------")
+    print(f" TOTAL DUE:            ${total_cost:>8.2f}")
+    print("==========================================================")
+
+    print("\nOrder Options:")
+    print(" [1] Accept / Buy / Submit")
+    print(" [2] Edit Customization")
+    print(" [3] Cancel Order")
+    choice = input("\nSelect choice (1-3): ").strip()
+
+    if choice == "1":
+        print(f"\nOrder {invoice_num} has been successfully submitted!")
+        return "SUBMITTED"
+    if choice == "2":
+        print("\nReturning to customizer menu...")
+        return "EDIT"
+
+    print("\nOrder canceled.")
+    return "CANCELED"
 
 
 def main():
     model_info = model_opts()
     frame_brand = model_info["brand"]
+    brakes_enabled = model_info["brakes_enabled"]
     wheel_size = tire_opts()  # 🔄 Returns e.g. "36""
+    rim_info = rim_opts(wheel_size)
     saddle_info = saddle_opts()
-    seat_post_opts(
+    seat_post_info = seat_post_opts(
         frame_brand=frame_brand,
         saddle_mount_style=saddle_info.get("mount_style", "Standard"),
     )
-    rim_opts(wheel_size)  # ⚙️ Pass wheel_size to restrict rim options!
-    crank_opts()
-    pedal_opts()
-    brake_opts()
-    billing_info()
-    shipping_info()
-    final_order()
+    crank_info = crank_opts()
+    pedal_info = pedal_opts()
+    brake_info = brake_opts(brakes_enabled=brakes_enabled)
+    billing = billing_info()
+    shipping = shipping_info(billing)
+    order_data = {
+        "frame_brand": frame_brand,
+        "wheel_size": wheel_size,
+        "rim": rim_info,
+        "saddle": saddle_info,
+        "seat_post": seat_post_info,
+        "cranks": crank_info,
+        "pedals": pedal_info,
+        "brakes": brake_info,
+        "billing": billing,
+        "shipping": shipping,
+    }
+    final_order(order_data)
 
 
-main()
+if __name__ == "__main__":
+    main()
