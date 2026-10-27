@@ -18,16 +18,17 @@ FRUITS = ("Strawberry", "Banana", "Mango", "Blueberry")
 
 # TODO: Define get_price(size)
 def get_price(size):
-    if size.lower() == "small":
-        return 3.00
-    elif size.lower() == "medium":
-        return 4.00
-    elif size.lower() == "large":
-        return 5.00
-    else:
-        # ⚠️ returns 0 as a result of an invalid size selection
-        print("\n\tSorry, but that was not a valid size choice.")
-        return 0
+    while True:
+        if size.lower() == "small":
+            return 3.00
+        elif size.lower() == "medium":
+            return 4.00
+        elif size.lower() == "large":
+            return 5.00
+        else:
+            # ⚠️ returns 0 as a result of an invalid size selection
+            print("\n\tSorry, but that was not a valid size choice.")
+            continue
 
 
 # TODO: Define blend(size, base, fruit, price)
@@ -36,23 +37,31 @@ def blend(size, base, fruit, price):
         f"\n\tPreparing Smoothie:\n\t  Size: {size} \n\t  Base: {base} \n\t  Fruit: {fruit} \n\t  Price: ${price:.2f}"
     )
 
+    # ℹ️ Main menu for the user selection flow.
+
 
 def base_selection():
     while True:
         try:
-            # ℹ️ Main menu for the user selection flow.
             print("\n\t1. Water")
             print("\t2. Apple Juice")
             print("\t3. Orange Juice")
             print("\t4. Milk")
-            base_selected = int(input("\n\tEnter your base choice (1-4): "))
-            if base_selected < 1 or base_selected > 4:
+            print("\t5. Exit Base Selection")
+            base_selected = int(
+                input("\n\tEnter your base choice (1-4, 5 to cancel): ")
+            )
+            if base_selected == 5:
+                print(f"\n\tYou have canceled base selection. Exiting the base menu.")
+                return ""
+            elif base_selected < 1 or base_selected > 4:
                 print("\n\tINVALID SELECTION - Please try again.")
                 continue
-            return BASES[base_selected - 1]
+            else:
+                return BASES[base_selected - 1]
         except ValueError:
             print("\n\tINVALID SELECTION - Please try again.")
-        # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
+        # ℹ️ Catch EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
         except EOFError:
             print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
             return ""
@@ -100,6 +109,11 @@ def main():
         price = get_price(size)
 
     base = base_selection()
+
+    if not base:
+        print("\n\tSmoothie order canceled.")
+        return
+
     fruit = fruit_selection()
 
     blend(size, base, fruit, price)
