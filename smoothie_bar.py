@@ -41,6 +41,7 @@ def blend(size, base, fruit, price):
 
 
 def base_selection():
+    # Prompts user to select a smoothie base or cancel.
     while True:
         try:
             print("\n\t1. Water")
@@ -52,7 +53,7 @@ def base_selection():
                 input("\n\tEnter your base choice (1-4, 5 to cancel): ")
             )
             if base_selected == 5:
-                print(f"\n\tYou have canceled base selection. Exiting the base menu.")
+                print("\n\tYou have canceled base selection. Exiting the base menu.")
                 return ""
             elif base_selected < 1 or base_selected > 4:
                 print("\n\tINVALID SELECTION - Please try again.")
@@ -83,7 +84,7 @@ def fruit_selection():
             if fruit_selected == 0:
                 # User has indicated all desired fruit has been selected. Return to main()
                 break
-            elif fruit_selected > 4 or fruit_selected < 1:
+            elif fruit_selected > 5 or fruit_selected < 1:
                 print("\n\tINVALID SELECTION - Please try again.")
             else:
                 selected_fruits.append(FRUITS[fruit_selected - 1])
