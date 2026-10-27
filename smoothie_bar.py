@@ -16,7 +16,7 @@ BASES = ("Water", "Apple Juice", "Orange Juice", "Milk")
 FRUITS = ("Strawberry", "Banana", "Mango", "Blueberry")
 
 
-# TODO: Define get_price(size)
+# ✅TODO: Define get_price(size)
 def get_price(size):
     while True:
         if size.lower() == "small":
@@ -31,13 +31,11 @@ def get_price(size):
             continue
 
 
-# TODO: Define blend(size, base, fruit, price)
+# ✅TODO: Define blend(size, base, fruit, price)
 def blend(size, base, fruit, price):
     print(
         f"\n\tPreparing Smoothie:\n\t  Size: {size} \n\t  Base: {base} \n\t  Fruit: {fruit} \n\t  Price: ${price:.2f}"
     )
-
-    # ℹ️ Main menu for the user selection flow.
 
 
 def base_selection():
@@ -73,7 +71,6 @@ def fruit_selection():
     more_fruit = True
     while more_fruit:
         try:
-            # ℹ️ Main menu for the user selection flow.
             print("\n\t1. Strawberry")
             print("\t2. Banana")
             print("\t3. Mango")
@@ -90,7 +87,6 @@ def fruit_selection():
                 selected_fruits.append(FRUITS[fruit_selected - 1])
         except ValueError:
             print("\n\tINVALID SELECTION - Please try again.")
-        # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
         except EOFError:
             print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
             break
@@ -107,7 +103,11 @@ def main():
         size = input(
             f"\n\tPlease enter your desired smoothie size (Small, Medium, Large):   "
         )
-        price = get_price(size)
+        if size != 0:
+            price = get_price(size)
+        else:
+            print("\tYou must select a valid size.")
+            continue
 
     base = base_selection()
 
