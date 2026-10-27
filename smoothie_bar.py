@@ -95,8 +95,12 @@ def fruit_selection():
                     continue
                 break
             elif 1 <= fruit_selected <= 4:
-                selected_fruits.append(FRUITS[fruit_selected - 1])
-                print(f"\tAdded: {FRUITS[fruit_selected - 1]}")
+                fruit = FRUITS[fruit_selected - 1]
+                if fruit in selected_fruits:
+                    print(f"\t{fruit} has already been selected.")
+                    continue
+                selected_fruits.append(fruit)
+                print(f"\tAdded: {fruit}")
             else:
                 print("\n\tINVALID SELECTION - Please try again.")
         except ValueError:
@@ -146,14 +150,14 @@ def main():
     try:
         scoops = int(input("\n\tHow many protein/booster scoops would you like?: "))
         if scoops < 0:
-            print("\tNegative scoops not allowed. Defaulting to 1 scoop.")
-            scoops = 1
+            print("\tNegative scoops not allowed. Defaulting to 0 scoops.")
+            scoops = 0
     except ValueError:
-        print("\n\tInvalid number of scoops entered. Defaulting to 1 scoop.")
-        scoops = 1
+        print("\n\tInvalid number of scoops entered. Defaulting to 0 scoops.")
+        scoops = 0
     except EOFError:
         print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-        scoops = 1
+        scoops = 0
 
     # Issue 3: Scoops passed to blend; total_cost is size-based per assignment specs
     blend(size, base, fruit, scoops)
