@@ -5,9 +5,9 @@ ASSIGNMENT 9A: THE SMOOTHIE SPRINT
 [✅] 1. Header Docstring included.
 [✅] 2. Global Constants BASES and FRUITS defined as Tuples.
 [✅] 3. Professional function get_price(size) returns a float.
-[✅] 4. Professional function blend(size, base, fruit, price) for output.
-[🚧] 5. main() function handles try/except for price (int).
-[🚧] 6. main() calls both functions correctly.
+[✅] 4. Professional function blend(size, base, fruit, scoops) for output.
+[✅] 5. main() function handles try/except for scoops (int) with fallback.
+[✅] 6. main() calls both functions correctly and prints the final bill.
 -----------------------------------------------------------------------
 """
 
@@ -16,30 +16,39 @@ BASES = ("Water", "Apple Juice", "Orange Juice", "Milk")
 FRUITS = ("Strawberry", "Banana", "Mango", "Blueberry")
 
 
-# ✅TODO: Define get_price(size)
+# ✅ 1. Define get_price(size)
 def get_price(size):
-    while True:
-        if size.lower() == "small":
-            return 3.00
-        elif size.lower() == "medium":
-            return 4.00
-        elif size.lower() == "large":
-            return 5.00
-        else:
-            # ⚠️ returns 0 as a result of an invalid size selection
-            print("\n\tSorry, but that was not a valid size choice.")
-            continue
+    """Evaluates size string and returns price as a float, or 0.0 if invalid."""
+    if size.lower() == "small":
+        return 3.00
+    elif size.lower() == "medium":
+        return 4.00
+    elif size.lower() == "large":
+        return 5.00
+    else:
+        # ⚠️ Returns 0.0 as a result of an invalid size selection
+        print("\n\tSorry, but that was not a valid size choice.")
+        return 0.0
 
 
-# ✅TODO: Define blend(size, base, fruit, price)
-def blend(size, base, fruit, price):
+# ✅ 2. Define blend(size, base, fruit, scoops)
+def blend(size, base, fruit, scoops):
+    """Prints a formatted summary showing size, base, customer-friendly fruit, and scoops."""
+    # Issue 2 Fix: Customer-friendly string rather than raw Python list representation
+    fruit_display = ", ".join(fruit) if fruit else "None (Base Only)"
+
     print(
-        f"\n\tPreparing Smoothie:\n\t  Size: {size} \n\t  Base: {base} \n\t  Fruit: {fruit} \n\t  Price: ${price:.2f}"
+        f"\n\tPreparing Smoothie:\n"
+        f"\t  Size:   {size.title()}\n"
+        f"\t  Base:   {base}\n"
+        f"\t  Fruit:  {fruit_display}\n"
+        f"\t  Scoops: {scoops}"
     )
 
 
 def base_selection():
-    # Prompts user to select a smoothie base or cancel.
+    """Prompts user to select a smoothie base or cancel."""
+    # Loops until user selects a valid base (1-4), cancels (5), or triggers EOF
     while True:
         try:
             print("\n\t1. Water")
@@ -53,20 +62,19 @@ def base_selection():
             if base_selected == 5:
                 print("\n\tYou have canceled base selection. Exiting the base menu.")
                 return ""
-            elif base_selected < 1 or base_selected > 4:
-                print("\n\tINVALID SELECTION - Please try again.")
-                continue
-            else:
+            elif 1 <= base_selected <= 4:
                 return BASES[base_selected - 1]
+            else:
+                print("\n\tINVALID SELECTION - Please try again.")
         except ValueError:
             print("\n\tINVALID SELECTION - Please try again.")
-        # ℹ️ Catch EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
         except EOFError:
             print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
             return ""
 
 
 def fruit_selection():
+    """Collects desired fruit choices into a list until user enters 5."""
     selected_fruits = []
     more_fruit = True
     while more_fruit:
@@ -76,48 +84,84 @@ def fruit_selection():
             print("\t3. Mango")
             print("\t4. Blueberry")
             fruit_selected = int(
-                input("\n\tEnter your fruit choice (1-4, enter 0 if finished): ")
+                input("\n\tEnter your fruit choice (1-4, enter 5 if finished): ")
             )
-            if fruit_selected == 0:
-                # User has indicated all desired fruit has been selected. Return to main()
+            if fruit_selected == 5:
+                # Issue 4 Fix: Enforce at least one fruit selection
+                if not selected_fruits:
+                    print(
+                        "\n\tPlease select at least one fruit before finishing your smoothie."
+                    )
+                    continue
                 break
-            elif fruit_selected > 5 or fruit_selected < 1:
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
+            elif 1 <= fruit_selected <= 4:
                 selected_fruits.append(FRUITS[fruit_selected - 1])
+                print(f"\tAdded: {FRUITS[fruit_selected - 1]}")
+            else:
+                print("\n\tINVALID SELECTION - Please try again.")
         except ValueError:
             print("\n\tINVALID SELECTION - Please try again.")
+        # Issue 1 Fix: Signal cancellation on EOF
         except EOFError:
             print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            break
-        except Exception as e:
-            print(f"\n\tAn unexpected error occurred: {e}")
+            return None
+        # Issue 5 Fix: Removed broad 'except Exception' to avoid masking logic bugs
     return selected_fruits
 
 
-# TODO: Define main() to collect input and call your logic
-# 🚧 Work in progress
+# ✅ 3. Define main() to collect inputs, validate scoops, and call functions
 def main():
-    size = 0
-    while size == 0:
-        size = input(
-            f"\n\tPlease enter your desired smoothie size (Small, Medium, Large):   "
-        )
-        if size != 0:
-            price = get_price(size)
-        else:
-            print("\tYou must select a valid size.")
-            continue
+    total_cost = 0.0
+    size = ""
 
+    # Size selection loop
+    while total_cost == 0.0:
+        try:
+            size = input(
+                "\n\tPlease enter your desired smoothie size (Small, Medium, Large):   "
+            ).strip()
+            if size:
+                total_cost = get_price(size)
+            else:
+                print("\tYou must select a valid size.")
+                continue
+        except EOFError:
+            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
+            return
+
+    # Base selection
     base = base_selection()
-
     if not base:
         print("\n\tSmoothie order canceled.")
         return
 
+    # Fruit selection
     fruit = fruit_selection()
+    # Issue 1 Fix: Order canceled if fruit selection hit EOF
+    if fruit is None:
+        print("\n\tSmoothie order canceled.")
+        return
 
-    blend(size, base, fruit, price)
+    # Scoop selection with try/except integer resilience & fallback
+    try:
+        scoops = int(input("\n\tHow many protein/booster scoops would you like?: "))
+        if scoops < 0:
+            print("\tNegative scoops not allowed. Defaulting to 1 scoop.")
+            scoops = 1
+    except ValueError:
+        print("\n\tInvalid number of scoops entered. Defaulting to 1 scoop.")
+        scoops = 1
+    except EOFError:
+        print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
+        scoops = 1
+
+    # Issue 3: Scoops passed to blend; total_cost is size-based per assignment specs
+    blend(size, base, fruit, scoops)
+
+    # Final bill
+    print(f"\n\t-----------------------------")
+    print(f"\tTOTAL DUE: ${total_cost:.2f}")
+    print(f"\t-----------------------------\n")
 
 
 main()
