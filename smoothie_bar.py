@@ -11,6 +11,10 @@ ASSIGNMENT 9A: THE SMOOTHIE SPRINT
 -----------------------------------------------------------------------
 """
 
+# needed for the clear_screen() function
+import os
+import subprocess
+
 # GLOBAL CONSTANTS (The Pantry)
 BASES = ("Water", "Apple Juice", "Orange Juice", "Milk")
 FRUITS = ("Strawberry", "Banana", "Mango", "Blueberry")
@@ -33,6 +37,7 @@ def get_price(size):
 
 # ✅ 2. Define blend(size, base, fruit, scoops)
 def blend(size, base, fruit, scoops):
+    clear_screen()
     """Prints a formatted summary showing size, base, customer-friendly fruit, and scoops."""
     # Issue 2 Fix: Customer-friendly string rather than raw Python list representation
     fruit_display = ", ".join(fruit) if fruit else "None (Base Only)"
@@ -50,6 +55,7 @@ def base_selection():
     """Prompts user to select a smoothie base or cancel."""
     # Loops until user selects a valid base (1-4), cancels (5), or triggers EOF
     while True:
+        clear_screen()
         try:
             print("\n\t1. Water")
             print("\t2. Apple Juice")
@@ -74,17 +80,21 @@ def base_selection():
 
 
 def fruit_selection():
-    """Collects desired fruit choices into a list until user enters 5."""
+    """Collect up to four distinct fruits, or finish early with choice 5."""
     selected_fruits = []
     more_fruit = True
     while more_fruit:
+        clear_screen()
         try:
             print("\n\t1. Strawberry")
             print("\t2. Banana")
             print("\t3. Mango")
             print("\t4. Blueberry")
+            print("\t5. done with fruit selection(s)")
             fruit_selected = int(
-                input("\n\tEnter your fruit choice (1-4, enter 5 if finished): ")
+                input(
+                    "\n\tEnter your fruit choice (1-4, 5 to finish; auto-finishes at 4): "
+                )
             )
             if fruit_selected == 5:
                 # Issue 4 Fix: Enforce at least one fruit selection
@@ -100,7 +110,9 @@ def fruit_selection():
                     print(f"\t{fruit} has already been selected.")
                     continue
                 selected_fruits.append(fruit)
-                print(f"\tAdded: {fruit}")
+                print(f"\tSelected: {selected_fruits}")
+                if len(selected_fruits) == 4:
+                    break
             else:
                 print("\n\tINVALID SELECTION - Please try again.")
         except ValueError:
@@ -113,8 +125,24 @@ def fruit_selection():
     return selected_fruits
 
 
+def clear_screen():
+    subprocess.run("cls" if os.name == "nt" else "clear", shell=True, check=True)
+    blender_banner()
+
+
+def blender_banner():
+    banner_border = "=" * 38
+    shop_name = "THE DAILY BLEND-der SMOOTHIE BAR"
+    print(
+        f"\n\t{banner_border}\n"
+        f"\t{shop_name.center(len(banner_border))}\n"
+        f"\t{banner_border}\n"
+    )
+
+
 # ✅ 3. Define main() to collect inputs, validate scoops, and call functions
 def main():
+    clear_screen()
     total_cost = 0.0
     size = ""
 
