@@ -12,6 +12,11 @@ ASSIGNMENT 9A: THE SMOOTHIE SPRINT
 """
 
 # ℹ️ These standard-library modules support the platform-specific screen clear.
+# I got this idea from researching how to make the "deprecated" warning go away:
+#       sources:
+#               - PROMPT:Pylance is giving me a soft deprecation notice about os.system() in my clear screen function. Show me sources for the recommended way to do this instead.
+#               - https://docs.python.org/3/library/subprocess.html
+#               - https://docs.python.org/3/library/os.html#os.system
 import os
 import subprocess
 
