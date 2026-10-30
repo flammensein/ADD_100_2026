@@ -116,7 +116,7 @@ def fruit_selection():
                     )
                     continue
                 break
-            elif 1 <= fruit_selected <= 4:
+            elif 1 <= fruit_selected and fruit_selected <= 4:
                 # 💡 Convert the one-based menu number to a zero-based tuple index.
                 fruit = FRUITS[fruit_selected - 1]
                 if fruit in selected_fruits:
