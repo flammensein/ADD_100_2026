@@ -15,7 +15,7 @@ import os
 import subprocess
 
 # The Global Pantry
-TOPPINGS = ("Pepperoni", "Mushrooms", "Italian Sausage", "Green Peppers", "Pineapple")
+TOPPINGS = ("Mushrooms", "Italian Sausage", "Green Peppers", "Pineapple")
 
 # Default Global Variables
 
@@ -45,8 +45,7 @@ def make_pizza(customer, size, toppings, is_delivery):
 def main():
     selected_toppings = []
     topping_selected = ""
-    more_toppings = True
-    # while more_toppings:
+    clear_screen()
     try:
         print("\n")
         # ℹ️ Main menu for the user selection flow.
@@ -56,17 +55,15 @@ def main():
             topping_selected = int(
                 input("\n\tEnter your toppings choice (1-4, enter 0 if finished): ")
             )
-            print(f"\nBefore adding the selection to the list/order")
-            print(f"Topping_Selected: {selected_toppings}")
+            # print(f"\nBefore adding the selection to the list/order")
+            # print(f"Topping_Selected: {selected_toppings}")
             if topping_selected > len(TOPPINGS) or topping_selected < 0:
                 input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
             else:
                 selected_toppings.append(TOPPINGS[topping_selected - 1])
-                print(f"\nAfter adding the selection to the list/order")
-                print(f"Topping_Selected: {selected_toppings}")
+                print(f"\tCurrently Selected Toppings: {selected_toppings}")
     except ValueError:
         input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
-        # break
     # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
     except EOFError:
         print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
@@ -74,11 +71,14 @@ def main():
     except Exception as e:
         print(f"\n\tAn unexpected error occurred: {e}")
         input("\n\tPRESS ENTER TO MOVE ON")
-        # break
-        # return selected_toppings
+
     # print(f"\nLast Topping_Selected: {topping_selected}")
-    print(f"Selected_Toppings: {selected_toppings}\n")
-    pass
+    print(f"\n\tSelected_Toppings: {selected_toppings}\n")
+    make_pizza(
+        customer="",
+        toppings=selected_toppings,
+        size=pie_size,
+    )
 
 
 main()
