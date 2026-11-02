@@ -4,10 +4,10 @@ ASSIGNMENT 10A: THE RESILIENT PIZZA ENGINE
 -----------------------------------------------------------------------
 [✅] 1. Header Docstring included.
 [✅] 2. Global constant TOPPINGS defined as a Tuple in ALL_CAPS.
-[ ] 3. Function 'make_pizza' defines 4 specific parameters.
+[✅] 3. Function 'make_pizza' defines 4 specific parameters.
 [✅] 4. 'make_pizza' uses a DEFAULT value for is_delivery.
 [✅] 5. main() displays the Global Pantry list to the user.
-[ ] 6. main() calls the function using KEYWORD ARGUMENTS.
+[✅] 6. main() calls the function using KEYWORD ARGUMENTS.
 -----------------------------------------------------------------------
 """
 
@@ -39,11 +39,19 @@ def pizza_pie_banner():
     )
 
 
-# def pizza_pie_size(size):
-#     pass
-
-
 def make_pizza(customer, size, toppings, is_delivery=False):
+    """Processes customer order data and prints the final pizza ticket.
+
+    :param customer: str, the name of the customer
+    :param size: str, the chosen pizza size
+    :param toppings: list, toppings chosen from the Global Pantry
+    :param is_delivery: bool, True if delivery, False if dine-in / carryout
+    """
+
+    if is_delivery:
+        order_type = "Delivery"
+    else:
+        order_type = "Carryout"
 
     if size[0].lower() == "s":
         cost_of_a_meal = 9.00
@@ -54,6 +62,7 @@ def make_pizza(customer, size, toppings, is_delivery=False):
     else:
         # ⚠️ main() treats 0.0 as invalid and prompts for another size.
         print("\n\tSorry, but that was not a valid size choice.")
+        return None
 
     toppings_display = ", ".join(toppings) if toppings else "Cheese Only (No Toppings)"
 
@@ -145,6 +154,8 @@ def main():
 
     clear_screen()
     # TO-DO add a welcoming statement to start the ordering process
+    print(f"\n\n\tWelcome to {shop_name.capitalize()}!")
+    print(f"\t Follow the prompts to build your order.")
     while is_delivery == "":
         its_not_digiorno = (
             input(f"\n\tIs this order for delivery? (y/n): ").strip().lower()
@@ -163,6 +174,9 @@ def main():
             continue
 
     info = customer_info(is_delivery)
+    if not info:
+        print("\n\tOrder canceled.")
+        return
 
     while not pie_size:
         try:
