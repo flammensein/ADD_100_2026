@@ -20,7 +20,7 @@ TOPPINGS = ("Mushrooms", "Italian Sausage", "Green Peppers", "Pineapple")
 
 # Default Global Variables
 # 💡 Use the border width to center the shop name consistently.
-pizza_banner_border = "=" * 38
+banner_border = "=" * 38
 shop_name = "Flammen Hot Pizzeria"
 SIZE_OPTIONS = ["s", "m", "l"]
 
@@ -33,34 +33,37 @@ def clear_screen():
 
 def pizza_pie_banner():
     print(
-        f"\n\t{pizza_banner_border}\n"
-        f"\t{shop_name.center(len(pizza_banner_border))}\n"
-        f"\t{pizza_banner_border}\n"
+        f"\n\t{banner_border}\n"
+        f"\t{shop_name.center(len(banner_border))}\n"
+        f"\t{banner_border}\n"
     )
 
 
-def pizza_pie_size(size):
-    """Evaluates size string and returns price as a float, or 0.0 if invalid."""
-    # 💡 Lowercasing allows size names in any letter case.
-    if size.lower() == "small":
-        return 9.00
-    elif size.lower() == "medium":
-        return 13.00
-    elif size.lower() == "large":
-        return 17.00
-    else:
-        # ⚠️ main() treats 0.0 as invalid and prompts for another size.
-        print("\n\tSorry, but that was not a valid size choice.")
-        return 0.0
+# def pizza_pie_size(size):
+#     pass
 
 
 def make_pizza(customer, size, toppings, is_delivery=False):
+
+    if size[0].lower() == "s":
+        cost_of_a_meal = 9.00
+    elif size[0].lower() == "m":
+        cost_of_a_meal = 13.00
+    elif size[0].lower() == "l":
+        cost_of_a_meal = 17.00
+    else:
+        # ⚠️ main() treats 0.0 as invalid and prompts for another size.
+        print("\n\tSorry, but that was not a valid size choice.")
+
+    toppings_display = ", ".join(toppings) if toppings else "Cheese Only (No Toppings)"
+
     order_id = f"PZ-{random.randint(9000, 9999)}"
     print(f"\n\tOrder #: {order_id}")
     print(f"\tCustomer: {customer}")
     print(f"\tDine-In: {is_delivery}")
     print(f"\tSize: {size}")
-    print(f"\tToppings: {"".join(toppings)}")
+    print(f"\tTotal:  ${cost_of_a_meal:.2f}")
+    print(f"\tToppings: {toppings_display}")
 
     return
 
@@ -161,7 +164,7 @@ def main():
 
     info = customer_info(is_delivery)
 
-    while pie_size == "":
+    while not pie_size:
         try:
             selected_size = (
                 input(
@@ -172,13 +175,16 @@ def main():
             )
             if selected_size == "":
                 input("\tYou must select a size. PRESS ENTER TO RETRY")
+                continue
             elif selected_size[0] not in SIZE_OPTIONS:
                 input("\tYou must select a valid size. PRESS ENTER TO RETRY")
                 continue
+            else:
+                pie_size = selected_size.capitalize()
         except Exception as e:
             print(f"\n\tAn unexpected error occurred: {e}")
             input("\n\tPRESS ENTER TO MOVE ON")
-    pie_size = pizza_pie_size(size=selected_size[0])
+            continue
 
     try:
         print("\n")
@@ -189,8 +195,9 @@ def main():
             topping_selected = int(
                 input("\n\tEnter your toppings choice (1-4, enter 0 if finished): ")
             )
-
-            if topping_selected > len(TOPPINGS) or topping_selected < 0:
+            if topping_selected == 0:
+                break
+            elif topping_selected > len(TOPPINGS) or topping_selected < 0:
                 input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
             else:
                 selected_toppings.append(TOPPINGS[topping_selected - 1])
