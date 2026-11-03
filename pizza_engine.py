@@ -39,12 +39,12 @@ def pizza_pie_banner():
     )
 
 
-def make_pizza(customer, size, toppings, is_delivery=False):
+def make_pizza(customer, size, topping, is_delivery=False):
     """Processes customer order data and prints the final pizza ticket.
 
     :param customer: str, the name of the customer
     :param size: str, the chosen pizza size
-    :param toppings: list, toppings chosen from the Global Pantry
+    :param topping: list, toppings chosen from the Global Pantry
     :param is_delivery: bool, True if delivery, False if dine-in / carryout
     """
 
@@ -64,15 +64,17 @@ def make_pizza(customer, size, toppings, is_delivery=False):
         print("\n\tSorry, but that was not a valid size choice.")
         return None
 
-    toppings_display = ", ".join(toppings) if toppings else "Cheese Only (No Toppings)"
+    toppings_display = (
+        "\n\t- ".join(topping) if topping else "Cheese Only (No Toppings)"
+    )
 
     order_id = f"PZ-{random.randint(9000, 9999)}"
     print(f"\n\tOrder #: {order_id}")
     print(f"\tCustomer: {customer}")
-    print(f"\tDine-In: {is_delivery}")
+    print(f"\tDelivery: {is_delivery}")
     print(f"\tSize: {size}")
     print(f"\tTotal:  ${cost_of_a_meal:.2f}")
-    print(f"\tToppings: {toppings_display}")
+    print(f"\tToppings: \n\t- {toppings_display}\n\n")
 
     return
 
@@ -142,7 +144,7 @@ def customer_info(is_delivery=False):
 
     # ⚠️ Catch keyboard exit signal gracefully to prevent crash loops
     except EOFError:
-        print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
+        print("\n\tINVALID INPUT, my friend...I'll see you out, have a nice day...\n\n")
         return None
 
 
@@ -150,27 +152,72 @@ def main():
     selected_toppings = []
     topping_selected = ""
     pie_size = ""
-    is_delivery = ""
+    is_delivery: bool | None = None
 
     clear_screen()
-    # TO-DO add a welcoming statement to start the ordering process
     print(f"\n\n\tWelcome to {shop_name.capitalize()}!")
-    print(f"\t Follow the prompts to build your order.")
-    while is_delivery == "":
-        its_not_digiorno = (
-            input(f"\n\tIs this order for delivery? (y/n): ").strip().lower()
-        )
-        if its_not_digiorno == "":
-            is_delivery = ""
-            input(f"\n\tYou have entered an invalid option. PRESS ENTER TO RETRY.")
+    input(f"\tPress ENTER and follow the prompts to build your order.")
+
+    print("\n")
+    # ℹ️ Main menu for the user selection flow.
+    while len(selected_toppings) < len(TOPPINGS) and topping_selected != 0:
+        clear_screen()
+        for topping in TOPPINGS:
+            print(f"\t{TOPPINGS.index(topping)+1} --- {topping}")
+        try:
+            print(f"\n\tCurrently Selected Toppings: {selected_toppings}")
+            topping_selected = int(
+                input("\tEnter your toppings choice (1-4, enter 0 if finished): ")
+            )
+            if topping_selected == 0:
+                break
+            elif topping_selected > len(TOPPINGS) or topping_selected < 0:
+                input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
+            else:
+                selected_toppings.append(TOPPINGS[topping_selected - 1])
+
+        except ValueError:
+            input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
             continue
-        elif its_not_digiorno[0] == "y":
-            is_delivery = True
-        elif its_not_digiorno[0] == "n":
-            is_delivery = False
-        else:
-            is_delivery = ""
-            input(f"\n\tYou have entered an invalid option. PRESS ENTER TO RETRY.")
+        # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
+        except EOFError:
+            print(
+                "\n\tINVALID INPUT, my friend...I'll see you out, have a nice day...\n\n"
+            )
+            return
+        except Exception as e:
+            print(f"\n\tAn unexpected error occurred: {e}")
+            input("\n\tPRESS ENTER TO MOVE ON")
+            continue
+
+    print(f"\n\tSelected_Toppings: {selected_toppings}\n")
+    while is_delivery is None:
+        try:
+            digiorno = input(f"\n\tIs this order for delivery? (y/n): ").strip().lower()
+            if digiorno == "":
+                is_delivery = ""
+                input(f"\n\tYou have entered an invalid option. PRESS ENTER TO RETRY.")
+                continue
+            elif digiorno[0] == "y":
+                is_delivery = True
+            elif digiorno[0] == "n":
+                is_delivery = False
+            else:
+                is_delivery = ""
+                input(f"\n\tYou have entered an invalid option. PRESS ENTER TO RETRY.")
+                continue
+        except ValueError:
+            input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
+            continue
+        # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
+        except EOFError:
+            print(
+                "\n\tINVALID INPUT, my friend...I'll see you out, have a nice day...\n\n"
+            )
+            return
+        except Exception as e:
+            print(f"\n\tAn unexpected error occurred: {e}")
+            input("\n\tPRESS ENTER TO MOVE ON")
             continue
 
     info = customer_info(is_delivery)
@@ -200,37 +247,10 @@ def main():
             input("\n\tPRESS ENTER TO MOVE ON")
             continue
 
-    try:
-        print("\n")
-        # ℹ️ Main menu for the user selection flow.
-        for topping in TOPPINGS:
-            print(f"\t{TOPPINGS.index(topping)+1} --- {topping}")
-        while len(selected_toppings) < len(TOPPINGS) and topping_selected != 0:
-            topping_selected = int(
-                input("\n\tEnter your toppings choice (1-4, enter 0 if finished): ")
-            )
-            if topping_selected == 0:
-                break
-            elif topping_selected > len(TOPPINGS) or topping_selected < 0:
-                input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
-            else:
-                selected_toppings.append(TOPPINGS[topping_selected - 1])
-                print(f"\tCurrently Selected Toppings: {selected_toppings}")
-    except ValueError:
-        input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
-    # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
-    except EOFError:
-        print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-        # break
-    except Exception as e:
-        print(f"\n\tAn unexpected error occurred: {e}")
-        input("\n\tPRESS ENTER TO MOVE ON")
-
-    print(f"\n\tSelected_Toppings: {selected_toppings}\n")
     make_pizza(
         customer=info["customer"],
         size=pie_size,
-        toppings=selected_toppings,
+        topping=selected_toppings,
         is_delivery=is_delivery,
     )
 
