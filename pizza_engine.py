@@ -15,7 +15,7 @@ import os
 import subprocess
 import random
 
-# The Global Pantry
+# The Global Pantry: One source of toppings (to bring them all and in the menu, display them).
 TOPPINGS = ("Mushrooms", "Italian Sausage", "Green Peppers", "Pineapple")
 
 # Default Global Variables
@@ -26,7 +26,7 @@ SIZE_OPTIONS = ["s", "m", "l"]
 
 
 def clear_screen():
-    # ℹ️ Select the terminal command based on the operating system.
+    # 💡 Translate the operating system into its terminal-clear command.
     subprocess.run("cls" if os.name == "nt" else "clear", shell=True, check=True)
     pizza_pie_banner()
 
@@ -47,12 +47,13 @@ def make_pizza(customer, size, topping, is_delivery=False):
     :param topping: list, toppings chosen from the Global Pantry
     :param is_delivery: bool, True if delivery, False if dine-in / carryout
     """
-
+    # 💡 Translate the delivery flag into the label printed on the ticket.
     if is_delivery:
         order_type = "Delivery"
     else:
         order_type = "Carryout"
-
+    # 💡 Translate the size's first letter into its fixed price.
+    # ⚠️ This assumes size is nonempty; main() checks that before calling.
     if size[0].lower() == "s":
         cost_of_a_meal = 9.00
     elif size[0].lower() == "m":
@@ -71,7 +72,7 @@ def make_pizza(customer, size, topping, is_delivery=False):
     order_id = f"PZ-{random.randint(9000, 9999)}"
     print(f"\n\tOrder #: {order_id}")
     print(f"\tCustomer: {customer}")
-    print(f"\tDelivery: {is_delivery}")
+    print(f"\tOrder Type: {order_type}")
     print(f"\tSize: {size}")
     print(f"\tTotal:  ${cost_of_a_meal:.2f}")
     print(f"\tToppings: \n\t- {toppings_display}\n\n")
@@ -111,7 +112,7 @@ def customer_info(is_delivery=False):
         phone = ""
         while not phone:
             phone_input = input("\tPlease enter your 10-digit phone number: ").strip()
-            # 🛡️ Strip formatting characters like hyphens or parentheses if entered
+            # 💡 Remove common formatting characters before validating the phone number.
             cleaned_phone = (
                 phone_input.replace("-", "")
                 .replace("(", "")
@@ -132,7 +133,7 @@ def customer_info(is_delivery=False):
                 if not address:
                     print("\tAddress cannot be blank. Please try again.\n")
 
-        # ✅ Package user details into a dictionary structure
+        # ✅ Return the customer's contact and address details in a dictionary.
         full_name = f"{first_name} {last_name}"
         return {
             "customer": full_name,
@@ -162,6 +163,10 @@ def main():
     # ℹ️ Main menu for the user selection flow.
     while len(selected_toppings) < len(TOPPINGS) and topping_selected != 0:
         clear_screen()
+
+        # Complexity: O(N²) per display if TOPPINGS grows: index() scans the
+        # tuple for every item. With the current four toppings, this is O(1).
+        # 🔮 Future improvement: enumerate(TOPPINGS) avoids repeated lookups.
         for topping in TOPPINGS:
             print(f"\t{TOPPINGS.index(topping)+1} --- {topping}")
         try:
@@ -174,6 +179,7 @@ def main():
             elif topping_selected > len(TOPPINGS) or topping_selected < 0:
                 input("\n\tINVALID SELECTION - PRESS ENTER TO RETRY")
             else:
+                # 💡 Translate the 1-based menu choice into a 0-based tuple index.
                 selected_toppings.append(TOPPINGS[topping_selected - 1])
 
         except ValueError:
@@ -195,7 +201,6 @@ def main():
         try:
             digiorno = input(f"\n\tIs this order for delivery? (y/n): ").strip().lower()
             if digiorno == "":
-                is_delivery = ""
                 input(f"\n\tYou have entered an invalid option. PRESS ENTER TO RETRY.")
                 continue
             elif digiorno[0] == "y":
@@ -203,7 +208,6 @@ def main():
             elif digiorno[0] == "n":
                 is_delivery = False
             else:
-                is_delivery = ""
                 input(f"\n\tYou have entered an invalid option. PRESS ENTER TO RETRY.")
                 continue
         except ValueError:
