@@ -1,9 +1,9 @@
 def read_menu():
     menus = {}
     try:
-        with open("menu.txt", "r") as file:
+        with open("flammen_rides_unicycles\\menu.json", "r") as file:
             for line in file:
-                parts_of_line = line.strip().split(";")
+                parts_of_line = line.strip().split(":")
                 category = parts_of_line[0].strip()
                 detail = parts_of_line[1].strip()
                 menus[category] = detail

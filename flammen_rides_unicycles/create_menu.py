@@ -19,7 +19,7 @@ def get_menu_options():
 
 
 def save_to_file(menu):
-    with open("flammen_rides_unicycles\\menu.txt", "a") as file:
+    with open("flammen_rides_unicycles\\menu.json", "a") as file:
         all_items = menu.items()
         for item in all_items:
             output = f"{item[0]} : {item[1]}"
