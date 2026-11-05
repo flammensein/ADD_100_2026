@@ -1,34 +1,54 @@
-"""
-DOCSTRING GOES HERE
-create menu.txt
-"""
+"""Export the unicycle inventory dictionaries to menu.json."""
+
+import json
+from pathlib import Path
+
+if __package__:
+    from .dictionaries import (
+        CRANK_OPTIONS,
+        PEDAL_OPTIONS,
+        RIM_OPTIONS,
+        SADDLE_OPTIONS,
+        SEAT_POST_OPTIONS,
+        TIRE_OPTIONS,
+        UNICYCLE_BRANDS,
+    )
+else:
+    from dictionaries import (
+        CRANK_OPTIONS,
+        PEDAL_OPTIONS,
+        RIM_OPTIONS,
+        SADDLE_OPTIONS,
+        SEAT_POST_OPTIONS,
+        TIRE_OPTIONS,
+        UNICYCLE_BRANDS,
+    )
 
 
 def get_menu_options():
-    menu = {}
-    while True:
-        print("Type 'Q' when done")
-        category = input(
-            "Please give me the category for this part of the menu: "
-        ).upper()
-        if category == "Q":
-            break
-        items = input("Please enter items separated by commas: ").title()
-        menu[category] = items
-    return menu
+    """Return all inventory dictionaries with their original nesting."""
+    return {
+        "UNICYCLE_BRANDS": UNICYCLE_BRANDS,
+        "TIRE_OPTIONS": TIRE_OPTIONS,
+        "SADDLE_OPTIONS": SADDLE_OPTIONS,
+        "SEAT_POST_OPTIONS": SEAT_POST_OPTIONS,
+        "RIM_OPTIONS": RIM_OPTIONS,
+        "PEDAL_OPTIONS": PEDAL_OPTIONS,
+        "CRANK_OPTIONS": CRANK_OPTIONS,
+    }
 
 
 def save_to_file(menu):
-    with open("flammen_rides_unicycles\\menu.json", "a") as file:
-        all_items = menu.items()
-        for item in all_items:
-            output = f"{item[0]} : {item[1]}"
-            file.write(output + "\n")
+    """Replace menu.json with the supplied inventory as readable JSON."""
+    menu_file = Path(__file__).with_name("menu.json")
+    with menu_file.open("w", encoding="utf-8") as file:
+        json.dump(menu, file, indent=2)
+        file.write("\n")
 
 
 def main():
-    my_menu = get_menu_options()
-    save_to_file(my_menu)
+    save_to_file(get_menu_options())
 
 
-main()
+if __name__ == "__main__":
+    main()
