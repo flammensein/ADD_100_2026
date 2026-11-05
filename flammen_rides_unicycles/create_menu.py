@@ -1,6 +1,4 @@
-"""
-Export the unicycle inventory dictionaries to menu.json.
-"""
+"""Export the unicycle inventory dictionaries to menu.json."""
 
 import json
 from pathlib import Path
