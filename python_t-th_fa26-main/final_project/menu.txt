@@ -1,0 +1,5 @@
+MILKS : Whole, 2%, skim, oat, soy, coconut, none
+DRINK_TYPE : Americano, drip, latte, caffe au lait, matcha, tea
+SIZES : Extra Large, Large, medium, small
+PRICES : 7.0, 6.0, 5.0, 4.0
+FLAVORS : Caramel, vanilla, chocolate, seasonal, sugar free caramel, sugar free vanilla, none
