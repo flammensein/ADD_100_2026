@@ -1,7 +1,7 @@
 """
 -----------------------------------------------------------------------
 ASSIGNMENT 10B: SPRINT 3 - REFACTORING & DATA ACCOUNTABILITY
-Project: Flammen Rides Unicycles v0.2
+Project: Flammen Rides Unicycles v0.3.0
 -----------------------------------------------------------------------
 """
 
@@ -14,6 +14,7 @@ logging.basicConfig(
 )
 
 MAX_SELECTION_ATTEMPTS = 5
+BASE_PRICE = 450.00
 
 # -----------------------------------------------------------------------
 # SYSTEM CONSTANTS & SCHEMAS
@@ -409,6 +410,60 @@ SHIPPING_METHODS = {
 }
 
 
+def get_menu_choice(prompt_text, options_list, option_label=None, default=None):
+    """
+    Prompt user to choose from a numbered list of options.
+    Returns the selected item, or the default value if attempts are exhausted
+    or input is interrupted with EOF.
+    """
+    if not options_list:
+        raise ValueError("options_list must not be empty.")
+
+    if option_label is None:
+        option_label = lambda item: str(item)
+
+    if default is None:
+        default = options_list[0]
+
+    selected = None
+    attempts = 0
+
+    while selected is None:
+        attempts += 1
+
+        if attempts > MAX_SELECTION_ATTEMPTS:
+            print(f"\n\tMaximum attempts reached. Defaulting to: {default}")
+            return default
+
+        try:
+            print(f"\n\t{prompt_text}")
+            for index, option in enumerate(options_list, start=1):
+                print(f"\t  [{index}] {option_label(option)}")
+
+            choice = int(input("\n\tSelect an option (Enter number): ").strip())
+
+            if choice < 1 or choice > len(options_list):
+                print("\n\tINVALID SELECTION - Please try again.")
+                continue
+
+            selected = options_list[choice - 1]
+
+        except ValueError:
+            print("\n\tINVALID SELECTION - Please try again.")
+        except EOFError:
+            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
+            return default
+        except Exception:
+            logging.exception("Unexpected error during menu choice selection.")
+            print(
+                "\n\tUnexpected error. This operation cannot continue; "
+                "see the error log for details."
+            )
+            raise
+
+    return selected
+
+
 def model_opts():
     """
     Prompts user for unicycle brand, model, and brake setup preference.
@@ -419,79 +474,21 @@ def model_opts():
     print(f"\t{'UNICYCLE MODEL & FRAME SELECTION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    # ℹ️ Display brand selection list
     brand_names = list(UNICYCLE_BRANDS.keys())
-    selected_brand = ""
-    attempts = 0
-    while not selected_brand:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_brand = brand_names[0]
-            print(f"\n\tMaximum attempts reached. Defaulting to: {selected_brand}")
-            break
-        try:
-            print("\n\tAvailable Unicycle Brands:")
-            for brand in brand_names:
-                print(f"\t  [{brand_names.index(brand) + 1}] {brand}")
+    selected_brand = get_menu_choice(
+        "Available Unicycle Brands:",
+        brand_names,
+    )
 
-            choice = int(input("\n\tSelect Brand (Enter number): ").strip())
-            if choice < 1 or choice > len(brand_names):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_brand = brand_names[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        # ℹ️ Catches EOF Errors if the user presses keyboard exit shortcuts at the input prompt.
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_brand = brand_names[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during model brand selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
-
-    # ℹ️ Fetch models for selected brand using .get()
     models_dict = UNICYCLE_BRANDS.get(selected_brand, {})
     model_names = list(models_dict.keys())
-    selected_model = ""
-    attempts = 0
-    while not selected_model:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_model = model_names[0]
-            print(f"\n\tMaximum attempts reached. Defaulting to: {selected_model}")
-            break
-        try:
-            print(f"\n\tAvailable Models for {selected_brand}:")
-            for model in model_names:
-                spec = models_dict.get(model, {})
-                wheel = spec.get("wheel_size", '24"')
-                print(
-                    f"\t  [{model_names.index(model) + 1}] {model} (Wheel Size: {wheel})"
-                )
-
-            m_choice = int(input("\n\tSelect Model (Enter number): ").strip())
-            if m_choice < 1 or m_choice > len(model_names):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_model = model_names[m_choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_model = model_names[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during model selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_model = get_menu_choice(
+        f"Available Models for {selected_brand}:",
+        model_names,
+        option_label=lambda model: (
+            f"{model} (Wheel Size: {models_dict.get(model, {}).get('wheel_size', '24\"')})"
+        ),
+    )
 
     model_spec = models_dict.get(selected_model, {})
     brakes_supported = model_spec.get("disc_brakes_supported", True)
@@ -522,75 +519,17 @@ def tire_opts():
     print(f"\t{'=' * 35:^35}")
 
     available_brands = list(TIRE_OPTIONS.keys())
-    selected_brand = ""
-    attempts = 0
-    while not selected_brand:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_brand = available_brands[0]
-            print(f"\n\tMaximum attempts reached. Defaulting to: {selected_brand}")
-            break
-        try:
-            print("\n\tAvailable Tire Brands:")
-            for brand in available_brands:
-                print(f"\t  [{available_brands.index(brand) + 1}] {brand}")
-
-            brand_choice = int(input("\n\tSelect Tire Brand (Enter number): ").strip())
-            if brand_choice < 1 or brand_choice > len(available_brands):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_brand = available_brands[brand_choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_brand = available_brands[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during tire brand selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_brand = get_menu_choice(
+        "Available Tire Brands:",
+        available_brands,
+    )
 
     available_sizes = TIRE_OPTIONS.get(selected_brand, [])
-    selected_tire_size = ""
-    attempts = 0
-    while not selected_tire_size:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_tire_size = available_sizes[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_tire_size}"
-            )
-            break
-        try:
-            print(f"\n\tAvailable Sizes for {selected_brand}:")
-            for size in available_sizes:
-                print(f"\t  [{available_sizes.index(size) + 1}] {size}")
+    selected_tire_size = get_menu_choice(
+        f"Available Sizes for {selected_brand}:",
+        available_sizes,
+    )
 
-            size_choice = int(input("\n\tSelect Tire Size (Enter number): ").strip())
-            if size_choice < 1 or size_choice > len(available_sizes):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_tire_size = available_sizes[size_choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_tire_size = available_sizes[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during tire size selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
-
-    # 💡 Extract core diameter from string (e.g., '36 x 2.25"' -> '36"')
     raw_parts = selected_tire_size.split()
     wheel_size = f'{raw_parts[0]}"'
 
@@ -611,42 +550,13 @@ def saddle_opts():
     print(f"\t{'=' * 35:^35}")
 
     saddle_names = list(SADDLE_OPTIONS.keys())
-    selected_saddle_name = ""
-    attempts = 0
-    while not selected_saddle_name:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_saddle_name = saddle_names[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_saddle_name}"
-            )
-            break
-        try:
-            print("\n\tAvailable Saddles:")
-            for name in saddle_names:
-                info = SADDLE_OPTIONS.get(name, {})
-                mount = info.get("mount_style", "Standard")
-                print(f"\t  [{saddle_names.index(name) + 1}] {name} ({mount} Mount)")
-
-            choice = int(input("\n\tSelect Saddle (Enter number): ").strip())
-            if choice < 1 or choice > len(saddle_names):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_saddle_name = saddle_names[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_saddle_name = saddle_names[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during saddle selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_saddle_name = get_menu_choice(
+        "Available Saddles:",
+        saddle_names,
+        option_label=lambda name: (
+            f"{name} ({SADDLE_OPTIONS.get(name, {}).get('mount_style', 'Standard')} Mount)"
+        ),
+    )
 
     saddle_data = SADDLE_OPTIONS.get(selected_saddle_name, {})
     mount_style = saddle_data.get("mount_style", "Standard")
@@ -701,53 +611,20 @@ def seat_post_opts(frame_brand="Nimbus Unicycles", saddle_mount_style="Standard"
             compatible_posts.append(post_name)
 
     if not compatible_posts:
-        # ⚠️ Fallback if filtering rules exclude all options
         compatible_posts = list(SEAT_POST_OPTIONS.keys())
 
-    selected_post_name = ""
-    attempts = 0
-    while not selected_post_name:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_post_name = compatible_posts[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_post_name}"
-            )
-            break
-        try:
-            print("\n\tCompatible Seatposts:")
-            for name in compatible_posts:
-                info = SEAT_POST_OPTIONS.get(name, {})
-                diameter = info.get("diameter_mm", 25.4)
-                post_type = info.get("type", "Standard")
-                print(
-                    f"\t  [{compatible_posts.index(name) + 1}] {name} ({diameter}mm, {post_type} Mount)"
-                )
-
-            choice = int(input("\n\tSelect Seatpost (Enter number): ").strip())
-            if choice < 1 or choice > len(compatible_posts):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_post_name = compatible_posts[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_post_name = compatible_posts[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during seatpost selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_post_name = get_menu_choice(
+        "Compatible Seatposts:",
+        compatible_posts,
+        option_label=lambda name: (
+            f"{name} ({SEAT_POST_OPTIONS.get(name, {}).get('diameter_mm', 25.4)}mm, "
+            f"{SEAT_POST_OPTIONS.get(name, {}).get('type', 'Standard')} Mount)"
+        ),
+    )
 
     post_info = SEAT_POST_OPTIONS.get(selected_post_name, {})
     available_lengths = post_info.get("lengths_mm", [300])
 
-    # ℹ️ Build list of formatted length strings using a standard for loop
     print("\n\tAvailable Lengths:")
     for length in available_lengths:
         print(f"\t  - {length}mm")
@@ -763,40 +640,10 @@ def seat_post_opts(frame_brand="Nimbus Unicycles", saddle_mount_style="Standard"
         print(f"\tℹ️ Defaulting length to: {selected_length}mm")
 
     clamp_names = list(CLAMP_STYLES.keys())
-    selected_clamp = ""
-    attempts = 0
-    while not selected_clamp:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_clamp = clamp_names[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_clamp}"
-            )
-            break
-        try:
-            print("\n\tAvailable Clamp Styles:")
-            for c_name in clamp_names:
-                print(f"\t  [{clamp_names.index(c_name) + 1}] {c_name}")
-
-            clamp_choice = int(input("\n\tSelect Clamp Style (Enter number): ").strip())
-            if clamp_choice < 1 or clamp_choice > len(clamp_names):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_clamp = clamp_names[clamp_choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_clamp = clamp_names[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during clamp selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_clamp = get_menu_choice(
+        "Available Clamp Styles:",
+        clamp_names,
+    )
 
     clamp_spec = CLAMP_STYLES.get(selected_clamp, {})
     clamp_color = "Standard Black"
@@ -836,52 +683,17 @@ def rim_opts(wheel_size='36"'):
             matching_rims.append(rim_name)
 
     if not matching_rims:
-        # ⚠️ Safe guard fallback if size isn't explicitly mapped
         matching_rims = list(RIM_OPTIONS.keys())
 
-    selected_rim_name = ""
-    attempts = 0
-    while not selected_rim_name:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_rim_name = matching_rims[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_rim_name}"
-            )
-            break
-        try:
-            print("\n\tAvailable Rims:")
-            for rim_name in matching_rims:
-                rim_info = RIM_OPTIONS.get(rim_name, {})
-                construction = rim_info.get("construction", "double-wall")
-                width = rim_info.get("width_mm", "N/A")
-                if width:
-                    width_str = f"{width}mm"
-                else:
-                    width_str = "Standard Width"
-                print(
-                    f"\t  [{matching_rims.index(rim_name) + 1}] {rim_name} — {construction} ({width_str})"
-                )
-
-            choice = int(input("\n\tSelect Rim Model (Enter number): ").strip())
-            if choice < 1 or choice > len(matching_rims):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_rim_name = matching_rims[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_rim_name = matching_rims[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during rim selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_rim_name = get_menu_choice(
+        "Available Rims:",
+        matching_rims,
+        option_label=lambda rim_name: (
+            f"{rim_name} — "
+            f"{RIM_OPTIONS.get(rim_name, {}).get('construction', 'double-wall')} "
+            f"({RIM_OPTIONS.get(rim_name, {}).get('width_mm', 'N/A')}mm)"
+        ),
+    )
 
     selected_specs = RIM_OPTIONS.get(selected_rim_name, {})
     final_width = selected_specs.get("width_mm", "Standard")
@@ -911,82 +723,23 @@ def crank_opts():
     print(f"\t{'=' * 35:^35}")
 
     crank_names = list(CRANK_OPTIONS.keys())
-    selected_crank_name = ""
-    attempts = 0
-    while not selected_crank_name:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_crank_name = crank_names[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_crank_name}"
-            )
-            break
-        try:
-            print("\n\tAvailable Crank Models:")
-            for name in crank_names:
-                info = CRANK_OPTIONS.get(name, {})
-                interface = info.get("interface", "Standard")
-                print(f"\t  [{crank_names.index(name) + 1}] {name} ({interface})")
-
-            choice = int(input("\n\tSelect Crank Model (Enter number): ").strip())
-            if choice < 1 or choice > len(crank_names):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_crank_name = crank_names[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_crank_name = crank_names[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during crank model selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_crank_name = get_menu_choice(
+        "Available Crank Models:",
+        crank_names,
+        option_label=lambda name: (
+            f"{name} ({CRANK_OPTIONS.get(name, {}).get('interface', 'Standard')})"
+        ),
+    )
 
     crank_info = CRANK_OPTIONS.get(selected_crank_name, {})
     interface = crank_info.get("interface", "Standard")
     available_lengths = crank_info.get("lengths", ["125mm"])
     colors = crank_info.get("available_colors", ["Black"])
 
-    selected_length = ""
-    attempts = 0
-    while not selected_length:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_length = available_lengths[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_length}"
-            )
-            break
-        try:
-            print(f"\n\tAvailable Lengths:")
-            for length in available_lengths:
-                print(f"\t  [{available_lengths.index(length) + 1}] {length}")
-
-            len_choice = int(input("\n\tSelect Length (Enter number): ").strip())
-            if len_choice < 1 or len_choice > len(available_lengths):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_length = available_lengths[len_choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_length = available_lengths[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during crank length selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_length = get_menu_choice(
+        "Available Lengths:",
+        available_lengths,
+    )
 
     print(f"\n\tAvailable Colors: {', '.join(colors)}")
     color_choice = input("\tSelect Crank Color: ").strip().title()
@@ -1012,45 +765,14 @@ def pedal_opts():
     print(f"\t{'=' * 35:^35}")
 
     pedal_brands = list(PEDAL_OPTIONS.keys())
-    selected_brand = ""
-    attempts = 0
-    while not selected_brand:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_brand = pedal_brands[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_brand}"
-            )
-            break
-        try:
-            print("\n\tAvailable Pedal Makes:")
-            for brand in pedal_brands:
-                info = PEDAL_OPTIONS.get(brand, {})
-                material = info.get("material", "Plastic platform")
-                pins = info.get("pins", "Molded studs")
-                print(
-                    f"\t  [{pedal_brands.index(brand) + 1}] {brand} — {material} ({pins})"
-                )
-
-            choice = int(input("\n\tSelect Pedal Make (Enter number): ").strip())
-            if choice < 1 or choice > len(pedal_brands):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_brand = pedal_brands[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_brand = pedal_brands[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during pedal selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_brand = get_menu_choice(
+        "Available Pedal Makes:",
+        pedal_brands,
+        option_label=lambda brand: (
+            f"{brand} — {PEDAL_OPTIONS.get(brand, {}).get('material', 'Plastic platform')} "
+            f"({PEDAL_OPTIONS.get(brand, {}).get('pins', 'Molded studs')})"
+        ),
+    )
 
     pedal_info = PEDAL_OPTIONS.get(selected_brand, {})
     material = pedal_info.get("material", "Plastic platform")
@@ -1091,45 +813,15 @@ def brake_opts(brakes_enabled=True):
         }
 
     brake_models = list(BRAKE_OPTIONS.keys())
-    selected_brake_name = ""
-    attempts = 0
-    while not selected_brake_name:
-        attempts += 1
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            selected_brake_name = brake_models[0]
-            print(
-                f"\n\tMaximum attempts reached. "
-                f"Defaulting to: {selected_brake_name}"
-            )
-            break
-        try:
-            print("\n\tAvailable Brake Systems:")
-            for model_name in brake_models:
-                info = BRAKE_OPTIONS.get(model_name, {})
-                mfr = info.get("manufacturer", "Generic")
-                b_type = info.get("type", "Standard Disc")
-                print(
-                    f"\t  [{brake_models.index(model_name) + 1}] {model_name} — {mfr} ({b_type})"
-                )
-
-            choice = int(input("\n\tSelect Brake Model (Enter number): ").strip())
-            if choice < 1 or choice > len(brake_models):
-                print("\n\tINVALID SELECTION - Please try again.")
-            else:
-                selected_brake_name = brake_models[choice - 1]
-        except ValueError:
-            print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            selected_brake_name = brake_models[0]
-            break
-        except Exception:
-            logging.exception("Unexpected error during brake model selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+    selected_brake_name = get_menu_choice(
+        "Available Brake Systems:",
+        brake_models,
+        option_label=lambda model_name: (
+            f"{model_name} — "
+            f"{BRAKE_OPTIONS.get(model_name, {}).get('manufacturer', 'Generic')} "
+            f"({BRAKE_OPTIONS.get(model_name, {}).get('type', 'Standard Disc')})"
+        ),
+    )
 
     brake_spec = BRAKE_OPTIONS.get(selected_brake_name, {})
     brake_type = brake_spec.get("type", "Hydraulic Disc")
@@ -1138,44 +830,12 @@ def brake_opts(brakes_enabled=True):
 
     selected_rotor = "N/A"
     if supported_rotors:
-        rotor_chosen = False
-        attempts = 0
-        while not rotor_chosen:
-            attempts += 1
-            if attempts > MAX_SELECTION_ATTEMPTS:
-                selected_rotor = default_rotor
-                print(
-                    f"\n\tMaximum attempts reached. "
-                    f"Defaulting rotor size to: {selected_rotor}mm"
-                )
-                break
-            try:
-                print(f"\n\tAvailable Rotor Sizes:")
-                for size in supported_rotors:
-                    print(f"\t  [{supported_rotors.index(size) + 1}] {size}mm Rotor")
-
-                rotor_choice = int(
-                    input("\n\tSelect Rotor Size (Enter number): ").strip()
-                )
-                if rotor_choice < 1 or rotor_choice > len(supported_rotors):
-                    print("\n\tINVALID SELECTION - Please try again.")
-                else:
-                    selected_rotor = supported_rotors[rotor_choice - 1]
-                    rotor_chosen = True
-            except ValueError:
-                print("\n\tINVALID SELECTION - Please try again.")
-            except EOFError:
-                print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-                selected_rotor = default_rotor
-                rotor_chosen = True
-                break
-            except Exception:
-                logging.exception("Unexpected error during rotor selection.")
-                print(
-                    "\n\tUnexpected error. This operation cannot continue; "
-                    "see the error log for details."
-                )
-                raise
+        selected_rotor = get_menu_choice(
+            "Available Rotor Sizes:",
+            supported_rotors,
+            option_label=lambda size: f"{size}mm Rotor",
+            default=default_rotor,
+        )
 
     return {
         "brakes_installed": True,
@@ -1327,8 +987,6 @@ def final_order(order_data):
     print(f"\t{'=' * 35:^35}")
     print(f"\t{invoice_header:^35}")
 
-    base_price = 450.00
-
     # ℹ️ Resiliently extract sub-component data using .get()
     saddle = order_data.get("saddle", {})
     seat_post = order_data.get("seat_post", {})
@@ -1340,7 +998,7 @@ def final_order(order_data):
 
     shipping_cost = shipping.get("shipping_cost", 25.00)
     tax_rate = 0.08
-    subtotal = base_price
+    subtotal = BASE_PRICE
     tax_amount = subtotal * tax_rate
     total_cost = subtotal + shipping_cost + tax_amount
 
