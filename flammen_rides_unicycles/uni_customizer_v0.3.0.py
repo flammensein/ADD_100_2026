@@ -5,15 +5,9 @@ Project: Flammen Rides Unicycles v0.3.0
 -----------------------------------------------------------------------
 """
 
-import logging
+import re
 import random
 
-logging.basicConfig(
-    level=logging.ERROR,
-    format="%(asctime)s %(levelname)s %(message)s",
-)
-
-MAX_SELECTION_ATTEMPTS = 5
 BASE_PRICE = 450.00
 
 # -----------------------------------------------------------------------
@@ -271,6 +265,18 @@ RIM_OPTIONS = {
 }
 
 AVAILABLE_RIM_COLORS = ["Black", "Silver", "Red", "Blue", "Green", "Gold"]
+SADDLE_CUSHION_COLORS = ["Black", "Brown", "Red", "Blue", "Green"]
+SADDLE_LEATHER_COLORS = ["Black", "Brown", "Red", "Blue"]
+
+US_STATE_CODES = frozenset(
+    """
+    AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN
+    MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA
+    WA WV WI WY DC
+    """.split()
+)
+EMAIL_PATTERN = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
+ZIP_CODE_PATTERN = re.compile(r"\d{5}(?:-\d{4})?")
 
 # ℹ️ INFO: Drivetrain options (Cranks & Pedals).
 CRANK_OPTIONS = {
@@ -412,9 +418,8 @@ SHIPPING_METHODS = {
 
 def get_menu_choice(prompt_text, options_list, option_label=None, default=None):
     """
-    Prompt user to choose from a numbered list of options.
-    Returns the selected item, or the default value if attempts are exhausted
-    or input is interrupted with EOF.
+    Prompt user to choose from a numbered list.
+    A default is selected only when the user submits a blank response.
     """
     if not options_list:
         raise ValueError("options_list must not be empty.")
@@ -422,52 +427,85 @@ def get_menu_choice(prompt_text, options_list, option_label=None, default=None):
     if option_label is None:
         option_label = lambda item: str(item)
 
-    if default is None:
-        default = options_list[0]
+    if default is not None and default not in options_list:
+        raise ValueError("default must be one of options_list.")
 
-    selected = None
-    attempts = 0
+    while True:
+        print(f"\n\t{prompt_text}")
+        for index, option in enumerate(options_list, start=1):
+            print(f"\t  [{index}] {option_label(option)}")
 
-    while selected is None:
-        attempts += 1
+        default_hint = f" (blank for default: {default})" if default is not None else ""
+        choice = input(
+            f"\n\tSelect an option (Enter number){default_hint}: "
+        ).strip()
 
-        if attempts > MAX_SELECTION_ATTEMPTS:
-            print(f"\n\tMaximum attempts reached. Defaulting to: {default}")
-            return default
+        if choice == "":
+            if default is not None:
+                print(f"\tℹ️ Blank input; using default: {default}")
+                return default
+            print("\n\tINVALID SELECTION - Please try again.")
+            continue
 
         try:
-            print(f"\n\t{prompt_text}")
-            for index, option in enumerate(options_list, start=1):
-                print(f"\t  [{index}] {option_label(option)}")
-
-            choice = int(input("\n\tSelect an option (Enter number): ").strip())
-
-            if choice < 1 or choice > len(options_list):
-                print("\n\tINVALID SELECTION - Please try again.")
-                continue
-
-            selected = options_list[choice - 1]
-
+            choice_number = int(choice)
         except ValueError:
             print("\n\tINVALID SELECTION - Please try again.")
-        except EOFError:
-            print("\n\tInput cut short...Alas poor user, I barely knew thee...\n\n")
-            return default
-        except Exception:
-            logging.exception("Unexpected error during menu choice selection.")
-            print(
-                "\n\tUnexpected error. This operation cannot continue; "
-                "see the error log for details."
-            )
-            raise
+            continue
 
-    return selected
+        if choice_number < 1 or choice_number > len(options_list):
+            print("\n\tINVALID SELECTION - Please try again.")
+            continue
+
+        return options_list[choice_number - 1]
+
+
+def get_validated_input(
+    prompt_text,
+    validator=None,
+    invalid_message="Invalid input. Please try again.",
+    default=None,
+    normalize=lambda value: value,
+):
+    """Prompt until a nonblank value passes validation; use defaults only for blank input."""
+    default_hint = f" (blank for default: {default})" if default is not None else ""
+    while True:
+        value = input(f"\t{prompt_text}{default_hint}: ").strip()
+        if value == "":
+            if default is not None:
+                print(f"\tℹ️ Blank input; using default: {default}")
+                return default
+            print("\tA value is required.")
+            continue
+
+        normalized_value = normalize(value)
+        if validator is None or validator(normalized_value):
+            return normalized_value
+        print(f"\t{invalid_message}")
+
+
+def get_text_choice(prompt_text, options_list, default=None):
+    """Prompt for one of a listed set of text options."""
+    if not options_list:
+        raise ValueError("options_list must not be empty.")
+    if default is not None and default not in options_list:
+        raise ValueError("default must be one of options_list.")
+
+    print(f"\n\tAvailable Options: {', '.join(options_list)}")
+    canonical_options = {option.casefold(): option for option in options_list}
+    return get_validated_input(
+        prompt_text,
+        validator=lambda value: value.casefold() in canonical_options,
+        invalid_message="INVALID SELECTION - Please choose an available option.",
+        default=default,
+        normalize=lambda value: canonical_options.get(value.casefold(), value),
+    )
 
 
 def model_opts():
     """
     Prompts user for unicycle brand, model, and brake setup preference.
-    Returns selected frame brand, model, and disc brakes capability flag.
+    Returns selected frame brand, model, wheel size, and brake preference.
     """
     print(f"\n\n")
     print(f"\t{'=' * 35:^35}")
@@ -495,48 +533,60 @@ def model_opts():
 
     brakes_yn = False
     if brakes_supported:
-        b_input = (
-            input("\n\tAdd Disc Brakes to this configuration? (y/n, Default: y): ")
-            .strip()
-            .lower()
+        b_input = get_validated_input(
+            "Add Disc Brakes to this configuration? (y/n)",
+            validator=lambda value: value in {"y", "n"},
+            invalid_message="Please enter 'y' or 'n'.",
+            default="y",
+            normalize=str.lower,
         )
-        if b_input != "n":
-            brakes_yn = True
+        brakes_yn = b_input == "y"
     else:
         print("\n\tℹ️ Disc brakes are not supported on this beginner frame model.")
 
-    return selected_brand, selected_model, brakes_yn
+    wheel_size = model_spec["wheel_size"]
+    return selected_brand, selected_model, wheel_size, brakes_yn
 
 
-def tire_opts():
+def tire_opts(frame_wheel_size):
     """
-    Prompts user for tire brand and size, then extracts nominal wheel_size.
-    Returns extracted wheel_size string for rim filtering.
+    Prompts user for a tire compatible with the selected frame wheel size.
+    Returns the selected tire's description.
     """
     print(f"\n\n")
     print(f"\t{'=' * 35:^35}")
     print(f"\t{'TIRE SELECTION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    available_brands = list(TIRE_OPTIONS.keys())
+    compatible_sizes_by_brand = {
+        brand: [
+            size
+            for size in sizes
+            if f'{size.split()[0]}"' == frame_wheel_size
+        ]
+        for brand, sizes in TIRE_OPTIONS.items()
+    }
+    compatible_sizes_by_brand = {
+        brand: sizes for brand, sizes in compatible_sizes_by_brand.items() if sizes
+    }
+    if not compatible_sizes_by_brand:
+        raise ValueError(f"No tires are available for wheel size {frame_wheel_size}.")
+
+    available_brands = list(compatible_sizes_by_brand)
     selected_brand = get_menu_choice(
-        "Available Tire Brands:",
+        f"Available Tire Brands for {frame_wheel_size}:",
         available_brands,
     )
 
-    available_sizes = TIRE_OPTIONS.get(selected_brand, [])
+    available_sizes = compatible_sizes_by_brand[selected_brand]
     selected_tire_size = get_menu_choice(
         f"Available Sizes for {selected_brand}:",
         available_sizes,
     )
 
-    raw_parts = selected_tire_size.split()
-    wheel_size = f'{raw_parts[0]}"'
-
-    print(
-        f"\n\t✅ Selected Tire: {selected_brand} {selected_tire_size} (Extracted Size: {wheel_size})"
-    )
-    return wheel_size
+    selected_tire = f"{selected_brand} {selected_tire_size}"
+    print(f"\n\t✅ Selected Tire: {selected_tire} (Fits {frame_wheel_size} wheel)")
+    return selected_tire
 
 
 def saddle_opts():
@@ -562,27 +612,32 @@ def saddle_opts():
     mount_style = saddle_data.get("mount_style", "Standard")
     widths = saddle_data.get("cushion_widths", ["Medium"])
 
-    print(f"\n\tAvailable Cushion Widths: {', '.join(widths)}")
-    width_choice = input("\tSelect Width: ").strip().title()
-    if width_choice not in widths:
-        width_choice = widths[0]
-        print(f"\tℹ️ Defaulting width to: {width_choice}")
+    width_choice = get_text_choice(
+        "Select Cushion Width",
+        widths,
+        default=widths[0],
+    )
 
-    cushion_color = input("\tEnter Cushion Color (Default: Black): ").strip().title()
-    if cushion_color == "":
-        cushion_color = "Black"
+    cushion_color = get_text_choice(
+        "Enter Cushion Color",
+        SADDLE_CUSHION_COLORS,
+        default="Black",
+    )
 
     leather_color = "N/A"
     if saddle_data.get("handle_leather_option", False):
-        enable_leather = (
-            input("\tEnable Custom Leather Handle? (y/n): ").strip().lower()
+        enable_leather = get_validated_input(
+            "Enable Custom Leather Handle? (y/n)",
+            validator=lambda value: value in {"y", "n"},
+            invalid_message="Please enter 'y' or 'n'.",
+            normalize=str.lower,
         )
         if enable_leather == "y":
-            leather_color = (
-                input("\tEnter Leather Color (Default: Brown): ").strip().title()
+            leather_color = get_text_choice(
+                "Enter Leather Color",
+                SADDLE_LEATHER_COLORS,
+                default="Brown",
             )
-            if leather_color == "":
-                leather_color = "Brown"
 
     return {
         "saddle_name": selected_saddle_name,
@@ -629,15 +684,12 @@ def seat_post_opts(frame_brand="Nimbus Unicycles", saddle_mount_style="Standard"
     for length in available_lengths:
         print(f"\t  - {length}mm")
 
-    len_choice = input("\tSelect Length in mm: ").strip()
-    try:
-        selected_length = int(len_choice)
-        if selected_length not in available_lengths:
-            selected_length = available_lengths[0]
-            print(f"\tℹ️ Defaulting length to: {selected_length}mm")
-    except ValueError:
-        selected_length = available_lengths[0]
-        print(f"\tℹ️ Defaulting length to: {selected_length}mm")
+    selected_length = get_menu_choice(
+        "Select Length in mm:",
+        available_lengths,
+        option_label=lambda length: f"{length}mm",
+        default=available_lengths[0],
+    )
 
     clamp_names = list(CLAMP_STYLES.keys())
     selected_clamp = get_menu_choice(
@@ -648,13 +700,11 @@ def seat_post_opts(frame_brand="Nimbus Unicycles", saddle_mount_style="Standard"
     clamp_spec = CLAMP_STYLES.get(selected_clamp, {})
     clamp_color = "Standard Black"
     if clamp_spec.get("color_customizable", False):
-        print(f"\n\tAvailable Clamp Colors: {', '.join(CLAMP_COLORS)}")
-        color_input = input("\tSelect Clamp Color: ").strip().title()
-        if color_input in CLAMP_COLORS:
-            clamp_color = color_input
-        else:
-            clamp_color = CLAMP_COLORS[0]
-            print(f"\tℹ️ Defaulting clamp color to: {clamp_color}")
+        clamp_color = get_text_choice(
+            "Select Clamp Color",
+            CLAMP_COLORS,
+            default=CLAMP_COLORS[0],
+        )
 
     return {
         "post_model": selected_post_name,
@@ -665,7 +715,7 @@ def seat_post_opts(frame_brand="Nimbus Unicycles", saddle_mount_style="Standard"
     }
 
 
-def rim_opts(wheel_size='36"'):
+def rim_opts(wheel_size):
     """
     Configures rim model and color filtered by target wheel_size.
     Uses resilient .get() lookups for safe data retrieval.
@@ -683,7 +733,7 @@ def rim_opts(wheel_size='36"'):
             matching_rims.append(rim_name)
 
     if not matching_rims:
-        matching_rims = list(RIM_OPTIONS.keys())
+        raise ValueError(f"No rims are available for wheel size {wheel_size}.")
 
     selected_rim_name = get_menu_choice(
         "Available Rims:",
@@ -699,11 +749,11 @@ def rim_opts(wheel_size='36"'):
     final_width = selected_specs.get("width_mm", "Standard")
     final_construction = selected_specs.get("construction", "double-wall")
 
-    print(f"\n\tAvailable Rim Colors: {', '.join(AVAILABLE_RIM_COLORS)}")
-    selected_color = input("\tChoose Rim Color: ").strip().title()
-    if selected_color not in AVAILABLE_RIM_COLORS:
-        selected_color = AVAILABLE_RIM_COLORS[0]
-        print(f"\tℹ️ Defaulting color to: {selected_color}")
+    selected_color = get_text_choice(
+        "Choose Rim Color",
+        AVAILABLE_RIM_COLORS,
+        default=AVAILABLE_RIM_COLORS[0],
+    )
 
     return {
         "rim_model": selected_rim_name,
@@ -741,11 +791,11 @@ def crank_opts():
         available_lengths,
     )
 
-    print(f"\n\tAvailable Colors: {', '.join(colors)}")
-    color_choice = input("\tSelect Crank Color: ").strip().title()
-    if color_choice not in colors:
-        color_choice = colors[0]
-        print(f"\tℹ️ Defaulting color to: {color_choice}")
+    color_choice = get_text_choice(
+        "Select Crank Color",
+        colors,
+        default=colors[0],
+    )
 
     return {
         "crank_model": selected_crank_name,
@@ -779,11 +829,11 @@ def pedal_opts():
     pins = pedal_info.get("pins", "Molded studs")
     colors = pedal_info.get("available_colors", ["Black"])
 
-    print(f"\n\tAvailable Colors: {', '.join(colors)}")
-    selected_color = input("\tChoose Pedal Color: ").strip().title()
-    if selected_color not in colors:
-        selected_color = colors[0]
-        print(f"\tℹ️ Defaulting color to: {selected_color}")
+    selected_color = get_text_choice(
+        "Choose Pedal Color",
+        colors,
+        default=colors[0],
+    )
 
     return {
         "pedal_brand": selected_brand,
@@ -855,39 +905,30 @@ def billing_info():
     print(f"\t{'BILLING INFORMATION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    full_name = input("\tEnter Full Name: ").strip()
-    if full_name == "":
-        full_name = "Valued Customer"
-
-    email = input("\tEnter Email Address: ").strip()
-    if email == "":
-        email = "customer@example.com"
-
-    address = input("\tEnter Billing Street Address: ").strip()
-    if address == "":
-        address = "123 Unicycle Way"
-
-    city = input("\tEnter City: ").strip()
-    if city == "":
-        city = "Portland"
-
-    state = input("\tEnter State (2 letters): ").strip().upper()
-    if state == "":
-        state = "OR"
-
-    zip_code = input("\tEnter ZIP Code: ").strip()
-    if zip_code == "":
-        zip_code = "97201"
-
-    payment_method = (
-        input(
-            "\tPayment Method [Credit Card / PayPal / Apple Pay] (Default: Credit Card): "
-        )
-        .strip()
-        .title()
+    full_name = get_validated_input("Full Name")
+    email = get_validated_input(
+        "Email Address",
+        validator=lambda value: EMAIL_PATTERN.fullmatch(value) is not None,
+        invalid_message="Enter a valid email address.",
     )
-    if payment_method == "":
-        payment_method = "Credit Card"
+    address = get_validated_input("Street Address")
+    city = get_validated_input("City")
+    state = get_validated_input(
+        "State (2-letter code)",
+        validator=lambda value: value in US_STATE_CODES,
+        invalid_message="Enter a valid 2-letter U.S. state or DC code.",
+        normalize=str.upper,
+    )
+    zip_code = get_validated_input(
+        "ZIP Code",
+        validator=lambda value: ZIP_CODE_PATTERN.fullmatch(value) is not None,
+        invalid_message="Enter a 5-digit ZIP Code or ZIP+4 (12345-6789).",
+    )
+    payment_method = get_text_choice(
+        "Payment Method",
+        ["Credit Card", "PayPal", "Apple Pay"],
+        default="Credit Card",
+    )
 
     return {
         "full_name": full_name,
@@ -910,41 +951,37 @@ def shipping_info(billing_dict=None):
     print(f"\t{'SHIPPING INFORMATION & METHOD':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    same_as_billing = (
-        input("\tIs shipping address same as billing address? (y/n, Default: y): ")
-        .strip()
-        .lower()
+    same_as_billing = get_validated_input(
+        "Is shipping address same as billing address? (y/n)",
+        validator=lambda value: value in {"y", "n"},
+        invalid_message="Please enter 'y' or 'n'.",
+        normalize=str.lower,
     )
 
-    if same_as_billing != "n" and billing_dict:
+    if same_as_billing == "y" and billing_dict:
         ship_address = {
-            "full_name": billing_dict.get("full_name", "Valued Customer"),
-            "address": billing_dict.get("address", "123 Main St"),
-            "city": billing_dict.get("city", "Portland"),
-            "state": billing_dict.get("state", "OR"),
-            "zip_code": billing_dict.get("zip_code", "97201"),
+            "full_name": billing_dict["full_name"],
+            "address": billing_dict["address"],
+            "city": billing_dict["city"],
+            "state": billing_dict["state"],
+            "zip_code": billing_dict["zip_code"],
         }
         print("\tℹ️ Using billing address for shipping.")
     else:
-        recipient_name = input("\tRecipient Full Name: ").strip()
-        if recipient_name == "":
-            recipient_name = "Valued Customer"
-
-        street_address = input("\tShipping Street Address: ").strip()
-        if street_address == "":
-            street_address = "123 Unicycle Way"
-
-        ship_city = input("\tCity: ").strip()
-        if ship_city == "":
-            ship_city = "Portland"
-
-        ship_state = input("\tState: ").strip().upper()
-        if ship_state == "":
-            ship_state = "OR"
-
-        ship_zip = input("\tZIP Code: ").strip()
-        if ship_zip == "":
-            ship_zip = "97201"
+        recipient_name = get_validated_input("Recipient Full Name")
+        street_address = get_validated_input("Shipping Street Address")
+        ship_city = get_validated_input("Shipping City")
+        ship_state = get_validated_input(
+            "Shipping State (2-letter code)",
+            validator=lambda value: value in US_STATE_CODES,
+            invalid_message="Enter a valid 2-letter U.S. state or DC code.",
+            normalize=str.upper,
+        )
+        ship_zip = get_validated_input(
+            "Shipping ZIP Code",
+            validator=lambda value: ZIP_CODE_PATTERN.fullmatch(value) is not None,
+            invalid_message="Enter a 5-digit ZIP Code or ZIP+4 (12345-6789).",
+        )
 
         ship_address = {
             "full_name": recipient_name,
@@ -954,14 +991,16 @@ def shipping_info(billing_dict=None):
             "zip_code": ship_zip,
         }
 
-    print("\n\tAvailable Shipping Options:")
-    for key, method in SHIPPING_METHODS.items():
-        print(
-            f"\t  [{key}] {method['name']} — ${method['cost']:.2f} ({method['days']})"
-        )
-
-    choice = input("\n\tSelect Shipping Method (Enter number): ").strip()
-    selected = SHIPPING_METHODS.get(choice, SHIPPING_METHODS["1"])
+    choice = get_menu_choice(
+        "Available Shipping Options:",
+        list(SHIPPING_METHODS),
+        option_label=lambda key: (
+            f"{SHIPPING_METHODS[key]['name']} — "
+            f"${SHIPPING_METHODS[key]['cost']:.2f} "
+            f"({SHIPPING_METHODS[key]['days']})"
+        ),
+    )
+    selected = SHIPPING_METHODS[choice]
 
     return {
         "destination": ship_address,
@@ -995,6 +1034,7 @@ def final_order(order_data):
     pedals = order_data.get("pedals", {})
     brakes = order_data.get("brakes", {})
     shipping = order_data.get("shipping", {})
+    tire = order_data.get("tire", "N/A")
 
     shipping_cost = shipping.get("shipping_cost", 25.00)
     tax_rate = 0.08
@@ -1008,6 +1048,7 @@ def final_order(order_data):
     )
     wheel_display = order_data.get("wheel_size", '36"')
     print(f"\t  • Wheel Size:             {wheel_display}")
+    print(f"\t  • Tire:                   {tire}")
     print(
         f"\t  • Rim:                    {rim.get('rim_model', 'N/A')} ({rim.get('rim_color', 'Black')})"
     )
@@ -1029,9 +1070,9 @@ def final_order(order_data):
 
     print("\n\t--- SHIPPING DESTINATION ---")
     dest = shipping.get("destination", {})
-    print(f"\t  {dest.get('full_name', 'Valued Customer')}")
+    print(f"\t  {dest['full_name']}")
     print(
-        f"\t  {dest.get('address', '123 Main St')}, {dest.get('city', 'Portland')}, {dest.get('state', 'OR')} {dest.get('zip_code', '97201')}"
+        f"\t  {dest['address']}, {dest['city']}, {dest['state']} {dest['zip_code']}"
     )
     print(
         f"\t  Method: {shipping.get('method_name', 'Standard Ground')} (${shipping_cost:.2f})"
@@ -1045,22 +1086,25 @@ def final_order(order_data):
     print(f"\t  TOTAL DUE:              ${total_cost:>8.2f}")
     print("\t==========================================================")
 
-    print("\n\tOrder Options:")
-    print("\t  [1] Accept / Buy / Submit")
-    print("\t  [2] Edit Customization")
-    print("\t  [3] Cancel Order")
-
-    choice = input("\n\tSelect choice (1-3): ").strip()
+    choice = get_menu_choice(
+        "Order Options:",
+        ["1", "2", "3"],
+        option_label=lambda option: {
+            "1": "Accept / Buy / Submit",
+            "2": "Edit Customization",
+            "3": "Cancel Order",
+        }[option],
+    )
 
     if choice == "1":
         print(f"\n\t🎉 Order {invoice_num} has been successfully submitted!")
         return "SUBMITTED"
-    elif choice == "2":
+    if choice == "2":
         print("\n\t🔄 Returning to customizer menu...")
         return "EDIT"
-    else:
-        print("\n\t❌ Order canceled.")
-        return "CANCELED"
+
+    print("\n\t❌ Order canceled.")
+    return "CANCELED"
 
 
 def main():
@@ -1071,10 +1115,10 @@ def main():
     program_running = True
     while program_running:
         # 📌 1. Model & Frame Options
-        frame_brand, selected_model, brakes_enabled = model_opts()
+        frame_brand, selected_model, wheel_size, brakes_enabled = model_opts()
 
         # 📌 2. Tire & Wheel Assembly
-        wheel_size = tire_opts()
+        selected_tire = tire_opts(wheel_size)
 
         # 📌 3. Seating Assembly
         saddle_dict = saddle_opts()
@@ -1102,6 +1146,7 @@ def main():
             "frame_brand": frame_brand,
             "selected_model": selected_model,
             "wheel_size": wheel_size,
+            "tire": selected_tire,
             "rim": rim_dict,
             "saddle": saddle_dict,
             "seat_post": seat_post_dict,
