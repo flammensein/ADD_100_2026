@@ -39,12 +39,10 @@ def get_order(emp_id):
         break
     read_menu.print_sizes(sizes, prices)
     clear_screen()
+    list_length = read_menu.print_coffee(sizes)
     while True:
         # 🖨️ Display the size menu
-        count = 1
-        for size in SIZES:
-            print(f"{count}.   {size}")
-            count += 1
+
         try:
             my_size = int(
                 input(
@@ -52,59 +50,61 @@ def get_order(emp_id):
                 ).strip()
             )
         except ValueError:
-            # ⚠️ Common bug: use len(SIZES), not SIZES.len()
-            input(f"Please enter a number (1-{len(SIZES)}). Press Enter to continue...")
+            # ⚠️ Common bug: use len(sizes), not sizes.len()
+            input(
+                f"Please enter a number (1-{list_length}). Press Enter to continue..."
+            )
             continue
-        if my_size < 1 or my_size > len(SIZES):
-            input(f"Please enter a number (1-{len(SIZES)}). Press Enter to continue...")
+        if my_size < 1 or my_size > len(sizes):
+            input(
+                f"Please enter a number (1-{list_length}). Press Enter to continue..."
+            )
             continue
-        size = SIZES[my_size - 1]
+        size = sizes[my_size - 1]
         break
 
     clear_screen()
     while True:
         # 🖨️ Display the milk menu
-        count = 1
-        for milk in MILKS:
-            print(f"{count}.   {milk}")
-            count += 1
+        list_length = read_menu.print_coffee(milks)
         try:
             my_milk = int(
                 input("Please enter the number for the milk you want:  ").strip()
             )
         except ValueError:
-            # ⚠️ Common bug: use len(MILKS), not MILKS.len()
-            input(f"Please enter a number (1-{len(MILKS)}). Press Enter to continue...")
+            # ⚠️ Common bug: use len(milks), not milks.len()
+            input(
+                f"Please enter a number (1-{list_length}). Press Enter to continue..."
+            )
             continue
-        if my_milk < 1 or my_milk > len(MILKS):
-            input(f"Please enter a number (1-{len(MILKS)}). Press Enter to continue...")
+        if my_milk < 1 or my_milk > len(milks):
+            input(
+                f"Please enter a number (1-{list_length}). Press Enter to continue..."
+            )
             continue
-        milk = MILKS[my_milk - 1]
+        milk = milks[my_milk - 1]
         break
 
     clear_screen()
     while True:
         # 🖨️ Display the flavor menu
-        count = 1
-        for flavor in FLAVORS:
-            print(f"{count}.   {flavor}")
-            count += 1
+        list_length = read_menu.print_coffee(flavors)
         try:
             my_flavor = int(
                 input("Please enter the number for the flavor you want:  ").strip()
             )
         except ValueError:
-            # ⚠️ Common bug: use len(FLAVORS), not FLAVORS.len()
+            # ⚠️ Common bug: use len(flavors), not flavors.len()
             input(
-                f"Please enter a number (1-{len(FLAVORS)}). Press Enter to continue..."
+                f"Please enter a number (1-{list_length}). Press Enter to continue..."
             )
             continue
-        if my_flavor < 1 or my_flavor > len(FLAVORS):
+        if my_flavor < 1 or my_flavor > list_length:
             input(
-                f"Please enter a number (1-{len(FLAVORS)}). Press Enter to continue..."
+                f"Please enter a number (1-{list_length}). Press Enter to continue..."
             )
             continue
-        flavor = FLAVORS[my_flavor - 1]
+        flavor = flavors[my_flavor - 1]
         break
 
     while True:

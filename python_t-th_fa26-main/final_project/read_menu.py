@@ -36,7 +36,6 @@ def read_menu():
 
 
 def split_into_variables(menu_items):
-    print("I'm in split into variables")
     coffee = menu_items.get("DRINK_TYPE")
     prices = menu_items.get("PRICES")
     milks = menu_items.get("MILKS")
