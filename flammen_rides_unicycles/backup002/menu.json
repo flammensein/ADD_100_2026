@@ -1,0 +1,135 @@
+{
+  "UNICYCLE_BRANDS": {
+    "Nimbus Unicycles": {
+      "Hatchet 27.5\" Mountain": {
+        "wheel_size": "27.5\""
+      },
+      "Oracle 36\"": {
+        "wheel_size": "36\""
+      }
+    },
+    "Kris Holm Unicycles (KHU)": {
+      "KH20 Trials": {
+        "wheel_size": "20\""
+      },
+      "KH36 Road/Touring": {
+        "wheel_size": "36\""
+      }
+    },
+    "Club Unicycles": {
+      "Club 20\" Beginner": {
+        "wheel_size": "20\""
+      },
+      "Club 24\"": {
+        "wheel_size": "24\""
+      }
+    }
+  },
+  "TIRE_OPTIONS": {
+    "Maxxis": [
+      "20 x 2.5\"",
+      "27.5 x 3.0\""
+    ],
+    "Nimbus": [
+      "36 x 2.25\"",
+      "29 x 3.0\""
+    ],
+    "Qu-Ax": [
+      "36 x 2.25\""
+    ]
+  },
+  "SADDLE_OPTIONS": {
+    "Kris Holm": [
+      "Fusion One"
+    ],
+    "Nimbus": [
+      "Air Saddle"
+    ],
+    "Impact": [
+      "Naomi"
+    ],
+    "Club": [
+      "Logo"
+    ]
+  },
+  "SEAT_POST_OPTIONS": {
+    "KH Forged Fixed Pivotal Seatpost": {
+      "lengths_mm": null,
+      "diameter_mm": 27.2,
+      "fits_brands": [
+        "Kris Holm Unicycles (KHU)"
+      ]
+    },
+    "Nimbus Standard Aluminum Seatpost": {
+      "lengths_mm": null,
+      "diameter_mm": 25.4,
+      "fits_brands": [
+        "Nimbus Unicycles",
+        "Club Unicycles"
+      ]
+    }
+  },
+  "RIM_OPTIONS": {
+    "KH Trials Rim": {
+      "diameter_inches": 19,
+      "construction": "double-wall",
+      "width_mm": 47.2,
+      "compatible_tire_sizes": [
+        "20 x 2.5\""
+      ]
+    },
+    "Nimbus Nightrider Rim": {
+      "diameter_inches": 36,
+      "construction": "double-wall",
+      "width_mm": 42.0,
+      "compatible_tire_sizes": [
+        "36 x 2.25\""
+      ]
+    },
+    "Nimbus Dominator Rim": {
+      "diameter_inches": 29,
+      "construction": "double-wall",
+      "width_mm": null,
+      "compatible_tire_sizes": [
+        "29 x 3.0\""
+      ]
+    }
+  },
+  "PEDAL_OPTIONS": {
+    "Wellgo": {
+      "material": "Clear polycarbonate platform",
+      "pins": "removable steel pins"
+    },
+    "Nimbus": {
+      "material": "Plastic platform",
+      "pins": "molded studs"
+    },
+    "Kris Holm": {
+      "material": "Plastic platform",
+      "pins": "molded studs"
+    }
+  },
+  "CRANK_OPTIONS": {
+    "KH Boundary": {
+      "interface": "Q-Axle micro spline",
+      "lengths": [
+        "117/137mm dual hole",
+        "127/150mm dual hole"
+      ]
+    },
+    "Nimbus VCX": {
+      "interface": "ISIS / Standard",
+      "lengths": [
+        "125mm",
+        "150mm"
+      ]
+    },
+    "Club Steel": {
+      "interface": "cotterless, square-tapered",
+      "lengths": [
+        "114mm",
+        "125mm"
+      ]
+    }
+  }
+}
