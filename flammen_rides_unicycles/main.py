@@ -5,8 +5,6 @@ Project: Flammen Rides Unicycles v1.0.0
 -----------------------------------------------------------------------
 """
 
-import random
-
 if __package__:
     from .dictionaries import (
         AVAILABLE_RIM_COLORS,
@@ -30,6 +28,7 @@ if __package__:
         US_STATE_CODES,
         ZIP_CODE_PATTERN,
     )
+    from .order_storage import create_order, generate_invoice_number
 else:
     from dictionaries import (
         AVAILABLE_RIM_COLORS,
@@ -53,9 +52,15 @@ else:
         US_STATE_CODES,
         ZIP_CODE_PATTERN,
     )
+    from order_storage import create_order, generate_invoice_number
 
 
-def get_menu_choice(prompt_text, options_list, option_label=None, default=None):
+def get_menu_choice(
+    prompt_text: str,
+    options_list: list,
+    option_label=None,
+    default=None,
+):
     """
     Prompt user to choose from a numbered list.
     Select a default only when the user submits a blank response.
@@ -69,6 +74,9 @@ def get_menu_choice(prompt_text, options_list, option_label=None, default=None):
     if default is not None and default not in options_list:
         raise ValueError("default must be one of options_list.")
 
+    # ℹ️ A generic menu preserves mixed option types (text labels and numeric rotor sizes).
+    # 💡 Translation: option_label changes display text only; return the original choice.
+    # 🧠 Complexity: displaying/checking choices is O(n); indexed selection is O(1).
     while True:
         print(f"\n\t{prompt_text}")
         for index, option in enumerate(options_list, start=1):
@@ -100,12 +108,12 @@ def get_menu_choice(prompt_text, options_list, option_label=None, default=None):
 
 
 def get_validated_input(
-    prompt_text,
+    prompt_text: str,
     validator=None,
-    invalid_message="Invalid input. Please try again.",
+    invalid_message: str = "Invalid input. Please try again.",
     default=None,
     normalize=lambda value: value,
-):
+) -> str:
     """Prompt until a nonblank value passes validation; use defaults only for blank input."""
     default_hint = f" (blank for default: {default})" if default is not None else ""
     while True:
@@ -124,7 +132,11 @@ def get_validated_input(
         print(f"\t{invalid_message}")
 
 
-def get_text_choice(prompt_text, options_list, default=None):
+def get_text_choice(
+    prompt_text: str,
+    options_list: list,
+    default=None,
+) -> str:
     """Prompt for one of a listed set of text options."""
     if not options_list:
         raise ValueError("options_list must not be empty.")
@@ -132,7 +144,8 @@ def get_text_choice(prompt_text, options_list, default=None):
         raise ValueError("default must be one of options_list.")
 
     print(f"\n\tAvailable Options: {', '.join(options_list)}")
-    # 💡 Tip: use .casefold() for case-insensitive matching that restores canonical casing
+    # 🧠 Complexity: build this lookup in O(n), then match each response in O(1) average.
+    # 💡 Translation: casefold input for matching, but return the catalog's original casing.
     canonical_options = {option.casefold(): option for option in options_list}
     # ✅ Return: matched canonical option (str)
     return get_validated_input(
@@ -201,7 +214,8 @@ def tire_opts(frame_wheel_size: str) -> str:
     print(f"\t{'TIRE SELECTION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    # 🧠 Filter tires by extracting nominal diameter (e.g., '24' from '24 x 3.0"') to match frame_wheel_size
+    # 🧠 Filtering costs O(T + B): check each tire, then remove brands with no matches.
+    # 💡 Translation: keep the full catalog label for display after matching its wheel diameter.
     compatible_sizes_by_brand = {
         brand: [size for size in sizes if f'{size.split()[0]}"' == frame_wheel_size]
         for brand, sizes in TIRE_OPTIONS.items()
@@ -302,7 +316,8 @@ def seat_post_opts(
     print(f"\t{'SEATPOST & CLAMP SELECTION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    # 🧠 Match seatposts that fit either the frame brand or the saddle's mount interface
+    # 🧠 Scan each catalog post once (O(n)); accept brand-compatible or matching mounts.
+    # ℹ️ Future changes should keep the mount and brand checks aligned with catalog specs.
     compatible_posts = []
     for post_name, specs in SEAT_POST_OPTIONS.items():
         post_type = specs.get("type", "Standard")
@@ -372,6 +387,7 @@ def rim_opts(wheel_size: str) -> dict:
     print(f"\t{header_title:^35}")
     print(f"\t{'=' * 35:^35}")
 
+    # 🧠 One pass over the rim catalog (O(n)) keeps filtering tied to the selected wheel size.
     matching_rims = []
     for rim_name, specs in RIM_OPTIONS.items():
         compatible_sizes = specs.get("compatible_wheel_sizes", [])
@@ -569,6 +585,7 @@ def billing_info() -> dict:
         "State (2-letter code)",
         validator=lambda value: value in US_STATE_CODES,
         invalid_message="Enter a valid 2-letter U.S. state or DC code.",
+        # 💡 Translation: store state codes in canonical uppercase form.
         normalize=str.upper,
     )
     zip_code = get_validated_input(
@@ -594,7 +611,9 @@ def billing_info() -> dict:
     }
 
 
-def shipping_info(billing_dict: dict | None = None) -> dict:
+def shipping_info(
+    billing_dict=None,
+) -> dict:
     """
     Collect shipping destination and shipping speed preference.
     Calculate shipping cost based on the selected method.
@@ -611,6 +630,7 @@ def shipping_info(billing_dict: dict | None = None) -> dict:
         normalize=str.lower,
     )
 
+    # 💡 Translation: copy the billing address fields to shipping only when requested.
     if same_as_billing == "y" and billing_dict:
         ship_address = {
             "full_name": billing_dict["full_name"],
@@ -664,23 +684,15 @@ def shipping_info(billing_dict: dict | None = None) -> dict:
     }
 
 
-def final_order(order_data: dict) -> str:
-    """
-    Generate a unique order ID (invoice_num) and display an itemized receipt.
-    Offer 'Accept/Buy/Submit', 'Edit', and 'Cancel' options.
-    """
-    random_id = random.randint(10000, 99999)
-    invoice_num = f"INV-{random_id}"
-    invoice_header = f"Invoice ID: {invoice_num}"
-
-    print(f"\n\n")
-    print(f"\t{'=' * 35:^35}")
-    print(f"\t{'FLAMMEN RIDES UNICYCLES':^35}")
-    print(f"\t{'ORDER INVOICE':^35}")
-    print(f"\t{'=' * 35:^35}")
-    print(f"\t{invoice_header:^35}")
-
-    # 🛡️ Resiliently extract sub-component data using .get() to prevent KeyError
+def format_invoice(
+    order_data: dict,
+    invoice_num: str,
+    subtotal: float,
+    tax_amount: float,
+    total_cost: float,
+) -> str:
+    """Return a customer-readable invoice for the selected order."""
+    # ℹ️ Order data combines heterogeneous catalog records, so nested values are dynamic.
     saddle = order_data.get("saddle", {})
     seat_post = order_data.get("seat_post", {})
     rim = order_data.get("rim", {})
@@ -688,56 +700,81 @@ def final_order(order_data: dict) -> str:
     pedals = order_data.get("pedals", {})
     brakes = order_data.get("brakes", {})
     shipping = order_data.get("shipping", {})
-    tire = order_data.get("tire", "N/A")
+    destination = shipping.get("destination", {})
+    billing = order_data.get("billing", {})
+    shipping_cost = shipping.get("shipping_cost", 0.0)
 
-    shipping_cost = shipping.get("shipping_cost", 25.00)
+    # 🖨️ Translation: present structured fields as a receipt without changing saved data.
+    # ✅ Return: complete, human-readable invoice text (str).
+    return "\n".join(
+        [
+            "",
+            "=" * 58,
+            f"Invoice ID: {invoice_num}".center(58),
+            "FLAMMEN RIDES UNICYCLES".center(58),
+            "CUSTOM ORDER INVOICE".center(58),
+            "=" * 58,
+            f"Customer: {billing.get('full_name', 'N/A')}",
+            "",
+            "CONFIGURATION",
+            f"  Frame / Model:       {order_data.get('selected_model', 'N/A')}",
+            f"  Wheel Size:          {order_data.get('wheel_size', 'N/A')}",
+            f"  Tire:                {order_data.get('tire', 'N/A')}",
+            f"  Rim:                 {rim.get('rim_model', 'N/A')} "
+            f"({rim.get('rim_color', 'N/A')})",
+            f"  Saddle:              {saddle.get('saddle_name', 'N/A')} "
+            f"[{saddle.get('width', 'N/A')}]",
+            f"  Seatpost / Clamp:    {seat_post.get('post_model', 'N/A')} / "
+            f"{seat_post.get('clamp_style', 'N/A')}",
+            f"  Cranks:              {cranks.get('crank_model', 'N/A')} "
+            f"({cranks.get('length', 'N/A')})",
+            f"  Pedals:              {pedals.get('pedal_brand', 'N/A')} "
+            f"({pedals.get('color', 'N/A')})",
+            f"  Brakes:              {brakes.get('brake_model', 'N/A')} "
+            f"({brakes.get('type', 'N/A')})",
+            "",
+            "SHIP TO",
+            f"  {destination.get('full_name', 'N/A')}",
+            f"  {destination.get('address', 'N/A')}",
+            f"  {destination.get('city', 'N/A')}, "
+            f"{destination.get('state', 'N/A')} "
+            f"{destination.get('zip_code', 'N/A')}",
+            f"  Shipping: {shipping.get('method_name', 'N/A')} "
+            f"(${shipping_cost:.2f})",
+            "",
+            "TOTALS",
+            f"  Subtotal:             ${subtotal:>8.2f}",
+            f"  Estimated Tax (8%):   ${tax_amount:>8.2f}",
+            f"  Shipping & Handling:  ${shipping_cost:>8.2f}",
+            "-" * 58,
+            f"  TOTAL DUE:            ${total_cost:>8.2f}",
+            "=" * 58,
+        ]
+    )
+
+
+def final_order(
+    order_data: dict,
+) -> str:
+    """
+    Generate a unique order ID (invoice_num) and display an itemized receipt.
+    Offer 'Accept/Buy/Submit', 'Edit', and 'Cancel' options.
+    """
+    # ℹ️ The order dictionary combines heterogeneous component records and JSON values.
+    invoice_num = generate_invoice_number()
+    shipping = order_data.get("shipping", {})
+
+    shipping_cost = shipping.get("shipping_cost", 0.0)
     tax_rate = 0.08
     subtotal = BASE_PRICE
     tax_amount = subtotal * tax_rate
     total_cost = subtotal + shipping_cost + tax_amount
 
-    # 🖨️ Display the itemized component summary, shipping address, and totals neatly
-    print("\n\t--- COMPONENT SUMMARY ---")
     print(
-        f"\t  • Frame / Model:          {order_data.get('selected_model', 'Custom Unicycle')}"
+        format_invoice(
+            order_data, invoice_num, subtotal, tax_amount, total_cost
+        )
     )
-    wheel_display = order_data.get("wheel_size", '36"')
-    print(f"\t  • Wheel Size:             {wheel_display}")
-    print(f"\t  • Tire:                   {tire}")
-    print(
-        f"\t  • Rim:                    {rim.get('rim_model', 'N/A')} ({rim.get('rim_color', 'Black')})"
-    )
-    print(
-        f"\t  • Saddle:                 {saddle.get('saddle_name', 'N/A')} [{saddle.get('width', 'Medium')}]"
-    )
-    print(
-        f"\t  • Seatpost & Clamp:       {seat_post.get('post_model', 'N/A')} ({seat_post.get('clamp_style', 'Standard')})"
-    )
-    print(
-        f"\t  • Crank Arms:             {cranks.get('crank_model', 'N/A')} ({cranks.get('length', '125mm')})"
-    )
-    print(
-        f"\t  • Pedals:                 {pedals.get('pedal_brand', 'N/A')} ({pedals.get('color', 'Black')})"
-    )
-    print(
-        f"\t  • Brakes:                 {brakes.get('brake_model', 'None')} ({brakes.get('type', 'N/A')})"
-    )
-
-    print("\n\t--- SHIPPING DESTINATION ---")
-    dest = shipping.get("destination", {})
-    print(f"\t  {dest['full_name']}")
-    print(f"\t  {dest['address']}, {dest['city']}, {dest['state']} {dest['zip_code']}")
-    print(
-        f"\t  Method: {shipping.get('method_name', 'Standard Ground')} (${shipping_cost:.2f})"
-    )
-
-    print("\n\t--- FINANCIAL BREAKDOWN ---")
-    print(f"\t  Subtotal:               ${subtotal:>8.2f}")
-    print(f"\t  Estimated Tax (8%):     ${tax_amount:>8.2f}")
-    print(f"\t  Shipping & Handling:    ${shipping_cost:>8.2f}")
-    print(f"\t  -----------------------------------")
-    print(f"\t  TOTAL DUE:              ${total_cost:>8.2f}")
-    print("\t==========================================================")
 
     choice = get_menu_choice(
         "Order Options:",
@@ -751,6 +788,17 @@ def final_order(order_data: dict) -> str:
 
     # ✅ Return: order status flag ("SUBMITTED", "EDIT", or "CANCELED") (str)
     if choice == "1":
+        # 💾 Put the invoice number first so it is easy to find in the saved order.
+        saved_order = {"invoice_num": invoice_num}
+        saved_order.update(order_data)
+        saved_order["financials"] = {
+            "subtotal": subtotal,
+            "tax_amount": tax_amount,
+            "shipping_cost": shipping_cost,
+            "total_cost": total_cost,
+        }
+        # 💾 Save only after confirmation; edits and cancellations remain unsaved.
+        create_order(saved_order)
         print(f"\n\t🎉 Order {invoice_num} has been successfully submitted!")
         return "SUBMITTED"
     if choice == "2":
@@ -816,5 +864,6 @@ def main() -> None:
             program_running = False
 
 
-# ▶️ Start the program by calling main()
-main()
+# ▶️ Imports expose functions without starting checkout; direct execution starts the app.
+if __name__ == "__main__":
+    main()

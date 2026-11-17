@@ -27,7 +27,7 @@ This project is currently in an educational/prototype stage. It contains multipl
 - Optional brake support logic
 - Billing and shipping information collection
 - Structured order data for final review
-- JSON inventory export for menu generation
+- Persistent order history in `orders.json`
 - Versioned development history in the backup folder
 
 ## Product Catalog
@@ -38,6 +38,16 @@ the application. The app does not need a database connection in this mode.
 
 Edit `product_catalog.json` when changing the catalog. The older `menu.json`
 export and its menu utilities are archived in `backup003`.
+
+## Order History
+
+Submitted orders are appended to `orders.json` in this folder. Each order starts
+with its invoice number, followed by the configuration, customer and shipping
+details, and financial totals. The human-readable invoice, with the invoice
+number at the top, is displayed before the customer confirms submission.
+`order_storage.py` provides functions to read, create,
+update, and delete saved orders; writes replace the JSON file atomically so an
+interrupted save does not leave a partially written order history.
 
 ## Deferred MySQL Migration
 
@@ -54,7 +64,9 @@ flammen_rides_unicycles/
 ├── backup003/                  # Deferred and unused files
 ├── dictionaries.py            # Loads the JSON catalog for Python callers
 ├── main.py                    # Current configurator
+├── order_storage.py           # Persistent order history and CRUD operations
 ├── pos_defaults.py            # POS constants
 ├── product_catalog.json       # Source-of-truth product catalog
+├── orders.json                # Created when the first order is submitted
 └── README.md                  # Project documentation
 ```

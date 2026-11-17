@@ -1,0 +1,74 @@
+[
+  {
+    "frame_brand": "Kris Holm Unicycles (KHU)",
+    "selected_model": "KH27.5 Mountain",
+    "wheel_size": "27.5\"",
+    "tire": "Qu-Ax 27.5 x 2.6\"",
+    "rim": {
+      "rim_model": "KH Freeride 27.5\" Rim",
+      "rim_color": "Red",
+      "width_mm": 47.0,
+      "construction": "double-wall"
+    },
+    "saddle": {
+      "saddle_name": "Nimbus Stadium",
+      "mount_style": "Standard",
+      "width": "Medium",
+      "cushion_color": "Brown",
+      "leather_color": "N/A"
+    },
+    "seat_post": {
+      "post_model": "Nimbus Standard Aluminum Seatpost",
+      "diameter_mm": 25.4,
+      "length_mm": 200,
+      "clamp_style": "Quick Release Clamp",
+      "clamp_color": "Green"
+    },
+    "cranks": {
+      "crank_model": "KH Boundary",
+      "interface": "Q-Axle micro spline",
+      "length": "127/150mm dual hole",
+      "color": "Black"
+    },
+    "pedals": {
+      "pedal_brand": "Kris Holm",
+      "material": "Studded plastic platform",
+      "pins": "Molded studs",
+      "color": "Black"
+    },
+    "brakes": {
+      "brakes_installed": false,
+      "brake_model": "None",
+      "type": "N/A",
+      "rotor_diameter_mm": "N/A"
+    },
+    "billing": {
+      "full_name": "Bobby Fisher",
+      "email": "checkmate@checkers.com",
+      "address": "Pawn to Queen 2",
+      "city": "Boardwalk",
+      "state": "IL",
+      "zip_code": "60089",
+      "payment_method": "Credit Card"
+    },
+    "shipping": {
+      "destination": {
+        "full_name": "Bobby Fisher",
+        "address": "Pawn to Queen 2",
+        "city": "Boardwalk",
+        "state": "IL",
+        "zip_code": "60089"
+      },
+      "method_name": "Standard Ground",
+      "shipping_cost": 25.0,
+      "delivery_estimate": "3-5 business days"
+    },
+    "invoice_num": "INV-09156C9F",
+    "financials": {
+      "subtotal": 450.0,
+      "tax_amount": 36.0,
+      "shipping_cost": 25.0,
+      "total_cost": 511.0
+    }
+  }
+]
