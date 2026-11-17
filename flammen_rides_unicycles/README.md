@@ -15,28 +15,6 @@ Flammen Rides Unicycles is a learning-focused project designed to demonstrate:
 
 The project is built as a prototype and is intended to reflect best practices for maintainable, readable code and clear product-data organization.
 
-## Streamlit App
-
-The web configurator is in `streamlit_app.py`. It reuses the product catalog,
-pricing and validation constants, invoice formatting, and JSON order-storage
-module from the command-line app.
-
-Run it from the repository root:
-
-```bash
-python -m pip install -r flammen_rides_unicycles/requirements.txt
-streamlit run flammen_rides_unicycles/streamlit_app.py
-```
-
-To deploy on Streamlit Community Cloud, connect this GitHub repository and set
-the app file to `flammen_rides_unicycles/streamlit_app.py`. Community Cloud
-accepts a `requirements.txt` alongside the app entrypoint.
-
-Orders continue to use the existing structured `orders.json` format and
-`order_storage.py` interface. This is suitable for the class prototype; move
-the storage implementation behind that interface to MySQL before relying on
-cloud storage for durable order history.
-
 ## Project Status
 
 This project is currently in an educational/prototype stage. It contains multiple iterative versions of the customization flow and archived backups, which is common in early-stage development. Some scripts are likely incomplete or transitional, and the codebase should be treated as a working learning project rather than a production e-commerce platform.

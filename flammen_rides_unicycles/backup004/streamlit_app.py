@@ -38,25 +38,17 @@ models = UNICYCLE_BRANDS[frame_brand]
 selected_model = st.selectbox(
     "Model",
     list(models),
-    format_func=lambda model: (
-        f"{model} ({models[model]['wheel_size']} wheel)"
-    ),
+    format_func=lambda model: (f"{model} ({models[model]['wheel_size']} wheel)"),
     key=f"model_{frame_brand}",
 )
 model_specs = models[selected_model]
 wheel_size = model_specs["wheel_size"]
 
 compatible_tires = {
-    brand: [
-        size
-        for size in sizes
-        if f'{size.split()[0]}"' == wheel_size
-    ]
+    brand: [size for size in sizes if f'{size.split()[0]}"' == wheel_size]
     for brand, sizes in TIRE_OPTIONS.items()
 }
-compatible_tires = {
-    brand: sizes for brand, sizes in compatible_tires.items() if sizes
-}
+compatible_tires = {brand: sizes for brand, sizes in compatible_tires.items() if sizes}
 if not compatible_tires:
     st.error(f"No tires are available for wheel size {wheel_size}.")
     st.stop()
@@ -214,7 +206,9 @@ with col1:
     billing_email = st.text_input("Email", key="billing_email")
     billing_address = st.text_input("Street address", key="billing_address")
     billing_city = st.text_input("City", key="billing_city")
-    billing_state = st.text_input("State (2-letter code)", max_chars=2, key="billing_state")
+    billing_state = st.text_input(
+        "State (2-letter code)", max_chars=2, key="billing_state"
+    )
     billing_zip = st.text_input("ZIP code", key="billing_zip")
     payment_method = st.selectbox(
         "Payment method",
@@ -268,9 +262,7 @@ billing_data = {
     "payment_method": payment_method,
 }
 shipping_data = {
-    "destination": {
-        key: value.strip() for key, value in shipping_destination.items()
-    },
+    "destination": {key: value.strip() for key, value in shipping_destination.items()},
     "method_name": shipping_specs["name"],
     "shipping_cost": shipping_specs["cost"],
     "delivery_estimate": shipping_specs["days"],
@@ -330,7 +322,9 @@ if st.button("Submit order", type="primary"):
         errors.append("Enter a valid shipping ZIP code.")
 
     if errors:
-        st.error("Please fix the following before submitting:\n\n- " + "\n- ".join(errors))
+        st.error(
+            "Please fix the following before submitting:\n\n- " + "\n- ".join(errors)
+        )
     elif not confirmed:
         st.warning("Review the invoice and confirm the order before submitting.")
     else:
