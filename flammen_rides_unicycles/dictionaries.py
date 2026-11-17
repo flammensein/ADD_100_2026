@@ -1,378 +1,62 @@
-# Product catalog data used by the unicycle customization flow.
-UNICYCLE_BRANDS = {
-    "Nimbus Unicycles": {
-        'Hatchet 27.5" Mountain': {
-            "wheel_size": '27.5"',
-            "disc_brakes_supported": True,
-        },
-        'Oracle 24" Mountain': {
-            "wheel_size": '24"',
-            "disc_brakes_supported": True,
-        },
-        'Oracle 29" Mountain': {
-            "wheel_size": '29"',
-            "disc_brakes_supported": True,
-        },
-        'Oracle 36"': {"wheel_size": '36"', "disc_brakes_supported": True},
-    },
-    "Kris Holm Unicycles (KHU)": {
-        "KH20 Trials": {
-            "wheel_size": '20"',
-            "disc_brakes_supported": True,
-        },
-        "KH24 Mountain": {
-            "wheel_size": '24"',
-            "disc_brakes_supported": True,
-        },
-        "KH27.5 Mountain": {
-            "wheel_size": '27.5"',
-            "disc_brakes_supported": True,
-        },
-        "KH29 Mountain/Road": {
-            "wheel_size": '29"',
-            "disc_brakes_supported": True,
-        },
-        "KH36 Road/Touring": {
-            "wheel_size": '36"',
-            "disc_brakes_supported": True,
-        },
-    },
-    "Qu-Ax Unicycles": {
-        'Muni 24" Q-Axle': {
-            "wheel_size": '24"',
-            "disc_brakes_supported": True,
-        },
-        'Muni 27.5" Q-Axle': {
-            "wheel_size": '27.5"',
-            "disc_brakes_supported": True,
-        },
-        'RGB 29" Cross/Muni': {
-            "wheel_size": '29"',
-            "disc_brakes_supported": True,
-        },
-        'Gentleman 36"': {
-            "wheel_size": '36"',
-            "disc_brakes_supported": True,
-        },
-    },
-    "Mad4One": {
-        'URC 24" Muni': {
-            "wheel_size": '24"',
-            "disc_brakes_supported": True,
-        },
-        'URC 27.5" Muni': {
-            "wheel_size": '27.5"',
-            "disc_brakes_supported": True,
-        },
-        'URC 29" Road/Muni': {
-            "wheel_size": '29"',
-            "disc_brakes_supported": True,
-        },
-    },
-    "Club Unicycles": {
-        'Club 20" Beginner': {
-            "wheel_size": '20"',
-            "disc_brakes_supported": False,
-        },
-        'Club 24"': {
-            "wheel_size": '24"',
-            "disc_brakes_supported": False,
-        },
-    },
-}
+"""Load the product catalog from product_catalog.json."""
 
-TIRE_OPTIONS = {
-    "Maxxis": ['20 x 2.5"', '24 x 2.4"', '27.5 x 3.0"', '29 x 2.5"'],
-    "Nimbus": ['24 x 3.0"', '29 x 3.0"', '36 x 2.25"'],
-    "Qu-Ax": ['24 x 3.0"', '27.5 x 2.6"', '36 x 2.25"'],
-    "Schwalbe": ['24 x 2.6"', '27.5 x 2.8"', '29 x 2.6"'],
-    "Duro": ['24 x 3.0"', '27.5 x 3.25"'],
-}
-
-SADDLE_OPTIONS = {
-    "Kris Holm Fusion One": {
-        "brand": "Kris Holm",
-        "mount_style": "Pivotal",
-        "cushion_widths": ["Slim", "Medium"],
-        "handle_leather_option": True,
-    },
-    "Kris Holm Fusion Freeride": {
-        "brand": "Kris Holm",
-        "mount_style": "Standard",
-        "cushion_widths": ["Medium", "Wide"],
-        "handle_leather_option": True,
-    },
-    "Nimbus Air Saddle": {
-        "brand": "Nimbus",
-        "mount_style": "Standard",
-        "cushion_widths": ["Medium", "Wide"],
-        "handle_leather_option": False,
-    },
-    "Nimbus Stadium": {
-        "brand": "Nimbus",
-        "mount_style": "Standard",
-        "cushion_widths": ["Medium"],
-        "handle_leather_option": False,
-    },
-    "Qu-Ax QX Eleven": {
-        "brand": "Qu-Ax",
-        "mount_style": "Standard",
-        "cushion_widths": ["Slim", "Medium"],
-        "handle_leather_option": False,
-    },
-    "Mad4One Handle Saddle": {
-        "brand": "Mad4One",
-        "mount_style": "Standard",
-        "cushion_widths": ["Slim", "Medium", "Wide"],
-        "handle_leather_option": False,
-    },
-    "Impact Naomi": {
-        "brand": "Impact",
-        "mount_style": "Standard",
-        "cushion_widths": ["Slim"],
-        "handle_leather_option": True,
-    },
-    "Club Logo": {
-        "brand": "Club",
-        "mount_style": "Standard",
-        "cushion_widths": ["Medium"],
-        "handle_leather_option": False,
-    },
-}
-
-SEAT_POST_OPTIONS = {
-    "KH Forged Fixed Pivotal Seatpost": {
-        "brand": "Kris Holm",
-        "type": "Pivotal",
-        "diameter_mm": 27.2,
-        "lengths_mm": [350],
-        "compatible_brands": ["Kris Holm Unicycles (KHU)"],
-    },
-    "KH Adjustable Standard Seatpost": {
-        "brand": "Kris Holm",
-        "type": "Standard",
-        "diameter_mm": 27.2,
-        "lengths_mm": [300, 400],
-        "compatible_brands": ["Kris Holm Unicycles (KHU)"],
-    },
-    "Nimbus Standard Aluminum Seatpost": {
-        "brand": "Nimbus",
-        "type": "Standard",
-        "diameter_mm": 25.4,
-        "lengths_mm": [200, 300, 400],
-        "compatible_brands": [
-            "Nimbus Unicycles",
-            "Club Unicycles",
-            "Qu-Ax Unicycles",
-        ],
-    },
-    "Qu-Ax Gusseted Aluminum Seatpost": {
-        "brand": "Qu-Ax",
-        "type": "Standard",
-        "diameter_mm": 25.4,
-        "lengths_mm": [350, 400],
-        "compatible_brands": [
-            "Qu-Ax Unicycles",
-            "Nimbus Unicycles",
-            "Club Unicycles",
-        ],
-    },
-    "Mad4One Reinforced Seatpost": {
-        "brand": "Mad4One",
-        "type": "Standard",
-        "diameter_mm": 27.2,
-        "lengths_mm": [300, 400],
-        "compatible_brands": ["Mad4One", "Kris Holm Unicycles (KHU)"],
-    },
-}
-
-CLAMP_STYLES = {
-    "Double Bolt Clamp": {"color_customizable": False},
-    "Quick Release Clamp": {"color_customizable": True},
-    "Triple Bolt Muni Clamp": {"color_customizable": True},
-}
-
-RIM_OPTIONS = {
-    "KH Trials Rim": {
-        "diameter_inches": 19,
-        "construction": "double-wall",
-        "width_mm": 47.2,
-        "compatible_wheel_sizes": ['20"', '19"'],
-    },
-    'KH Freeride 24" Rim': {
-        "diameter_inches": 24,
-        "construction": "double-wall",
-        "width_mm": 47.0,
-        "compatible_wheel_sizes": ['24"'],
-    },
-    'KH Freeride 27.5" Rim': {
-        "diameter_inches": 27.5,
-        "construction": "double-wall",
-        "width_mm": 47.0,
-        "compatible_wheel_sizes": ['27.5"'],
-    },
-    'Nimbus Dominator 24" Rim': {
-        "diameter_inches": 24,
-        "construction": "double-wall",
-        "width_mm": 42.0,
-        "compatible_wheel_sizes": ['24"'],
-    },
-    "Nimbus Dominator Rim": {
-        "diameter_inches": 29,
-        "construction": "double-wall",
-        "width_mm": None,
-        "compatible_wheel_sizes": ['29"', '27.5"'],
-    },
-    "Nimbus Nightrider Rim": {
-        "diameter_inches": 36,
-        "construction": "double-wall",
-        "width_mm": 42.0,
-        "compatible_wheel_sizes": ['36"'],
-    },
-    "Qu-Ax DB-X Muni Rim": {
-        "diameter_inches": 27.5,
-        "construction": "double-wall",
-        "width_mm": 45.0,
-        "compatible_wheel_sizes": ['24"', '27.5"', '29"'],
-    },
-}
-
-CRANK_OPTIONS = {
-    "KH Boundary": {
-        "brand": "Kris Holm",
-        "interface": "Q-Axle micro spline",
-        "lengths": ["117/137mm dual hole", "127/150mm dual hole"],
-        "available_colors": ["Black", "Silver"],
-    },
-    "KH Spirit": {
-        "brand": "Kris Holm",
-        "interface": "ISIS (Supports External Disc Rotor)",
-        "lengths": [
-            "110/137mm dual hole",
-            "127/150mm dual hole",
-            "137/165mm dual hole",
-        ],
-        "available_colors": ["Black"],
-    },
-    "Nimbus VCX": {
-        "brand": "Nimbus",
-        "interface": "ISIS / Standard (Supports D'Brake Mount)",
-        "lengths": ["100mm", "125mm", "150mm", "165mm"],
-        "available_colors": ["Black", "Silver", "Red"],
-    },
-    "Qu-Ax Q-Axle": {
-        "brand": "Qu-Ax",
-        "interface": "Q-Axle 24mm Hollow-Axle",
-        "lengths": ["125mm", "137mm", "145mm", "160mm"],
-        "available_colors": ["Black", "Red", "Blue", "Gold"],
-    },
-    "Mad4One Agile": {
-        "brand": "Mad4One",
-        "interface": "ISIS Splined",
-        "lengths": ["125mm", "140mm", "150mm"],
-        "available_colors": ["Black", "Silver", "Green", "Orange"],
-    },
-    "Club Steel": {
-        "brand": "Club",
-        "interface": "Cotterless, square-tapered",
-        "lengths": ["114mm", "125mm"],
-        "available_colors": ["Black"],
-    },
-}
-
-PEDAL_OPTIONS = {
-    "Wellgo": {
-        "material": "Clear polycarbonate platform",
-        "pins": "Removable steel pins",
-        "available_colors": ["Clear", "Smoke", "Blue", "Red"],
-    },
-    "Nimbus": {
-        "material": "Plastic studded platform",
-        "pins": "Molded studs",
-        "available_colors": ["Black", "White"],
-    },
-    "Kris Holm": {
-        "material": "Studded plastic platform",
-        "pins": "Molded studs",
-        "available_colors": ["Black"],
-    },
-    "Qu-Ax": {
-        "material": "CNC Aluminum Muni platform",
-        "pins": "Replaceable steel pins",
-        "available_colors": ["Black", "Red", "Silver"],
-    },
-}
-
-BRAKE_OPTIONS = {
-    "Shimano Deore M6100": {
-        "manufacturer": "Shimano",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [160, 180, 203],
-        "default_rotor_mm": 180,
-    },
-    "Shimano SLX M7100": {
-        "manufacturer": "Shimano",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [160, 180, 203],
-        "default_rotor_mm": 180,
-    },
-    "Shimano Deore XT M8100": {
-        "manufacturer": "Shimano",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [160, 180, 203, 220],
-        "default_rotor_mm": 203,
-    },
-    "Magura MT5 (4-Piston)": {
-        "manufacturer": "Magura",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [180, 203],
-        "default_rotor_mm": 203,
-    },
-    "Magura MT4": {
-        "manufacturer": "Magura",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [160, 180, 203],
-        "default_rotor_mm": 180,
-    },
-    "Tektro HD-M275": {
-        "manufacturer": "Tektro",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [160, 180],
-        "default_rotor_mm": 160,
-    },
-    "Hope Tech 4 E4": {
-        "manufacturer": "Hope",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [180, 200, 203, 220],
-        "default_rotor_mm": 203,
-    },
-    "Magura HS33": {
-        "manufacturer": "Magura",
-        "type": "Hydraulic Rim Brake",
-        "supported_rotors_mm": [],
-        "default_rotor_mm": None,
-    },
-    "SRAM Level TL": {
-        "manufacturer": "SRAM",
-        "type": "Hydraulic Disc",
-        "supported_rotors_mm": [160, 180],
-        "default_rotor_mm": 160,
-    },
-    "Bengal Helix 7.B": {
-        "manufacturer": "Bengal",
-        "type": "Mechanical Disc",
-        "supported_rotors_mm": [160, 180],
-        "default_rotor_mm": 180,
-    },
-}
-
-AVAILABLE_RIM_COLORS = ["Black", "Silver", "Red", "Blue", "Green", "Gold"]
-SADDLE_CUSHION_COLORS = ["Black", "Brown", "Red", "Blue", "Green"]
-SADDLE_LEATHER_COLORS = ["Black", "Brown", "Red", "Blue"]
-CLAMP_COLORS = ["Black", "Silver", "Red", "Blue", "Gold", "Green", "Orange"]
+import json
+from pathlib import Path
+from typing import Any
 
 
-def model_opts():
+_REQUIRED_CATALOG_KEYS = (
+    "UNICYCLE_BRANDS",
+    "TIRE_OPTIONS",
+    "SADDLE_OPTIONS",
+    "SEAT_POST_OPTIONS",
+    "CLAMP_STYLES",
+    "RIM_OPTIONS",
+    "CRANK_OPTIONS",
+    "PEDAL_OPTIONS",
+    "BRAKE_OPTIONS",
+    "AVAILABLE_RIM_COLORS",
+    "SADDLE_CUSHION_COLORS",
+    "SADDLE_LEATHER_COLORS",
+    "CLAMP_COLORS",
+)
+
+
+def _load_catalog() -> dict[str, Any]:
+    catalog_file = Path(__file__).with_name("product_catalog.json")
+    with catalog_file.open(encoding="utf-8") as file:
+        catalog = json.load(file)
+
+    if not isinstance(catalog, dict):
+        raise ValueError(f"{catalog_file.name} must contain a JSON object.")
+
+    missing_keys = [key for key in _REQUIRED_CATALOG_KEYS if key not in catalog]
+    if missing_keys:
+        raise ValueError(
+            f"{catalog_file.name} is missing catalog sections: "
+            + ", ".join(missing_keys)
+        )
+    return catalog
+
+
+_CATALOG = _load_catalog()
+
+UNICYCLE_BRANDS = _CATALOG["UNICYCLE_BRANDS"]
+TIRE_OPTIONS = _CATALOG["TIRE_OPTIONS"]
+SADDLE_OPTIONS = _CATALOG["SADDLE_OPTIONS"]
+SEAT_POST_OPTIONS = _CATALOG["SEAT_POST_OPTIONS"]
+CLAMP_STYLES = _CATALOG["CLAMP_STYLES"]
+RIM_OPTIONS = _CATALOG["RIM_OPTIONS"]
+CRANK_OPTIONS = _CATALOG["CRANK_OPTIONS"]
+PEDAL_OPTIONS = _CATALOG["PEDAL_OPTIONS"]
+BRAKE_OPTIONS = _CATALOG["BRAKE_OPTIONS"]
+AVAILABLE_RIM_COLORS = _CATALOG["AVAILABLE_RIM_COLORS"]
+SADDLE_CUSHION_COLORS = _CATALOG["SADDLE_CUSHION_COLORS"]
+SADDLE_LEATHER_COLORS = _CATALOG["SADDLE_LEATHER_COLORS"]
+CLAMP_COLORS = _CATALOG["CLAMP_COLORS"]
+
+
+def model_opts() -> dict[str, Any]:
     """Display the available unicycle models and return the user's selection."""
     models = [
         (brand, model, options)

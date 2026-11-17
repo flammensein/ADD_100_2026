@@ -6,7 +6,7 @@ A Python-based prototype for configuring and customizing a unicycle build from a
 
 Flammen Rides Unicycles is a learning-focused project designed to demonstrate:
 
-- structured product data using Python dictionaries
+- structured product data in a JSON catalog
 - menu generation from inventory catalogs
 - component compatibility rules
 - interactive customization flow
@@ -30,20 +30,31 @@ This project is currently in an educational/prototype stage. It contains multipl
 - JSON inventory export for menu generation
 - Versioned development history in the backup folder
 
+## Product Catalog
+
+`product_catalog.json` is the current source of truth for product data.
+`dictionaries.py` loads it and keeps the existing Python constants available to
+the application. The app does not need a database connection in this mode.
+
+Edit `product_catalog.json` when changing the catalog. The older `menu.json`
+export and its menu utilities are archived in `backup003`.
+
+## Deferred MySQL Migration
+
+The MySQL migration is paused. Its schema, seeder, optional driver requirements,
+and related tests are archived in `backup003` for later. The application
+currently reads from the JSON file.
+
 ## Directory Structure
 
 ```text
 flammen_rides_unicycles/
-├── backup/                     # Archived/earlier versions of project files
-├── create_menu.py             # Exports inventory data to menu.json
-├── dictionaries.py            # Source-of-truth product dictionaries
-├── menu.json                  # Generated inventory catalog
-├── read_menu.py               # Legacy/experimental menu reader
-├── rim_options.py             # Rim-related option logic
-├── tire_options               # Tire option helper/data
-├── uni_customizer_v0.1.py     # Initial prototype
-├── uni_customizer_v0.2.py     # Early modular version
-├── uni_customizer_v0.2.2.py   # Iteration with more complete flow
-├── uni_customizer_v0.2.3.py   # Continued refactoring
-├── uni_customizer_v0.2.4.py   # More advanced prototype
+├── backup001/                  # Archived project files
+├── backup002/                  # Archived project files
+├── backup003/                  # Deferred and unused files
+├── dictionaries.py            # Loads the JSON catalog for Python callers
+├── main.py                    # Current configurator
+├── pos_defaults.py            # POS constants
+├── product_catalog.json       # Source-of-truth product catalog
 └── README.md                  # Project documentation
+```
