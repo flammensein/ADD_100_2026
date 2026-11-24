@@ -3,82 +3,95 @@
     "Nimbus Unicycles": {
       "Hatchet 27.5\" Mountain": {
         "wheel_size": "27.5\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "Oracle 24\" Mountain": {
         "wheel_size": "24\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "Oracle 29\" Mountain": {
         "wheel_size": "29\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "Oracle 36\"": {
         "wheel_size": "36\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       }
     },
     "Kris Holm Unicycles (KHU)": {
       "KH20 Trials": {
         "wheel_size": "20\"",
+        "seatpost_diameter_mm": 27.2,
         "disc_brakes_supported": true
       },
       "KH24 Mountain": {
         "wheel_size": "24\"",
+        "seatpost_diameter_mm": 27.2,
         "disc_brakes_supported": true
       },
       "KH27.5 Mountain": {
         "wheel_size": "27.5\"",
+        "seatpost_diameter_mm": 27.2,
         "disc_brakes_supported": true
       },
       "KH29 Mountain/Road": {
         "wheel_size": "29\"",
+        "seatpost_diameter_mm": 27.2,
         "disc_brakes_supported": true
       },
       "KH36 Road/Touring": {
         "wheel_size": "36\"",
+        "seatpost_diameter_mm": 27.2,
         "disc_brakes_supported": true
       }
     },
     "Qu-Ax Unicycles": {
       "Muni 24\" Q-Axle": {
         "wheel_size": "24\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "Muni 27.5\" Q-Axle": {
         "wheel_size": "27.5\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "RGB 29\" Cross/Muni": {
         "wheel_size": "29\"",
-        "disc_brakes_supported": true
-      },
-      "Gentleman 36\"": {
-        "wheel_size": "36\"",
+        "seatpost_diameter_mm": 31.6,
         "disc_brakes_supported": true
       }
     },
     "Mad4One": {
       "URC 24\" Muni": {
         "wheel_size": "24\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "URC 27.5\" Muni": {
         "wheel_size": "27.5\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       },
       "URC 29\" Road/Muni": {
         "wheel_size": "29\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": true
       }
     },
     "Club Unicycles": {
       "Club 20\" Beginner": {
         "wheel_size": "20\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": false
       },
       "Club 24\"": {
         "wheel_size": "24\"",
+        "seatpost_diameter_mm": 25.4,
         "disc_brakes_supported": false
       }
     }
@@ -183,6 +196,14 @@
     }
   },
   "SEAT_POST_OPTIONS": {
+    "QU-AX Pivotal Seatpost": {
+      "brand": "Qu-Ax",
+      "type": "Pivotal",
+      "diameter_mm": 31.6,
+      "lengths_mm": [
+        500
+      ]
+    },
     "KH Forged Fixed Pivotal Seatpost": {
       "brand": "Kris Holm",
       "type": "Pivotal",
@@ -406,16 +427,6 @@
     }
   },
   "PEDAL_OPTIONS": {
-    "Wellgo": {
-      "material": "Clear polycarbonate platform",
-      "pins": "Removable steel pins",
-      "available_colors": [
-        "Clear",
-        "Smoke",
-        "Blue",
-        "Red"
-      ]
-    },
     "Nimbus": {
       "material": "Plastic studded platform",
       "pins": "Molded studs",

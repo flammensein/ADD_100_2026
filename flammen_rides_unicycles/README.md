@@ -30,6 +30,42 @@ This project is currently in an educational/prototype stage. It contains multipl
 - Persistent order history in `orders.json`
 - Versioned development history in the backup folder
 
+Seatposts must match the selected frame model's `seatpost_diameter_mm` and the
+saddle's mount style; seatpost `compatible_brands` entries are not used for
+matching. Frames without an available compatible seatpost and saddle are
+excluded from the frame menu, and saddles without a matching seatpost are
+excluded from the saddle menu. Missing or invalid frame diameters are reported
+as catalog errors rather than guessed. The QX RGB 29 currently has only a
+Pivotal seatpost in the catalog.
+After a configuration edit, existing components are checked for compatibility.
+If another section must change, the customer can update it or cancel the edit.
+Editing billing also prompts the customer to review shipping.
+The configurator displays the selections made so far before each build section
+and when editing sections.
+
+Frame seatpost-diameter references:
+
+- Nimbus [Hatchet 27.5](https://www.unicycle.co.uk/product/27-nimbus-hatchet-muni-unicycle-grey/)
+  and [Oracle frames](https://www.unicycle.co.uk/product/nimbus-oracle-disc-unicycle-frame/):
+  25.4 mm.
+- [Kris Holm frames](https://www.krisholm.com/en/gear/component/frames):
+  27.2 mm.
+- QU-AX Muni [24](https://jwseurope.com/muni-mountain-unicycles/261-qu-ax-muni-24-unicycle.html)
+  and [27.5](https://qu-ax.de/catalog/QU-AX-Muni-584-mm-275-black): 25.4 mm;
+  [QX RGB 29](https://www.circus-expert.com/qx-rgb-muni-29-inch-with-disc-brake-red.html):
+  31.6 mm.
+- [Mad4One URC frames](https://www.mad4one.com/gb/frames/520-mad4one-frame-muni-m.html):
+  25.4 mm.
+- Club [20](https://www.unicycle.co.uk/product/20-club-freestyle-unicycle-with-white-tyre/)
+  and [24](https://www.clubunicycles.com/24-club-freestyle-unicycle/):
+  25.4 mm.
+- The [QU-AX Pivotal seatpost](https://qu-ax.de/catalog/QU-AX-Pivotal-Seatpost-aluminum-316-mm)
+  is 31.6 mm in diameter and 500 mm long.
+
+The configurator checks the listed diameter and mount specifications, not every
+physical fit or safety requirement. Verify parts and clamp compatibility against
+the exact frame and component versions before assembly.
+
 ## Product Catalog
 
 `product_catalog.json` is the current source of truth for product data.

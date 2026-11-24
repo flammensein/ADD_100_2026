@@ -5,6 +5,8 @@ Project: Flammen Rides Unicycles v1.0.0
 -----------------------------------------------------------------------
 """
 
+import math
+
 if __package__:
     from .dictionaries import (
         AVAILABLE_RIM_COLORS,
@@ -172,6 +174,21 @@ def _select_brakes_enabled(brakes_supported: bool) -> bool:
     return b_input == "y"
 
 
+def _frame_seatpost_diameter(frame_brand: str, selected_model: str) -> float:
+    diameter = UNICYCLE_BRANDS[frame_brand][selected_model].get("seatpost_diameter_mm")
+    if (
+        isinstance(diameter, bool)
+        or not isinstance(diameter, (int, float))
+        or not math.isfinite(diameter)
+        or diameter <= 0
+    ):
+        raise ValueError(
+            f"Frame {frame_brand} - {selected_model} must have a valid "
+            "seatpost_diameter_mm in the catalog."
+        )
+    return float(diameter)
+
+
 def model_opts() -> tuple:
     """
     Prompt user for unicycle brand, model, and brake setup preference.
@@ -182,14 +199,29 @@ def model_opts() -> tuple:
     print(f"\t{'UNICYCLE MODEL & FRAME SELECTION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    brand_names = list(UNICYCLE_BRANDS.keys())
+    available_models = {
+        brand: [
+            model
+            for model in models
+            if _compatible_saddles(_frame_seatpost_diameter(brand, model))
+        ]
+        for brand, models in UNICYCLE_BRANDS.items()
+    }
+    if any(
+        len(available_models[brand]) != len(models)
+        for brand, models in UNICYCLE_BRANDS.items()
+    ):
+        print("\tℹ️ Frames without a compatible seatpost and saddle " "are not shown.")
+    brand_names = [brand for brand, models in available_models.items() if models]
+    if not brand_names:
+        raise ValueError("No frames have a compatible seatpost and saddle.")
     selected_brand = get_menu_choice(
         "Available Unicycle Brands:",
         brand_names,
     )
 
     models_dict = UNICYCLE_BRANDS.get(selected_brand, {})
-    model_names = list(models_dict.keys())
+    model_names = available_models[selected_brand]
     selected_model = get_menu_choice(
         f"Available Models for {selected_brand}:",
         model_names,
@@ -199,12 +231,22 @@ def model_opts() -> tuple:
     )
 
     model_spec = models_dict.get(selected_model, {})
-    brakes_yn = _select_brakes_enabled(
-        model_spec.get("disc_brakes_supported", True)
-    )
+    brakes_yn = _select_brakes_enabled(model_spec.get("disc_brakes_supported", True))
     wheel_size = model_spec["wheel_size"]
     # ✅ Return: (selected_brand, selected_model, wheel_size, brakes_yn) (tuple)
     return selected_brand, selected_model, wheel_size, brakes_yn
+
+
+def _compatible_tires(frame_wheel_size: str) -> dict:
+    return {
+        brand: matching
+        for brand, sizes in TIRE_OPTIONS.items()
+        if (
+            matching := [
+                size for size in sizes if f'{size.split()[0]}"' == frame_wheel_size
+            ]
+        )
+    }
 
 
 def tire_opts(frame_wheel_size: str) -> str:
@@ -219,13 +261,7 @@ def tire_opts(frame_wheel_size: str) -> str:
 
     # 🧠 Filtering costs O(T + B): check each tire, then remove brands with no matches.
     # 💡 Translation: keep the full catalog label for display after matching its wheel diameter.
-    compatible_sizes_by_brand = {
-        brand: [size for size in sizes if f'{size.split()[0]}"' == frame_wheel_size]
-        for brand, sizes in TIRE_OPTIONS.items()
-    }
-    compatible_sizes_by_brand = {
-        brand: sizes for brand, sizes in compatible_sizes_by_brand.items() if sizes
-    }
+    compatible_sizes_by_brand = _compatible_tires(frame_wheel_size)
     if not compatible_sizes_by_brand:
         raise ValueError(f"No tires are available for wheel size {frame_wheel_size}.")
 
@@ -247,7 +283,28 @@ def tire_opts(frame_wheel_size: str) -> str:
     return selected_tire
 
 
-def saddle_opts() -> dict:
+def _compatible_seat_posts(
+    frame_seatpost_diameter_mm: float, saddle_mount_style: str
+) -> list:
+    return [
+        post_name
+        for post_name, specs in SEAT_POST_OPTIONS.items()
+        if specs.get("diameter_mm") == frame_seatpost_diameter_mm
+        and specs.get("type") == saddle_mount_style
+    ]
+
+
+def _compatible_saddles(frame_seatpost_diameter_mm: float) -> list:
+    return [
+        name
+        for name, specs in SADDLE_OPTIONS.items()
+        if _compatible_seat_posts(
+            frame_seatpost_diameter_mm, specs.get("mount_style", "Standard")
+        )
+    ]
+
+
+def saddle_opts(frame_seatpost_diameter_mm: float | None = None) -> dict:
     """
     Configure saddle model, cushion width, cushion color, and optional handle leather.
     Return saddle details dictionary including mount_style.
@@ -258,6 +315,17 @@ def saddle_opts() -> dict:
     print(f"\t{'=' * 35:^35}")
 
     saddle_names = list(SADDLE_OPTIONS.keys())
+    if frame_seatpost_diameter_mm is not None:
+        saddle_names = _compatible_saddles(frame_seatpost_diameter_mm)
+        if not saddle_names:
+            raise ValueError(
+                f"No saddles have a compatible {frame_seatpost_diameter_mm} mm seatpost."
+            )
+        if len(saddle_names) < len(SADDLE_OPTIONS):
+            print(
+                "\tℹ️ Saddles without a compatible seatpost for this frame "
+                "are not shown."
+            )
     selected_saddle_name = get_menu_choice(
         "Available Saddles:",
         saddle_names,
@@ -307,11 +375,9 @@ def saddle_opts() -> dict:
     }
 
 
-def seat_post_opts(
-    frame_brand: str = "Nimbus Unicycles", saddle_mount_style: str = "Standard"
-) -> dict:
+def seat_post_opts(frame_seatpost_diameter_mm: float, saddle_mount_style: str) -> dict:
     """
-    Filter seatposts by frame brand compatibility and saddle mount type (Pivotal vs Standard).
+    Filter seatposts by frame diameter and saddle mount type (Pivotal vs Standard).
     Configure post length, clamp style, and optional clamp color customization.
     """
     print(f"\n\n")
@@ -319,17 +385,14 @@ def seat_post_opts(
     print(f"\t{'SEATPOST & CLAMP SELECTION':^35}")
     print(f"\t{'=' * 35:^35}")
 
-    # 🧠 Scan each catalog post once (O(n)); accept brand-compatible or matching mounts.
-    # ℹ️ Future changes should keep the mount and brand checks aligned with catalog specs.
-    compatible_posts = []
-    for post_name, specs in SEAT_POST_OPTIONS.items():
-        post_type = specs.get("type", "Standard")
-        brands = specs.get("compatible_brands", [])
-        if frame_brand in brands or post_type == saddle_mount_style:
-            compatible_posts.append(post_name)
-
+    compatible_posts = _compatible_seat_posts(
+        frame_seatpost_diameter_mm, saddle_mount_style
+    )
     if not compatible_posts:
-        compatible_posts = list(SEAT_POST_OPTIONS.keys())
+        raise ValueError(
+            f"No seatposts are compatible with frame diameter {frame_seatpost_diameter_mm} mm "
+            f"and saddle mount {saddle_mount_style}."
+        )
 
     selected_post_name = get_menu_choice(
         "Compatible Seatposts:",
@@ -379,6 +442,14 @@ def seat_post_opts(
     }
 
 
+def _compatible_rims(wheel_size: str) -> list:
+    return [
+        rim_name
+        for rim_name, specs in RIM_OPTIONS.items()
+        if wheel_size in specs.get("compatible_wheel_sizes", [])
+    ]
+
+
 def rim_opts(wheel_size: str) -> dict:
     """
     Configure rim model and color filtered by target wheel_size.
@@ -391,11 +462,7 @@ def rim_opts(wheel_size: str) -> dict:
     print(f"\t{'=' * 35:^35}")
 
     # 🧠 One pass over the rim catalog (O(n)) keeps filtering tied to the selected wheel size.
-    matching_rims = []
-    for rim_name, specs in RIM_OPTIONS.items():
-        compatible_sizes = specs.get("compatible_wheel_sizes", [])
-        if wheel_size in compatible_sizes:
-            matching_rims.append(rim_name)
+    matching_rims = _compatible_rims(wheel_size)
 
     if not matching_rims:
         raise ValueError(f"No rims are available for wheel size {wheel_size}.")
@@ -756,8 +823,68 @@ def format_invoice(
     )
 
 
+def _show_configuration(order_data: dict, brakes_enabled: bool | None = None) -> None:
+    """Display selections made so far, including pending edits."""
+    print("\n\t--- Configuration selected so far ---")
+    if not order_data:
+        print("\t  No selections yet.")
+
+    def show_fields(values: dict, indent: str) -> None:
+        for key, value in values.items():
+            label = key.replace("_", " ").title()
+            if isinstance(value, dict):
+                print(f"{indent}{label}:")
+                show_fields(value, indent + "  ")
+            else:
+                print(f"{indent}{label}: {value}")
+
+    show_fields(order_data, "\t  ")
+    if brakes_enabled is not None:
+        print(f"\t  Brakes requested: {'Yes' if brakes_enabled else 'No'}")
+
+
+def _edit_conflicts(order_data: dict, brakes_enabled: bool) -> list:
+    """Find components that must change to match the proposed configuration."""
+    frame_brand = order_data["frame_brand"]
+    frame_diameter = _frame_seatpost_diameter(frame_brand, order_data["selected_model"])
+    wheel_size = order_data["wheel_size"]
+    mount_style = order_data["saddle"].get("mount_style", "Standard")
+    compatible_tires = _compatible_tires(wheel_size)
+    conflicts = []
+
+    if not any(
+        order_data["tire"] == f"{brand} {size}"
+        for brand, sizes in compatible_tires.items()
+        for size in sizes
+    ):
+        conflicts.append(("Tire", f"the tire does not fit the {wheel_size} wheel"))
+    if order_data["rim"]["rim_model"] not in _compatible_rims(wheel_size):
+        conflicts.append(("Rim", f"the rim does not fit the {wheel_size} wheel"))
+
+    compatible_posts = _compatible_seat_posts(frame_diameter, mount_style)
+    if not compatible_posts:
+        conflicts.append(
+            (
+                "Saddle",
+                f"no seatpost matches the {frame_diameter} mm frame and {mount_style} saddle mount",
+            )
+        )
+    elif order_data["seat_post"]["post_model"] not in compatible_posts:
+        conflicts.append(
+            (
+                "Seatpost",
+                f"the seatpost does not match the {frame_diameter} mm frame and {mount_style} saddle mount",
+            )
+        )
+
+    if order_data["brakes"]["brakes_installed"] != brakes_enabled:
+        reason = "brakes were enabled" if brakes_enabled else "brakes were disabled"
+        conflicts.append(("Brakes", reason))
+    return conflicts
+
+
 def _edit_order_section(order_data: dict, brakes_enabled: bool) -> bool:
-    """Edit one order section and refresh any components that depend on it."""
+    """Edit one section, resolving compatibility conflicts before committing it."""
     sections = [
         "Frame",
         "Tire",
@@ -771,63 +898,127 @@ def _edit_order_section(order_data: dict, brakes_enabled: bool) -> bool:
         "Shipping",
     ]
     section = get_menu_choice("Select a section to edit:", sections)
+    proposed = order_data.copy()
+    proposed_brakes_enabled = brakes_enabled
+    _show_configuration(proposed, proposed_brakes_enabled)
 
     if section == "Frame":
-        frame_brand, selected_model, wheel_size, brakes_enabled = model_opts()
-        order_data.update(
+        frame_brand, selected_model, wheel_size, proposed_brakes_enabled = model_opts()
+        proposed.update(
             {
                 "frame_brand": frame_brand,
                 "selected_model": selected_model,
                 "wheel_size": wheel_size,
             }
         )
-        order_data["tire"] = tire_opts(wheel_size)
-        order_data["seat_post"] = seat_post_opts(
-            frame_brand=frame_brand,
-            saddle_mount_style=order_data["saddle"].get(
-                "mount_style", "Standard"
-            ),
-        )
-        order_data["rim"] = rim_opts(wheel_size)
-        order_data["brakes"] = brake_opts(brakes_enabled=brakes_enabled)
     elif section == "Tire":
-        order_data["tire"] = tire_opts(order_data["wheel_size"])
+        proposed["tire"] = tire_opts(proposed["wheel_size"])
     elif section == "Saddle":
-        order_data["saddle"] = saddle_opts()
-        order_data["seat_post"] = seat_post_opts(
-            frame_brand=order_data["frame_brand"],
-            saddle_mount_style=order_data["saddle"].get(
-                "mount_style", "Standard"
-            ),
+        proposed["saddle"] = saddle_opts(
+            frame_seatpost_diameter_mm=_frame_seatpost_diameter(
+                proposed["frame_brand"], proposed["selected_model"]
+            )
         )
     elif section == "Seatpost":
-        order_data["seat_post"] = seat_post_opts(
-            frame_brand=order_data["frame_brand"],
-            saddle_mount_style=order_data["saddle"].get(
-                "mount_style", "Standard"
+        proposed["seat_post"] = seat_post_opts(
+            frame_seatpost_diameter_mm=_frame_seatpost_diameter(
+                proposed["frame_brand"], proposed["selected_model"]
             ),
+            saddle_mount_style=proposed["saddle"].get("mount_style", "Standard"),
         )
     elif section == "Rim":
-        order_data["rim"] = rim_opts(order_data["wheel_size"])
+        proposed["rim"] = rim_opts(proposed["wheel_size"])
     elif section == "Cranks":
-        order_data["cranks"] = crank_opts()
+        proposed["cranks"] = crank_opts()
     elif section == "Pedals":
-        order_data["pedals"] = pedal_opts()
+        proposed["pedals"] = pedal_opts()
     elif section == "Brakes":
-        model_spec = UNICYCLE_BRANDS[order_data["frame_brand"]][
-            order_data["selected_model"]
+        model_spec = UNICYCLE_BRANDS[proposed["frame_brand"]][
+            proposed["selected_model"]
         ]
-        brakes_enabled = _select_brakes_enabled(
+        proposed_brakes_enabled = _select_brakes_enabled(
             model_spec.get("disc_brakes_supported", True)
         )
-        order_data["brakes"] = brake_opts(brakes_enabled=brakes_enabled)
+        proposed["brakes"] = brake_opts(brakes_enabled=proposed_brakes_enabled)
     elif section == "Billing":
-        order_data["billing"] = billing_info()
-        order_data["shipping"] = shipping_info(order_data["billing"])
+        proposed["billing"] = billing_info()
+        print(
+            "\tℹ️ Please review shipping after changing billing, "
+            "because the shipping address may use the billing address."
+        )
+        print("\n\tProposed configuration (not yet applied):")
+        _show_configuration(proposed, proposed_brakes_enabled)
+        proposed["shipping"] = shipping_info(proposed["billing"])
     else:
-        order_data["shipping"] = shipping_info(order_data["billing"])
+        proposed["shipping"] = shipping_info(proposed["billing"])
 
-    return brakes_enabled
+    while True:
+        conflicts = _edit_conflicts(proposed, proposed_brakes_enabled)
+        if not conflicts:
+            order_data.update(proposed)
+            return proposed_brakes_enabled
+
+        print("\n\tThis edit requires changes to other sections:")
+        for affected, reason in conflicts:
+            print(f"\t- {affected}: {reason}.")
+
+        no_options = (
+            ("Tire", not _compatible_tires(proposed["wheel_size"])),
+            ("Rim", not _compatible_rims(proposed["wheel_size"])),
+            (
+                "Saddle",
+                not _compatible_saddles(
+                    _frame_seatpost_diameter(
+                        proposed["frame_brand"], proposed["selected_model"]
+                    )
+                ),
+            ),
+            ("Brakes", proposed_brakes_enabled and not BRAKE_OPTIONS),
+        )
+        unavailable = [
+            name
+            for name, empty in no_options
+            if empty and any(affected == name for affected, _ in conflicts)
+        ]
+        if unavailable:
+            print(
+                f"\tNo compatible {' and '.join(unavailable)} options are available; "
+                "the edit is canceled."
+            )
+            return brakes_enabled
+
+        resolution = get_menu_choice(
+            "Resolve the incompatibilities or cancel this edit?",
+            ["Change Affected Sections", "Cancel Edit"],
+        )
+        if resolution == "Cancel Edit":
+            print("\tEdit canceled; the previous configuration is unchanged.")
+            return brakes_enabled
+
+        for affected, _ in conflicts:
+            print("\n\tProposed configuration (not yet applied):")
+            _show_configuration(proposed, proposed_brakes_enabled)
+            if affected == "Tire":
+                proposed["tire"] = tire_opts(proposed["wheel_size"])
+            elif affected == "Rim":
+                proposed["rim"] = rim_opts(proposed["wheel_size"])
+            elif affected == "Saddle":
+                proposed["saddle"] = saddle_opts(
+                    frame_seatpost_diameter_mm=_frame_seatpost_diameter(
+                        proposed["frame_brand"], proposed["selected_model"]
+                    )
+                )
+            elif affected == "Seatpost":
+                proposed["seat_post"] = seat_post_opts(
+                    frame_seatpost_diameter_mm=_frame_seatpost_diameter(
+                        proposed["frame_brand"], proposed["selected_model"]
+                    ),
+                    saddle_mount_style=proposed["saddle"].get(
+                        "mount_style", "Standard"
+                    ),
+                )
+            elif affected == "Brakes":
+                proposed["brakes"] = brake_opts(brakes_enabled=proposed_brakes_enabled)
 
 
 def final_order(
@@ -850,11 +1041,7 @@ def final_order(
         tax_amount = subtotal * tax_rate
         total_cost = subtotal + shipping_cost + tax_amount
 
-        print(
-            format_invoice(
-                order_data, invoice_num, subtotal, tax_amount, total_cost
-            )
-        )
+        print(format_invoice(order_data, invoice_num, subtotal, tax_amount, total_cost))
 
         choice = get_menu_choice(
             "Order Options:",
@@ -893,49 +1080,56 @@ def main() -> None:
     """
     Execute the unicycle customization and checkout pipeline in sequence.
     """
+    order_data: dict = {}
+
     # 🧠 STEP 1: Select frame & establish wheel_size and brake support
+    _show_configuration(order_data)
     frame_brand, selected_model, wheel_size, brakes_enabled = model_opts()
+    order_data.update(
+        {
+            "frame_brand": frame_brand,
+            "selected_model": selected_model,
+            "wheel_size": wheel_size,
+        }
+    )
 
     # 🧠 STEP 2: Select tire filtered by frame wheel_size
-    selected_tire = tire_opts(wheel_size)
+    _show_configuration(order_data, brakes_enabled)
+    order_data["tire"] = tire_opts(wheel_size)
 
-    # 🧠 STEP 3: Configure saddle & pair seatpost with frame brand or saddle mount
-    saddle_dict = saddle_opts()
-    seat_post_dict = seat_post_opts(
-        frame_brand=frame_brand,
+    # 🧠 STEP 3: Match the seatpost to the frame diameter and saddle mount
+    _show_configuration(order_data, brakes_enabled)
+    frame_seatpost_diameter_mm = _frame_seatpost_diameter(frame_brand, selected_model)
+    saddle_dict = saddle_opts(frame_seatpost_diameter_mm=frame_seatpost_diameter_mm)
+    order_data["saddle"] = saddle_dict
+    _show_configuration(order_data, brakes_enabled)
+    order_data["seat_post"] = seat_post_opts(
+        frame_seatpost_diameter_mm=frame_seatpost_diameter_mm,
         saddle_mount_style=saddle_dict.get("mount_style", "Standard"),
     )
 
     # 🧠 STEP 4: Select rim filtered by frame wheel_size
-    rim_dict = rim_opts(wheel_size)
+    _show_configuration(order_data, brakes_enabled)
+    order_data["rim"] = rim_opts(wheel_size)
 
     # 🧠 STEP 5: Configure drivetrain (cranks and pedals)
-    crank_dict = crank_opts()
-    pedal_dict = pedal_opts()
+    _show_configuration(order_data, brakes_enabled)
+    order_data["cranks"] = crank_opts()
+    _show_configuration(order_data, brakes_enabled)
+    order_data["pedals"] = pedal_opts()
 
     # 🧠 STEP 6: Configure brakes (bypassed if unsupported or declined)
-    brake_dict = brake_opts(brakes_enabled=brakes_enabled)
+    _show_configuration(order_data, brakes_enabled)
+    order_data["brakes"] = brake_opts(brakes_enabled=brakes_enabled)
 
     # 🧠 STEP 7: Collect billing & shipping (with billing address reuse option)
+    _show_configuration(order_data, brakes_enabled)
     billing_dict = billing_info()
-    shipping_dict = shipping_info(billing_dict)
+    order_data["billing"] = billing_dict
+    _show_configuration(order_data, brakes_enabled)
+    order_data["shipping"] = shipping_info(billing_dict)
 
-    # 🧠 STEP 8: Consolidate selections into a single order dictionary for checkout
-    order_data = {
-        "frame_brand": frame_brand,
-        "selected_model": selected_model,
-        "wheel_size": wheel_size,
-        "tire": selected_tire,
-        "rim": rim_dict,
-        "saddle": saddle_dict,
-        "seat_post": seat_post_dict,
-        "cranks": crank_dict,
-        "pedals": pedal_dict,
-        "brakes": brake_dict,
-        "billing": billing_dict,
-        "shipping": shipping_dict,
-    }
-
+    # 🧠 STEP 8: Review the completed configuration and checkout.
     final_order(order_data, brakes_enabled)
 
 
