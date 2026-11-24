@@ -5,6 +5,8 @@ Project: Flammen Rides Unicycles v1.0.0
 -----------------------------------------------------------------------
 """
 
+from json import JSONDecodeError
+
 if __package__:
     from .dictionaries import (
         AVAILABLE_RIM_COLORS,
@@ -761,7 +763,10 @@ def final_order(
     Offer 'Accept/Buy/Submit', 'Edit', and 'Cancel' options.
     """
     # ℹ️ The order dictionary combines heterogeneous component records and JSON values.
-    invoice_num = generate_invoice_number()
+    try:
+        invoice_num = generate_invoice_number()
+    except (OSError, ValueError) as exc:
+        raise RuntimeError(f"Unable to generate an invoice number: {exc}") from exc
     shipping = order_data.get("shipping", {})
 
     shipping_cost = shipping.get("shipping_cost", 0.0)
@@ -770,11 +775,7 @@ def final_order(
     tax_amount = subtotal * tax_rate
     total_cost = subtotal + shipping_cost + tax_amount
 
-    print(
-        format_invoice(
-            order_data, invoice_num, subtotal, tax_amount, total_cost
-        )
-    )
+    print(format_invoice(order_data, invoice_num, subtotal, tax_amount, total_cost))
 
     choice = get_menu_choice(
         "Order Options:",
@@ -798,7 +799,10 @@ def final_order(
             "total_cost": total_cost,
         }
         # 💾 Save only after confirmation; edits and cancellations remain unsaved.
-        create_order(saved_order)
+        try:
+            create_order(saved_order)
+        except (OSError, ValueError) as exc:
+            raise RuntimeError(f"Unable to save the order: {exc}") from exc
         print(f"\n\t🎉 Order {invoice_num} has been successfully submitted!")
         return "SUBMITTED"
     if choice == "2":

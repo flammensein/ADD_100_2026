@@ -38,7 +38,10 @@ def _load_catalog() -> dict[str, Any]:
     return catalog
 
 
-_CATALOG = _load_catalog()
+try:
+    _CATALOG = _load_catalog()
+except (OSError, ValueError) as exc:
+    raise RuntimeError(f"Could not load product_catalog.json: {exc}") from exc
 
 UNICYCLE_BRANDS = _CATALOG["UNICYCLE_BRANDS"]
 TIRE_OPTIONS = _CATALOG["TIRE_OPTIONS"]
