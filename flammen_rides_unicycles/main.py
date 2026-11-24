@@ -5,8 +5,6 @@ Project: Flammen Rides Unicycles v1.0.0
 -----------------------------------------------------------------------
 """
 
-from json import JSONDecodeError
-
 if __package__:
     from .dictionaries import (
         AVAILABLE_RIM_COLORS,
@@ -159,6 +157,21 @@ def get_text_choice(
     )
 
 
+def _select_brakes_enabled(brakes_supported: bool) -> bool:
+    if not brakes_supported:
+        print("\n\tℹ️ Disc brakes are not supported on this beginner frame model.")
+        return False
+
+    b_input = get_validated_input(
+        "Add Disc Brakes to this configuration? (y/n)",
+        validator=lambda value: value in {"y", "n"},
+        invalid_message="Please enter 'y' or 'n'.",
+        default="y",
+        normalize=str.lower,
+    )
+    return b_input == "y"
+
+
 def model_opts() -> tuple:
     """
     Prompt user for unicycle brand, model, and brake setup preference.
@@ -186,21 +199,9 @@ def model_opts() -> tuple:
     )
 
     model_spec = models_dict.get(selected_model, {})
-    brakes_supported = model_spec.get("disc_brakes_supported", True)
-
-    brakes_yn = False
-    if brakes_supported:
-        b_input = get_validated_input(
-            "Add Disc Brakes to this configuration? (y/n)",
-            validator=lambda value: value in {"y", "n"},
-            invalid_message="Please enter 'y' or 'n'.",
-            default="y",
-            normalize=str.lower,
-        )
-        brakes_yn = b_input == "y"
-    else:
-        print("\n\tℹ️ Disc brakes are not supported on this beginner frame model.")
-
+    brakes_yn = _select_brakes_enabled(
+        model_spec.get("disc_brakes_supported", True)
+    )
     wheel_size = model_spec["wheel_size"]
     # ✅ Return: (selected_brand, selected_model, wheel_size, brakes_yn) (tuple)
     return selected_brand, selected_model, wheel_size, brakes_yn
@@ -755,117 +756,187 @@ def format_invoice(
     )
 
 
+def _edit_order_section(order_data: dict, brakes_enabled: bool) -> bool:
+    """Edit one order section and refresh any components that depend on it."""
+    sections = [
+        "Frame",
+        "Tire",
+        "Saddle",
+        "Seatpost",
+        "Rim",
+        "Cranks",
+        "Pedals",
+        "Brakes",
+        "Billing",
+        "Shipping",
+    ]
+    section = get_menu_choice("Select a section to edit:", sections)
+
+    if section == "Frame":
+        frame_brand, selected_model, wheel_size, brakes_enabled = model_opts()
+        order_data.update(
+            {
+                "frame_brand": frame_brand,
+                "selected_model": selected_model,
+                "wheel_size": wheel_size,
+            }
+        )
+        order_data["tire"] = tire_opts(wheel_size)
+        order_data["seat_post"] = seat_post_opts(
+            frame_brand=frame_brand,
+            saddle_mount_style=order_data["saddle"].get(
+                "mount_style", "Standard"
+            ),
+        )
+        order_data["rim"] = rim_opts(wheel_size)
+        order_data["brakes"] = brake_opts(brakes_enabled=brakes_enabled)
+    elif section == "Tire":
+        order_data["tire"] = tire_opts(order_data["wheel_size"])
+    elif section == "Saddle":
+        order_data["saddle"] = saddle_opts()
+        order_data["seat_post"] = seat_post_opts(
+            frame_brand=order_data["frame_brand"],
+            saddle_mount_style=order_data["saddle"].get(
+                "mount_style", "Standard"
+            ),
+        )
+    elif section == "Seatpost":
+        order_data["seat_post"] = seat_post_opts(
+            frame_brand=order_data["frame_brand"],
+            saddle_mount_style=order_data["saddle"].get(
+                "mount_style", "Standard"
+            ),
+        )
+    elif section == "Rim":
+        order_data["rim"] = rim_opts(order_data["wheel_size"])
+    elif section == "Cranks":
+        order_data["cranks"] = crank_opts()
+    elif section == "Pedals":
+        order_data["pedals"] = pedal_opts()
+    elif section == "Brakes":
+        model_spec = UNICYCLE_BRANDS[order_data["frame_brand"]][
+            order_data["selected_model"]
+        ]
+        brakes_enabled = _select_brakes_enabled(
+            model_spec.get("disc_brakes_supported", True)
+        )
+        order_data["brakes"] = brake_opts(brakes_enabled=brakes_enabled)
+    elif section == "Billing":
+        order_data["billing"] = billing_info()
+        order_data["shipping"] = shipping_info(order_data["billing"])
+    else:
+        order_data["shipping"] = shipping_info(order_data["billing"])
+
+    return brakes_enabled
+
+
 def final_order(
     order_data: dict,
+    brakes_enabled: bool = True,
 ) -> str:
     """
-    Generate a unique order ID (invoice_num) and display an itemized receipt.
-    Offer 'Accept/Buy/Submit', 'Edit', and 'Cancel' options.
+    Generate a unique order ID and allow editing until the order is submitted or canceled.
     """
     # ℹ️ The order dictionary combines heterogeneous component records and JSON values.
     try:
         invoice_num = generate_invoice_number()
     except (OSError, ValueError) as exc:
         raise RuntimeError(f"Unable to generate an invoice number: {exc}") from exc
-    shipping = order_data.get("shipping", {})
+    while True:
+        shipping = order_data.get("shipping", {})
+        shipping_cost = shipping.get("shipping_cost", 0.0)
+        tax_rate = 0.08
+        subtotal = BASE_PRICE
+        tax_amount = subtotal * tax_rate
+        total_cost = subtotal + shipping_cost + tax_amount
 
-    shipping_cost = shipping.get("shipping_cost", 0.0)
-    tax_rate = 0.08
-    subtotal = BASE_PRICE
-    tax_amount = subtotal * tax_rate
-    total_cost = subtotal + shipping_cost + tax_amount
+        print(
+            format_invoice(
+                order_data, invoice_num, subtotal, tax_amount, total_cost
+            )
+        )
 
-    print(format_invoice(order_data, invoice_num, subtotal, tax_amount, total_cost))
+        choice = get_menu_choice(
+            "Order Options:",
+            ["1", "2", "3"],
+            option_label=lambda option: {
+                "1": "Accept / Buy / Submit",
+                "2": "Edit Customization",
+                "3": "Cancel Order",
+            }[option],
+        )
 
-    choice = get_menu_choice(
-        "Order Options:",
-        ["1", "2", "3"],
-        option_label=lambda option: {
-            "1": "Accept / Buy / Submit",
-            "2": "Edit Customization",
-            "3": "Cancel Order",
-        }[option],
-    )
+        if choice == "1":
+            saved_order: dict[str, object] = {"invoice_num": invoice_num}
+            saved_order.update(order_data)
+            saved_order["financials"] = {
+                "subtotal": subtotal,
+                "tax_amount": tax_amount,
+                "shipping_cost": shipping_cost,
+                "total_cost": total_cost,
+            }
+            try:
+                create_order(saved_order)
+            except (OSError, ValueError) as exc:
+                raise RuntimeError(f"Unable to save the order: {exc}") from exc
+            print(f"\n\t🎉 Order {invoice_num} has been successfully submitted!")
+            return "SUBMITTED"
+        if choice == "2":
+            brakes_enabled = _edit_order_section(order_data, brakes_enabled)
+            continue
 
-    # ✅ Return: order status flag ("SUBMITTED", "EDIT", or "CANCELED") (str)
-    if choice == "1":
-        # 💾 Put the invoice number first so it is easy to find in the saved order.
-        saved_order = {"invoice_num": invoice_num}
-        saved_order.update(order_data)
-        saved_order["financials"] = {
-            "subtotal": subtotal,
-            "tax_amount": tax_amount,
-            "shipping_cost": shipping_cost,
-            "total_cost": total_cost,
-        }
-        # 💾 Save only after confirmation; edits and cancellations remain unsaved.
-        try:
-            create_order(saved_order)
-        except (OSError, ValueError) as exc:
-            raise RuntimeError(f"Unable to save the order: {exc}") from exc
-        print(f"\n\t🎉 Order {invoice_num} has been successfully submitted!")
-        return "SUBMITTED"
-    if choice == "2":
-        print("\n\t🔄 Returning to customizer menu...")
-        return "EDIT"
-
-    print("\n\t❌ Order canceled.")
-    return "CANCELED"
+        print("\n\t❌ Order canceled.")
+        return "CANCELED"
 
 
 def main() -> None:
     """
     Execute the unicycle customization and checkout pipeline in sequence.
     """
-    # ℹ️ Info: Structured State Flag loop pattern to manage application runtime
-    program_running = True
-    while program_running:
-        # 🧠 STEP 1: Select frame & establish wheel_size and brake support
-        frame_brand, selected_model, wheel_size, brakes_enabled = model_opts()
+    # 🧠 STEP 1: Select frame & establish wheel_size and brake support
+    frame_brand, selected_model, wheel_size, brakes_enabled = model_opts()
 
-        # 🧠 STEP 2: Select tire filtered by frame wheel_size
-        selected_tire = tire_opts(wheel_size)
+    # 🧠 STEP 2: Select tire filtered by frame wheel_size
+    selected_tire = tire_opts(wheel_size)
 
-        # 🧠 STEP 3: Configure saddle & pair seatpost with frame brand or saddle mount
-        saddle_dict = saddle_opts()
-        seat_post_dict = seat_post_opts(
-            frame_brand=frame_brand,
-            saddle_mount_style=saddle_dict.get("mount_style", "Standard"),
-        )
+    # 🧠 STEP 3: Configure saddle & pair seatpost with frame brand or saddle mount
+    saddle_dict = saddle_opts()
+    seat_post_dict = seat_post_opts(
+        frame_brand=frame_brand,
+        saddle_mount_style=saddle_dict.get("mount_style", "Standard"),
+    )
 
-        # 🧠 STEP 4: Select rim filtered by frame wheel_size
-        rim_dict = rim_opts(wheel_size)
+    # 🧠 STEP 4: Select rim filtered by frame wheel_size
+    rim_dict = rim_opts(wheel_size)
 
-        # 🧠 STEP 5: Configure drivetrain (cranks and pedals)
-        crank_dict = crank_opts()
-        pedal_dict = pedal_opts()
+    # 🧠 STEP 5: Configure drivetrain (cranks and pedals)
+    crank_dict = crank_opts()
+    pedal_dict = pedal_opts()
 
-        # 🧠 STEP 6: Configure brakes (bypassed if unsupported or declined)
-        brake_dict = brake_opts(brakes_enabled=brakes_enabled)
+    # 🧠 STEP 6: Configure brakes (bypassed if unsupported or declined)
+    brake_dict = brake_opts(brakes_enabled=brakes_enabled)
 
-        # 🧠 STEP 7: Collect billing & shipping (with billing address reuse option)
-        billing_dict = billing_info()
-        shipping_dict = shipping_info(billing_dict)
+    # 🧠 STEP 7: Collect billing & shipping (with billing address reuse option)
+    billing_dict = billing_info()
+    shipping_dict = shipping_info(billing_dict)
 
-        # 🧠 STEP 8: Consolidate selections into a single order dictionary for checkout
-        order_data = {
-            "frame_brand": frame_brand,
-            "selected_model": selected_model,
-            "wheel_size": wheel_size,
-            "tire": selected_tire,
-            "rim": rim_dict,
-            "saddle": saddle_dict,
-            "seat_post": seat_post_dict,
-            "cranks": crank_dict,
-            "pedals": pedal_dict,
-            "brakes": brake_dict,
-            "billing": billing_dict,
-            "shipping": shipping_dict,
-        }
+    # 🧠 STEP 8: Consolidate selections into a single order dictionary for checkout
+    order_data = {
+        "frame_brand": frame_brand,
+        "selected_model": selected_model,
+        "wheel_size": wheel_size,
+        "tire": selected_tire,
+        "rim": rim_dict,
+        "saddle": saddle_dict,
+        "seat_post": seat_post_dict,
+        "cranks": crank_dict,
+        "pedals": pedal_dict,
+        "brakes": brake_dict,
+        "billing": billing_dict,
+        "shipping": shipping_dict,
+    }
 
-        status = final_order(order_data)
-        if status != "EDIT":
-            program_running = False
+    final_order(order_data, brakes_enabled)
 
 
 # ▶️ Imports expose functions without starting checkout; direct execution starts the app.
