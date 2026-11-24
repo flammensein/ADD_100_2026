@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 _REQUIRED_CATALOG_KEYS = (
     "UNICYCLE_BRANDS",
     "TIRE_OPTIONS",
@@ -56,28 +55,28 @@ SADDLE_LEATHER_COLORS = _CATALOG["SADDLE_LEATHER_COLORS"]
 CLAMP_COLORS = _CATALOG["CLAMP_COLORS"]
 
 
-def model_opts() -> dict[str, Any]:
-    """Display the available unicycle models and return the user's selection."""
-    models = [
-        (brand, model, options)
-        for brand, brand_models in UNICYCLE_BRANDS.items()
-        for model, options in brand_models.items()
-    ]
+# def model_opts() -> dict[str, Any]:
+#     """Display the available unicycle models and return the user's selection."""
+#     models = [
+#         (brand, model, options)
+#         for brand, brand_models in UNICYCLE_BRANDS.items()
+#         for model, options in brand_models.items()
+#     ]
 
-    print("Available unicycle models:")
-    for index, (brand, model, options) in enumerate(models, start=1):
-        print(f"{index}. {brand} - {model} ({options['wheel_size']} wheel)")
+#     print("Available unicycle models:")
+#     for index, (brand, model, options) in enumerate(models, start=1):
+#         print(f"{index}. {brand} - {model} ({options['wheel_size']} wheel)")
 
-    while True:
-        selection = input(f"Select a model (1-{len(models)}): ")
-        try:
-            index = int(selection)
-        except ValueError:
-            print("Please enter a number from the list.")
-            continue
+#     while True:
+#         selection = input(f"Select a model (1-{len(models)}): ")
+#         try:
+#             index = int(selection)
+#         except ValueError:
+#             print("Please enter a number from the list.")
+#             continue
 
-        if 1 <= index <= len(models):
-            brand, model, options = models[index - 1]
-            return {"brand": brand, "model": model, **options}
+#         if 1 <= index <= len(models):
+#             brand, model, options = models[index - 1]
+#             return {"brand": brand, "model": model, **options}
 
-        print(f"Please enter a number from 1 to {len(models)}.")
+#         print(f"Please enter a number from 1 to {len(models)}.")
